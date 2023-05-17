@@ -1,7 +1,6 @@
 package com.oop.chess.gui;
 
 import javax.swing.*;
-import java.awt.event.MouseListener;
 import com.oop.chess.Game.PieceEnum;
 
 public class Pieces {
@@ -22,8 +21,6 @@ public class Pieces {
     }
 
     public void addPieces(JPanel board) {
-        MouseListener listener = new PieceMovement(board);
-        board.addMouseListener(listener);
         loadImages();
         JPanel tile;
 

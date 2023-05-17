@@ -1,5 +1,6 @@
 package com.oop.chess.model.pieces;
 
+import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.model.Cell;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
  * This class represents a piece of the chess board.
  */
 public abstract class Piece {
+    public PieceEnum piece_type;
 
     // x and y coordinates of the piece on the board
 
@@ -17,8 +19,16 @@ public abstract class Piece {
     public int y = -1;
     public boolean isWhite;
 
+    public Piece() {
+
+    }
+
     public boolean isWhite() {
         return this.isWhite;
+    }
+
+    public PieceEnum getType() {
+        return piece_type;
     }
 
     public void setWhite(boolean white) {
@@ -65,4 +75,22 @@ public abstract class Piece {
      **/
     public abstract ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY);
 
+    public ArrayList<int[]> getLegalMoves(int initialX, int initialY) {
+        ArrayList<int[]> legalMoves = new ArrayList<int[]>();
+
+        for(int i = 0; i < 8; i++){
+            for(int ii = 0; ii < 8; ii++){
+                ArrayList<int[]> moves = getLegalMoves(initialX, initialY, i, ii);
+
+                if (moves != null)
+                    legalMoves.addAll(moves);
+            }
+        }
+
+        return legalMoves;
+    }
+
+    public void makeMove(int initialX, int initialY, int finalX, int finalY) {
+
+    }
 }

@@ -1,6 +1,7 @@
 package com.oop.chess.model.pieces;
 
 import com.oop.chess.Game;
+import com.oop.chess.Game.PieceEnum;
 
 import java.util.ArrayList;
 
@@ -19,65 +20,73 @@ public class Bishop extends Piece {
         super.isWhite = white;
         super.x = i;
         super.y = j;
+        super.piece_type = PieceEnum.BISHOP;
     }
-
 
     /**
      * Returns an identical Bishop piece.
      * @return a new identical piece.
      */
     @Override
+    public Bishop clone() {
+        return new Bishop(isWhite, x, y);
+    }
+
+    @Override
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY) {
         ArrayList<int[]> legalMoves = new ArrayList<>();
 
         if (finalX == initialX && finalY == initialY) {
-            return null; //cannot move nothing
+            return legalMoves; //cannot move nothing
         }
         if (finalX < 0 || finalX > 7 || initialX < 0 || initialX > 7 || finalY < 0 || finalY > 7 || initialY < 0 || initialY > 7) {
-            return null;
+            return legalMoves;
         }
 
-        if (initialX - finalX != initialY - finalY) {
-            return null;
+        if (Math.abs(initialX - finalX) != Math.abs(initialY - finalY)) {
+            return legalMoves;
         }
 
-        for (int i = initialX + 1, j = initialY + 1; i < finalX && j < finalY; i++, j++) { //NE movement
-            Piece piece = Game.getPiece(i, j);
+        int[][] directions_to_check = {
+            { 1, 1},
+            {-1, 1},
+            { 1,-1},
+            {-1,-1}
+        };
 
-            if (piece == null) {
-                int[] move = {i, j};
-                legalMoves.add(move);
 
-            }
-        }
+        for(int i = 0; i < directions_to_check.length; i++) {
+            int[] d = directions_to_check[i];
 
-        for (int i = initialX + 1, j = initialY - 1; i < finalX && j > 0; i++, j--) {//SE movement
-            Piece piece = Game.getPiece(i, j);
+            int x = initialX + d[0];
+            int y = initialY + d[1];
 
-            if (piece == null) {
-                int[] move = {i, j};
-                legalMoves.add(move);
+            boolean check = true;
 
-            }
-        }
+            while(check) {
+                Piece piece = Game.getPiece(x,y);
+                boolean add_to_legal_moves = false;
 
-        for (int i = initialX - 1, j = initialY + 1; i > 0 && j < finalY; i--, j++) { //SW movement
-            Piece piece = Game.getPiece(i, j);
+                if (piece == null ) {
+                    add_to_legal_moves = true;
+                } else if (piece.isWhite != isWhite) {
+                    add_to_legal_moves = true;
+                    check = false;
+                } else
+                    check = false;
 
-            if (piece == null) {
-                int[] move = {i, j};
-                legalMoves.add(move);
 
-            }
-        }
+                if (add_to_legal_moves) {
+                    int[] move = {x,y};
+                    legalMoves.add(move);
+                }
 
-        for (int i = initialX - 1, j = initialY - 1; i > 0 && j > 0; i--, j--) { //NW movement
-            Piece piece = Game.getPiece(i, j);
 
-            if (piece == null) {
-                int[] move = {i, j};
-                legalMoves.add(move);
+                x += d[0];
+                y += d[1];
 
+                if (!Game.xyInBounds(x, y))
+                    check = false;
             }
         }
 

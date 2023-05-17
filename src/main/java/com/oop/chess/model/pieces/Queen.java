@@ -1,5 +1,7 @@
 package com.oop.chess.model.pieces;
 
+import com.oop.chess.Game.PieceEnum;
+
 import java.util.ArrayList;
 
 /**
@@ -17,6 +19,7 @@ public class Queen extends Piece {
         super.isWhite = white;
         super.x = i;
         super.y = j;
+        super.piece_type = PieceEnum.QUEEN;
     }
 
     /**
@@ -30,7 +33,6 @@ public class Queen extends Piece {
 
     @Override
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY) {
-
         Bishop bishop = new Bishop(this.isWhite, this.x, this.y);
         Rook rook = new Rook(this.isWhite, this.x, this.y);
 
@@ -38,6 +40,8 @@ public class Queen extends Piece {
         ArrayList<int[]> rookMoves = new ArrayList<>(rook.getLegalMoves(initialX, initialY, finalX, finalY));
 
         bishopMoves.addAll(rookMoves);
+
         return bishopMoves;
+
     }
 }

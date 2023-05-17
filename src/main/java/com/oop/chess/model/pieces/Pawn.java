@@ -1,6 +1,7 @@
 package com.oop.chess.model.pieces;
 
 import com.oop.chess.Game;
+import com.oop.chess.Game.PieceEnum;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,9 @@ import java.util.ArrayList;
  * This class represents a Pawn piece of the chess board.
  */
 public class Pawn extends Piece {
+
+    // This variable 'enPassantPossible' defines that the most recent move of the pawn is two squares and it is thus possible that it is captured.
+    boolean enPassantPossible;
 
     /**
      * Constructs a Pawn piece using the fact whether it is white or black and its initial location on the board.
@@ -19,6 +23,9 @@ public class Pawn extends Piece {
         super.isWhite = white;
         super.x = i;
         super.y = j;
+        enPassantPossible = false;
+
+        super.piece_type = PieceEnum.PAWN;
     }
 
     /**
@@ -27,9 +34,10 @@ public class Pawn extends Piece {
      */
     @Override
     public Pawn clone() {
-        return new Pawn(isWhite, x, y);
+        Pawn p = new Pawn(isWhite, x, y);
+        p.enPassantPossible = enPassantPossible;
+        return p;
     }
-
 
     @Override
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY) {
@@ -42,75 +50,105 @@ public class Pawn extends Piece {
             return null;
         }
 
-        if (isWhite) {//1 square movement and movement for taking piece for WHITE pieces
+        // This is the direction in which a pawn can move
+        // For white, it's -1 because white pieces move  upwards, and for black it's 1 because black pieces move downwards
+        int direction;
+        if (isWhite)
+            direction = -1; // up
+        else
+            direction =  1; // down
 
-            Piece piece = Game.getPiece(finalX, finalY);
+        // Check if there's a piece already at the final position
+        Piece piece = Game.getPiece(finalX, finalY);
+        System.out.println("There is a piece: " + piece);
 
-            if (finalY - initialY == -1) {
+        // 1 tile movement
+        if (finalY - initialY == direction) {
+            // Same column, only move forwards if the space in front of the pawn is empty
+            if (finalX == initialX && piece == null) {
+                int[] move = {finalX, finalY};
+                legalMoves.add(move);
+            }
+
+            // Capture a piece via diagonal movement
+            if (Math.abs(initialX - finalX) == 1 && piece != null && piece.isWhite != isWhite) {
+                int[] move = {finalX, finalY};
+                legalMoves.add(move);
+            }
+
+            // En-passant movement
+            Piece enPassantPiece = Game.getPiece(finalX, finalY - direction);
+            if (enPassantPiece != null && enPassantPiece instanceof Pawn) {
+                System.out.println(((Pawn) enPassantPiece).enPassantPossible);
+                if (Math.abs(initialX - finalX) == 1 && ((Pawn) enPassantPiece).enPassantPossible && enPassantPiece.isWhite != isWhite) {
+                    int[] move = {finalX, finalY};
+                    legalMoves.add(move);
+                }
+            }
+        }
+
+        // 2 tile movement
+        // Check if the pawn is on its first move
+        boolean b;
+        if (isWhite)
+            b = (initialY == 6);
+        else
+            b = (initialY == 1);
+
+        if (b) {
+            if (finalY - initialY == 2*direction) {
                 if (finalX == initialX && piece == null) {
                     int[] move = {finalX, finalY};
                     legalMoves.add(move);
                 }
-
-                if (Math.abs(initialX - finalX) == 1 && piece != null && !piece.isWhite) {
-                    int[] move = {finalX, finalY};
-                    legalMoves.add(move);
-                }
-
-
-            }
-        }
-
-        boolean b = ((initialX == 0 || initialX == 1 || initialX == 2 || initialX == 3 || initialX == 4 || initialX == 5 || initialX == 6 || initialX == 7) && initialY == 6);
-
-        if (isWhite) { //2 square movement for WHITE pieces
-            Piece piece = Game.getPiece(finalX, finalY);
-            if (b == true) {
-
-                if (finalY - initialY == -2) {
-                    if (finalX == initialX && piece == null) {
-
-                        int[] move = {finalX, finalY};
-                        legalMoves.add(move);
-                    }
-                }
-
-            }
-
-        }
-
-        if (!isWhite) {          //1 square movement and movement for taking the piece for BLACK pieces
-            Piece piece = Game.getPiece(finalX, finalY);
-            if (finalY - initialY == 1) {
-                if (finalX == initialX && piece == null) {
-                    int[] move = {finalX, finalY};
-                    legalMoves.add(move);
-                }
-
-                if (Math.abs(initialX - finalX) == 1 && piece != null && piece.isWhite) {
-                    int[] move = {finalX, finalY};
-                    legalMoves.add(move);
-                }
-
-
-            }
-        }
-        boolean a = ((initialX == 0 || initialX == 1 || initialX == 2 || initialX == 3 || initialX == 4 || initialX == 5 || initialX == 6 || initialX == 7) && initialY == 1);
-        if (!isWhite) {   //2 square movement for BLACK pieces
-            Piece piece = Game.getPiece(finalX, finalY);
-            if (a == true) {
-
-                if (finalY - initialY == 2) {
-                    if (finalX == initialX && piece == null) {
-
-                        int[] move = {finalX, finalY};
-                        legalMoves.add(move);
-                    }
-                }
-
             }
         }
 
         return legalMoves;
+    }
+
+
+    // Execute specific actions on a move
+    public void makeMove(int initialX, int initialY, int finalX, int finalY) {
+        Piece piece = Game.getPiece(finalX, finalY);
+
+        int direction;
+        if (isWhite)
+            direction = -1; // up
+        else
+            direction =  1; // down
+
+        // en passant is not possible (only moved by 1 tile)
+        if (finalY - initialY == direction) {
+            if (finalX == initialX && piece == null) {
+                enPassantPossible = false;
+            }
+        }
+
+        // check if enpassant is possible
+        boolean b;
+        if (isWhite)
+            b = (initialY == 6);
+        else
+            b = (initialY == 1);
+
+        if (b) {
+            if (finalY - initialY == 2*direction) {
+                if (finalX == initialX && piece == null) {
+                    enPassantPossible = true;
+                }
+            }
+        }
+
+        // execute en passant
+        Piece enPassantPiece = Game.getPiece(finalX, finalY - direction);
+        if (enPassantPiece != null && enPassantPiece instanceof Pawn) {
+            System.out.println(((Pawn) enPassantPiece).enPassantPossible);
+            if (Math.abs(initialX - finalX) == 1 && ((Pawn) enPassantPiece).enPassantPossible && enPassantPiece.isWhite != isWhite) {
+                // delete the en passant piece
+                Game.board[finalY - direction][finalX] = null;
+                Game.GUIdeletePiece(finalX, finalY - direction);
+            }
+        }
     }
 }

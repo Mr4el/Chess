@@ -1,6 +1,7 @@
 package com.oop.chess.model.pieces;
 
 import com.oop.chess.Game;
+import com.oop.chess.Game.PieceEnum;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
  * This class represents a King piece of the chess board.
  */
 public class King extends Piece {
+
     boolean castle;
     private Rook Rook;
 
@@ -21,6 +23,7 @@ public class King extends Piece {
         super.isWhite = white;
         super.x = i;
         super.y = j;
+        super.piece_type = PieceEnum.KING;
     }
 
     /**
@@ -41,7 +44,7 @@ public class King extends Piece {
         int changeY = Math.abs(finalY - initialY);
 
         if (changeX <= 1 && changeY <= 1) {
-            if (!(initialX == finalX && initialY == finalY)) {
+            if (!(finalX == initialX && finalY == initialY)) {
                 int[] move = {finalX, finalY};
                 legalMoves.add(move);
             }
@@ -51,6 +54,7 @@ public class King extends Piece {
     }
 
     public boolean canCastle() {
+
         Piece rookWhite1 = Game.getPiece(0, 0);
         Piece rookWhite2 = Game.getPiece(0, 7);
         Piece rookBlack1 = Game.getPiece(7, 0);

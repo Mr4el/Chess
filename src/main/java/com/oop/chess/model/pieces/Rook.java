@@ -1,6 +1,7 @@
 package com.oop.chess.model.pieces;
 
 import com.oop.chess.Game;
+import com.oop.chess.Game.PieceEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class Rook extends Piece {
         super.isWhite = white;
         super.x = i;
         super.y = j;
+        super.piece_type = PieceEnum.ROOK;
     }
 
     /**
@@ -34,18 +36,17 @@ public class Rook extends Piece {
     @Override
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY) {
         ArrayList<int[]> legalMoves = new ArrayList<>();
-        boolean noMoves = true;
 
         if (finalX == initialX && finalY == initialY) {
-            return null; //cannot move nothing
+            return legalMoves; //cannot move nothing
         }
         if (finalX < 0 || finalX > 7 || initialX < 0 || initialX > 7 || finalY < 0 || finalY > 7 || initialY < 0 || initialY > 7) {
             System.err.println("here 1");
-            return null;
+            return legalMoves;
         }
 
         // right
-        noMoves = true;
+        boolean noMoves = true;
         for (int i = initialX + 1; i <= 7 && noMoves; i++) {
 
             Piece piece = Game.getPiece(i, initialY);
@@ -118,11 +119,9 @@ public class Rook extends Piece {
         noMoves = true;
         for (int i = initialY - 1; i >= 0 && noMoves; i--) {
             Piece piece = Game.getPiece(initialX, i);
-            System.out.println(piece);
             if (piece == null) {
                 int[] move = {initialX, i};
                 legalMoves.add(move);
-                System.out.println("ye");
 
             } else {
 

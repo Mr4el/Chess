@@ -10,45 +10,30 @@ import java.util.ArrayList;
 import javax.swing.SwingUtilities;
 
 import com.oop.chess.Game.PieceEnum;
+import com.oop.chess.model.player.Human;
 
-public class PieceMovement extends Pieces implements MouseListener {
+// The communication channel between player and the GUI
+public class HumanClicking implements MouseListener {
 
     JPanel board, oldTile, newTile;
     VisualPiece selectedPiece;
     int oldtile_x, oldtile_y;
-
+    boolean pieceSelected;
+    public boolean appliedToBoard = false;
+    public boolean enabled = false;
     ArrayList<int[]> moves;
 
-    public PieceMovement(JPanel board) {
-        this.board = board;
+    Human human;
+
+    public HumanClicking(Human human) {
+        board = GuiGame.visualBoard;
+        board.addMouseListener(this);
+        this.human = human;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        /*Point p = e.getLocationOnScreen();
-        SwingUtilities.convertPointFromScreen(p, (JComponent)board);
-        //no piece selected
-        if (!pieceSelected) {
-            oldTile = (JPanel) e.getComponent().getComponentAt(p);
-            //if tile has a piece on it
-            if (oldTile.getComponents().length >= 1) {
-                selectedPiece = (JLabel) oldTile.getComponent(0);
-                pieceSelected = true;
-            } else {
-                return;
-            }
-            //piece already selected
-        } else {
-            newTile = (JPanel) e.getComponent().getComponentAt(p);
-            //if clicked tile is occupied, remove the piece.
-            if (newTile.getComponents().length >= 1) {
-                newTile.removeAll();
-            }
-            newTile.add(selectedPiece);
-            oldTile.repaint();
-            newTile.repaint();
-            resetVars();
-        }*/
+
     }
 
     private void resetVars() {
@@ -60,27 +45,36 @@ public class PieceMovement extends Pieces implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if (!enabled)
+            return;
+
+        // What tile is being clicked on?
         Point p = e.getLocationOnScreen();
         SwingUtilities.convertPointFromScreen(p, (JComponent)board);
 
         oldTile = (JPanel) e.getComponent().getComponentAt(p);
 
-        oldtile_x = (int)Math.round(oldTile.getX()*8/(550.0));
-        oldtile_y = (int)Math.round(oldTile.getY()*8/(550.0));
+        Dimension board_dimensions = board.getSize();
+        double w = board_dimensions.getWidth();
+        double h = board_dimensions.getHeight();
 
+        oldtile_x = (int)Math.round(oldTile.getX()*8/w);
+        oldtile_y = (int)Math.round(oldTile.getY()*8/h);
 
-        //if tile has a piece on it
+        // If tile has a piece on it
         if (oldTile.getComponents().length >= 1) {
             VisualPiece chosen_piece = (VisualPiece)oldTile.getComponent(0);
 
-            System.out.println(chosen_piece.piece_type);
+            // TODO: Account for pawn promotion
 
             if (!(Game.getLegalPiece() == PieceEnum.ANY || Game.getLegalPiece() == chosen_piece.piece_type)) {
                 resetVars();
+                //TODO: Maybe display a message on the side of the board displaying that we cannot choose this piece.
                 return;
             }
 
-            if (chosen_piece.white == Game.current_player.isWhite()) {
+            // If piece colour matches current player colour
+            if (chosen_piece.white == Game.getCurrentPlayer().isWhite()) {
                 selectedPiece = chosen_piece;
                 pieceSelected = true;
             } else {
@@ -95,6 +89,8 @@ public class PieceMovement extends Pieces implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (!enabled)
+            return;
         Point p = e.getLocationOnScreen();
         SwingUtilities.convertPointFromScreen(p, (JComponent)board);
 
@@ -112,20 +108,20 @@ public class PieceMovement extends Pieces implements MouseListener {
             }
         }
 
-        int newtile_x = (int)Math.round(newTile.getX()*8/(550.0));
-        int newtile_y = (int)Math.round(newTile.getY()*8/(550.0));
+        Dimension board_dimensions = board.getSize();
+        double w = board_dimensions.getWidth();
+        double h = board_dimensions.getHeight();
+
+        int newtile_x = (int)Math.round(newTile.getX()*8/w);
+        int newtile_y = (int)Math.round(newTile.getY()*8/h);
 
         int[] final_pos = {newtile_x, newtile_y};
         moves = Game.getPiece(oldtile_x,oldtile_y).getLegalMoves(oldtile_x, oldtile_y, newtile_x, newtile_y);
-
-        System.out.println(Game.getPiece(oldtile_x,oldtile_y));
 
         if (moves == null) {
             resetVars();
             return;
         }
-
-        //System.out.println(moves.get(0)[0] + " " + moves.get(0)[1]);
 
         boolean possible = false;
         check_if_move_is_legal:
@@ -139,18 +135,10 @@ public class PieceMovement extends Pieces implements MouseListener {
         if (!possible)
             return;
 
-        Game.movePieceTo(oldtile_x, oldtile_y, newtile_x, newtile_y);
-
         // tell the game that the player has moved
-        Game.getCurrentPlayer().setMoved(true);
+        Game.getCurrentPlayer().setMove(oldtile_x, oldtile_y, newtile_x, newtile_y);
 
         //if clicked tile is occupied, remove the piece.
-        if (newTile.getComponents().length >= 1) {
-            newTile.removeAll();
-        }
-        newTile.add(selectedPiece);
-        oldTile.repaint();
-        newTile.repaint();
         resetVars();
     }
 

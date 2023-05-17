@@ -4,6 +4,7 @@ import com.oop.chess.Game.PieceEnum;
 
 public class AI implements Player {
     boolean white;
+    boolean move = false;
 
     // have we made a move?
     public boolean moved = false;
@@ -28,7 +29,7 @@ public class AI implements Player {
         return white;
     }
 
-    public void setMoved(boolean moved) {
-        this.moved = moved;
+    public void setMove(int ox, int oy, int nx, int ny) {
+
     }
 }

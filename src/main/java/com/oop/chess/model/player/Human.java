@@ -1,32 +1,53 @@
 package com.oop.chess.model.player;
 
+import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
+import com.oop.chess.gui.HumanClicking;
+
 public class Human implements Player {
+
+    boolean move;
     boolean white;
-
-    // have we made a move?
-    public boolean moved = false;
-
     boolean help;
+    int oldtile_x = 0;
+    int oldtile_y = 0;
+    int newtile_x = 0;
+    int newtile_y = 0;
+    HumanClicking clicker = null;
 
     public Human(boolean white, boolean help) {
         this.white = white;
         this.help = help;
+
     }
 
+    // Player turn logic
     public boolean turn(PieceEnum piece) {
-        /* TODO:
-            Communicate with the GUI that the player can only move pieces with the following properties:
-            1) Same colour as current player
-            2) Same type as PieceEnum piece
-        */
+        // Add the human's clicker to the board
+        if (clicker == null) {
+            clicker = new HumanClicking(this);
+        }
+        clicker.enabled = true;
 
-        if (moved) {
-            moved = false;
+        // If the clicker calls setMove(x,y,x,y), then the player can make their move
+        if (move) {
+            Game.movePieceTo(oldtile_x, oldtile_y, newtile_x, newtile_y);
+            move = false;
+            clicker.enabled = false;
             return true;
         }
 
         return false;
+    }
+
+    // Set the player's move
+    public void setMove(int ox, int oy, int nx, int ny) {
+        this.oldtile_x = ox;
+        this.oldtile_y = oy;
+        this.newtile_x = nx;
+        this.newtile_y = ny;
+
+        this.move = true;
     }
 
     public boolean hasHelp() {
@@ -35,9 +56,5 @@ public class Human implements Player {
 
     public boolean isWhite() {
         return white;
-    }
-
-    public void setMoved(boolean moved) {
-        this.moved = moved;
     }
 }

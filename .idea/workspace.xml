@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8424e3ac-510b-40da-9da4-21d750c8667f" name="Changes" comment="VZ - implemented movement logic sketch">
+    <list default="true" id="8424e3ac-510b-40da-9da4-21d750c8667f" name="Changes" comment="VZ - draft of moving chess pieces">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/ChessBoard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/VisualBoard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GuiGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GuiGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GuiMain.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/PieceMovement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/PieceMovement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/PieceMovement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/HumanClicking.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/Pieces.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/Pieces.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/VisualBoard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/VisualBoard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/VisualPiece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/VisualPiece.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Bishop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Bishop.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/King.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/King.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Knight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Knight.java" afterDir="false" />
@@ -20,6 +19,9 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Piece.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Queen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Queen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Rook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Rook.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/AI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/AI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Human.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Human.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Player.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +107,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="com.oop.chess.gui.GuiMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="GuiMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.oop.chess.gui.GuiMain" />
       <module name="Chess.main" />
       <extension name="coverage">
@@ -162,7 +164,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684328473347</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="VZ - draft of moving chess pieces">
+      <created>1684331264841</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1684331264841</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -194,14 +203,15 @@
     <MESSAGE value="MK, added some piece movement stuff" />
     <MESSAGE value="Movement logic sketch" />
     <MESSAGE value="VZ - implemented movement logic sketch" />
-    <option name="LAST_COMMIT_MESSAGE" value="VZ - implemented movement logic sketch" />
+    <MESSAGE value="VZ - draft of moving chess pieces" />
+    <option name="LAST_COMMIT_MESSAGE" value="VZ - draft of moving chess pieces" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/oop/chess/model/pieces/Knight.java</url>
-          <line>34</line>
+          <line>36</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

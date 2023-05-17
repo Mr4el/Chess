@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Game implements GameState {
-    private static Piece[][] board;
+    public static Piece[][] board;
     ChessMain parent;
 
     // store player 1 and 2 in array, players[current_player_index] accesses the current player (with current_player_index being either 0 or 1.)
@@ -92,8 +92,10 @@ public class Game implements GameState {
             // the player is currently making a move
             case CHOOSING_MOVE:
                 // if this returns true, then the player has successfully finished a round
-                if (current_player.turn(legal_piece))
+                if (current_player.turn(legal_piece)) {
                     turn_state = TURN_STATES.SWITCH_TURN;
+                    GuiGame.frame.repaint();
+                }
                 break;
 
             // next player's turn
@@ -105,8 +107,6 @@ public class Game implements GameState {
                 current_player = players[current_player_index];
 
                 turn_state = TURN_STATES.START;
-
-                System.out.println(Arrays.deepToString(board));
                 break;
 
             default:
@@ -119,7 +119,7 @@ public class Game implements GameState {
     // (x,y) = (0,0) -> top left corner of the board
     // (x,y) = (7,7) -> bottom right corner of the board
     public static Piece getPiece(int x, int y) {
-        if (x < 0 || x > board[0].length || y < 0 || y >= board.length)
+        if (!xyInBounds(x,y))
             return null;
 
         Piece foundPiece = board[y][x];
@@ -130,22 +130,52 @@ public class Game implements GameState {
         }
     }
 
+    // Check if coordinates x y are within the bounds of the board
+    public static boolean xyInBounds(int x, int y) {
+        if (x < 0 || x >= board.length || y < 0 || y >= board.length)
+            return false;
+        return true;
+    }
+
+    // Move a piece from an initial (x,y) position to a new (x,y) position
     public static void movePieceTo(int from_x, int from_y, int to_x, int to_y){
         Piece p = getPiece(from_x,from_y);
+
         if (p != null) {
-            board[to_y][to_x] = p.clone();
+            p.makeMove(from_x,from_y,to_x,to_y);
+
+            Piece p_clone = p.clone();
+            board[to_y][to_x] = p_clone;
             board[from_y][from_x] = null;
+
+            GUIdeletePiece(from_x, from_y);
+            GUIdeletePiece(to_x, to_y);
+
+            GUIsetPiece(to_x, to_y, p_clone.piece_type, p_clone.isWhite);
         }
     }
 
+    // Get the current player
     public static Player getCurrentPlayer() {
         return current_player;
     }
 
+    // Get the current legal piece (as decided by the dice)
     public static PieceEnum getLegalPiece() {
         return legal_piece;
     }
 
+    // GUI COMMUNICATION
+    // Ensure that a piece on the board is deleted visually
+    public static void GUIdeletePiece(int x, int y) {
+        GuiGame.removeVisualPiece(x,y);
+    }
+    // Ensure that a piece on the board is deleted visually
+    public static void GUIsetPiece(int x, int y, PieceEnum type, Boolean white) {
+        GuiGame.addVisualPiece(x,y,type,white);
+    }
+
+    // Initialize all pieces on the board
     public void initializeBoard() {
 
         board = new Piece[8][8];
