@@ -4,7 +4,7 @@ import com.oop.chess.Game.PieceEnum;
 
 public interface Player {
     boolean white = true;
-    public boolean moved = false;
+    boolean move = false;
 
     /**
      * turn() - the logic for the player's turn (dice roll, choose piece, choose move)
@@ -14,5 +14,5 @@ public interface Player {
 
     public boolean isWhite();
 
-    public void setMoved(boolean moved);
+    public void setMove(int ox, int oy, int nx, int ny);
 }

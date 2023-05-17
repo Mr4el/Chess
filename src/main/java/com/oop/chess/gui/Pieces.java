@@ -1,15 +1,14 @@
 package com.oop.chess.gui;
 
 import javax.swing.*;
-import java.awt.event.MouseListener;
 import com.oop.chess.Game.PieceEnum;
 
 public class Pieces {
 
     public static VisualPiece[] blackPieces = new VisualPiece[16];
     public static VisualPiece[] whitePieces = new VisualPiece[16];
-    private static int[] blackPieceTiles = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    private static int[] whitePieceTiles = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65};
+    private static int[] blackPieceTiles = { 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15};
+    private static int[] whitePieceTiles = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63};
     public boolean pieceSelected = false;
 
 
@@ -22,8 +21,6 @@ public class Pieces {
     }
 
     public void addPieces(JPanel board) {
-        MouseListener listener = new PieceMovement(board);
-        board.addMouseListener(listener);
         loadImages();
         JPanel tile;
 

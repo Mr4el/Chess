@@ -3,13 +3,17 @@ package com.oop.chess.gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class ChessBoard {
+public class VisualBoard {
 
     /**
      * Method to instantiate a chessboard.
      * @return a JPanel component containing all the tiles with the correct colour.
      */
-    public static JPanel createBoard() {
+    public static JFrame frame;
+
+    public static JPanel createBoard(JFrame f) {
+        frame = f;
+
         JPanel board = new JPanel();
         board.setLayout(new GridLayout(8,8));
         JPanel tile;
