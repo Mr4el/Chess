@@ -1,9 +1,12 @@
 package com.oop.chess.model.player;
 
-import com.oop.chess.ChessMain.PieceEnum;
+import com.oop.chess.Game.PieceEnum;
 
 public class AI implements Player {
     boolean white;
+
+    // have we made a move?
+    public boolean moved = false;
 
     boolean help;
 
@@ -23,5 +26,9 @@ public class AI implements Player {
 
     public boolean isWhite() {
         return white;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
     }
 }

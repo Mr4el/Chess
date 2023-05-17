@@ -2,17 +2,17 @@ package com.oop.chess.gui;
 
 import javax.swing.*;
 
-public class GuiGame implements GUI {
+public class GuiGame extends GUI {
     public GuiGame() {
-        JFrame frame = new JFrame("OOP Chess");
+        setTitle("OOP Chess");
 
-        frame.setSize(550,550);
+        setSize(550,550);
 
         JPanel board = ChessBoard.createBoard();
-        Pieces.addPieces(board);
-        frame.add(board);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        new Pieces(board);
+        add(board);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 }

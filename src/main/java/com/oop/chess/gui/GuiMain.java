@@ -5,7 +5,7 @@ import javax.swing.*;
 public class GuiMain {
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("OOP Chess");
+        /*JFrame frame = new JFrame("OOP Chess");
 
         frame.setSize(550,550);
 
@@ -14,6 +14,6 @@ public class GuiMain {
         frame.add(board);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        frame.setVisible(true);*/
     }
 }

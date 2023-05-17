@@ -1,9 +1,11 @@
 package com.oop.chess.model.player;
 
-import com.oop.chess.ChessMain.PieceEnum;
-
+import com.oop.chess.Game.PieceEnum;
 public class Human implements Player {
     boolean white;
+
+    // have we made a move?
+    public boolean moved = false;
 
     boolean help;
 
@@ -12,8 +14,18 @@ public class Human implements Player {
         this.help = help;
     }
 
-    // valid pieces from the PIECES enum
     public boolean turn(PieceEnum piece) {
+        /* TODO:
+            Communicate with the GUI that the player can only move pieces with the following properties:
+            1) Same colour as current player
+            2) Same type as PieceEnum piece
+        */
+
+        if (moved) {
+            moved = false;
+            return true;
+        }
+
         return false;
     }
 
@@ -23,5 +35,9 @@ public class Human implements Player {
 
     public boolean isWhite() {
         return white;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
     }
 }

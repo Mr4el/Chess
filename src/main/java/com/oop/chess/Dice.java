@@ -1,11 +1,11 @@
 package com.oop.chess;
 
 import java.util.Random;
-import com.oop.chess.ChessMain.PieceEnum;
+import com.oop.chess.Game.PieceEnum;
 
 public class Dice {
     // placeholder, return -1 for any piece
-    public PieceEnum roll(boolean white) {
+    public static PieceEnum roll(boolean white) {
 
         // idea: roll dice, check if possible pieces of colour "white" have any legal moves. if not, roll dice again. if yes, return the random piece type.
         PieceEnum random = getRandomPiece();

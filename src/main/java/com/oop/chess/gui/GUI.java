@@ -1,5 +1,7 @@
 package com.oop.chess.gui;
 
-public interface GUI {
+import javax.swing.JFrame;
+
+public abstract class GUI extends JFrame {
 
 }

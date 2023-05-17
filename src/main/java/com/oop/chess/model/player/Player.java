@@ -1,9 +1,10 @@
 package com.oop.chess.model.player;
 
-import com.oop.chess.ChessMain.PieceEnum;
+import com.oop.chess.Game.PieceEnum;
 
 public interface Player {
     boolean white = true;
+    public boolean moved = false;
 
     /**
      * turn() - the logic for the player's turn (dice roll, choose piece, choose move)
@@ -12,4 +13,6 @@ public interface Player {
     public boolean turn(PieceEnum piece);
 
     public boolean isWhite();
+
+    public void setMoved(boolean moved);
 }

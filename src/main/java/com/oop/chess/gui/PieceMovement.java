@@ -1,5 +1,7 @@
 package com.oop.chess.gui;
 
+import com.oop.chess.Game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -9,7 +11,7 @@ import javax.swing.SwingUtilities;
 public class PieceMovement extends Pieces implements MouseListener {
 
     JPanel board, oldTile, newTile;
-    JLabel selectedPiece;
+    VisualPiece selectedPiece;
 
     public PieceMovement(JPanel board) {
         this.board = board;
@@ -17,7 +19,7 @@ public class PieceMovement extends Pieces implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        Point p = e.getLocationOnScreen();
+        /*Point p = e.getLocationOnScreen();
         SwingUtilities.convertPointFromScreen(p, (JComponent)board);
         //no piece selected
         if (!pieceSelected) {
@@ -40,7 +42,7 @@ public class PieceMovement extends Pieces implements MouseListener {
             oldTile.repaint();
             newTile.repaint();
             resetVars();
-        }
+        }*/
     }
 
     private void resetVars() {
@@ -52,12 +54,43 @@ public class PieceMovement extends Pieces implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        Point p = e.getLocationOnScreen();
+        SwingUtilities.convertPointFromScreen(p, (JComponent)board);
 
+        oldTile = (JPanel) e.getComponent().getComponentAt(p);
+        //if tile has a piece on it
+        if (oldTile.getComponents().length >= 1) {
+            if (((VisualPiece)oldTile.getComponent(0)).white == Game.current_player.isWhite()) {
+
+                selectedPiece = (VisualPiece)oldTile.getComponent(0);
+                pieceSelected = true;
+            }
+        } else {
+            return;
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        Point p = e.getLocationOnScreen();
+        SwingUtilities.convertPointFromScreen(p, (JComponent)board);
 
+        if (!pieceSelected)
+            return;
+
+        newTile = (JPanel) e.getComponent().getComponentAt(p);
+
+        // tell the game that the player has moved
+        Game.getCurrentPlayer().setMoved(true);
+
+        //if clicked tile is occupied, remove the piece.
+        if (newTile.getComponents().length >= 1) {
+            newTile.removeAll();
+        }
+        newTile.add(selectedPiece);
+        oldTile.repaint();
+        newTile.repaint();
+        resetVars();
     }
 
     @Override

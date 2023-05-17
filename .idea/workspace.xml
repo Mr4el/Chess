@@ -4,13 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8424e3ac-510b-40da-9da4-21d750c8667f" name="Changes" comment="MK, added Chess board GUI, currently static only (see &quot;Screenshots&quot; folder)">
+    <list default="true" id="8424e3ac-510b-40da-9da4-21d750c8667f" name="Changes" comment="MK, added some piece movement stuff">
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/ChessMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/ChessMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/Dice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/Dice.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GuiGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GuiGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GuiMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/GuiMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/PieceMovement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/PieceMovement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/Pieces.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/gui/Pieces.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/AI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/AI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Human.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Human.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/oop/chess/model/player/Player.java" afterDir="false" />
     </list>
@@ -84,7 +90,7 @@
       <recent name="C:\Users\zujev\Desktop\Main\Projects\OopProject\Chess" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.GuiMain">
+  <component name="RunManager" selected="Application.ChessMain">
     <configuration name="ChessMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.oop.chess.ChessMain" />
       <module name="Chess.main" />
@@ -141,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684315392433</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="MK, added some piece movement stuff">
+      <created>1684318488033</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1684318488033</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -170,6 +183,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="MK, implemented basic class features" />
     <MESSAGE value="MK, added Chess board GUI, currently static only (see &quot;Screenshots&quot; folder)" />
-    <option name="LAST_COMMIT_MESSAGE" value="MK, added Chess board GUI, currently static only (see &quot;Screenshots&quot; folder)" />
+    <MESSAGE value="MK, added some piece movement stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="MK, added some piece movement stuff" />
   </component>
 </project>
