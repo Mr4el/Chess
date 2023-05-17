@@ -2,6 +2,7 @@ package com.oop.chess;
 
 import com.oop.chess.model.pieces.*;
 import com.oop.chess.model.player.*;
+import com.oop.chess.ChessMain.PieceEnum;
 
 import java.util.Objects;
 
@@ -16,10 +17,20 @@ public class Game implements GameState {
     Piece[] white_pieces;
     Piece[] black_pieces;
 
-    public Game() {
+    // what is the current state of the turn?
+    TURN_STATES turn_state = TURN_STATES.DICE_ROLL;
+
+    // the different values which the turn state can have.
+    enum TURN_STATES {
+        DICE_ROLL,
+        CHOOSING_MOVE,
+        SWITCH_TURN
+    }
+
+    public Game(Player player1, Player player2) {
         //TODO: Initialize Dice.
 
-        Piece[][] board = new Piece[7][7];
+        Piece[][] board = new Piece[8][8];
 
         board[0][0] = new Rook(false,0,0);
         board[0][1] = new Knight(false,0,1);
@@ -47,13 +58,42 @@ public class Game implements GameState {
         board[7][6] = new Knight(true,7,6);
         board[7][7] = new Rook(true,7,7);
 
-        //TODO: Initialize white and black pieces arrays.
+        //Initialize white and black pieces arrays.
+        black_pieces = new Piece[16];
+        white_pieces = new Piece[16];
+
+        int i = 0;
+        for(int y = 0; y < 2; y++) {
+            for(int x = 0; x < 2; x++) {
+                black_pieces[i] = getPiece(x, y);
+                white_pieces[i] = getPiece(x, 6 + y);
+                i++;
+            }
+        }
     }
+
+    PieceEnum legal_piece;
 
     // update state of the game & progress
     public void run() {
+        switch(turn_state) {
+            case DICE_ROLL:
+                legal_piece = (new Dice()).roll(players[current_player].isWhite());
 
+                /* since the dice roll should take place in a while loop until a valid piece type has been found, it will only change the turn state once that piece has been found.
+                 */
+                turn_state = TURN_STATES.CHOOSING_MOVE;
+                break;
+
+            case CHOOSING_MOVE:
+                players[current_player].turn(legal_piece);
+                break;
+
+            default:
+                break;
+        }
     }
+
 
     public Piece getPiece(int x, int y) {
         Piece foundPiece = board[x][y];

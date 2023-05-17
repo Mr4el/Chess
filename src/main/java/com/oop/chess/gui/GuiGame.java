@@ -2,9 +2,8 @@ package com.oop.chess.gui;
 
 import javax.swing.*;
 
-public class GuiMain {
-
-    public static void main(String[] args) {
+public class GuiGame implements GUI {
+    public GuiGame() {
         JFrame frame = new JFrame("OOP Chess");
 
         frame.setSize(550,550);

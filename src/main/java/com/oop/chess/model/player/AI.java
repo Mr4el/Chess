@@ -2,12 +2,12 @@ package com.oop.chess.model.player;
 
 import com.oop.chess.ChessMain.PieceEnum;
 
-public class Human implements Player {
+public class AI implements Player {
     boolean white;
 
     boolean help;
 
-    public Human(boolean white, boolean help) {
+    public AI(boolean white, boolean help) {
         this.white = white;
         this.help = help;
     }

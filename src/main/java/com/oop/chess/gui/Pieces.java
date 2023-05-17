@@ -1,6 +1,7 @@
 package com.oop.chess.gui;
 
 import javax.swing.*;
+import java.awt.event.MouseListener;
 
 public class Pieces {
 
@@ -8,9 +9,12 @@ public class Pieces {
     public static JLabel[] whitePieces = new JLabel[16];
     private static int[] blackPieceTiles = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     private static int[] whitePieceTiles = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65};
+    public boolean pieceSelected = false;
 
 
     public static void addPieces(JPanel board) {
+        MouseListener listener = new PieceMovement(board);
+        board.addMouseListener(listener);
         loadImages();
         JPanel tile;
 
@@ -27,12 +31,16 @@ public class Pieces {
     public static void loadImages() {
         for (int i = 8; i < 16; i++) {
             blackPieces[i] = new JLabel(new ImageIcon("src/main/resources/blackPawn.png"));
+            blackPieces[i].setName("Black Pawn");
         }
         for (int i = 0; i < 8; i++) {
             whitePieces[i] = new JLabel(new ImageIcon("src/main/resources/whitePawn.png"));
+            whitePieces[i].setName("White Pawn");
         }
         blackPieces[2] = new JLabel(new ImageIcon("src/main/resources/blackBishop.png"));
+        blackPieces[2].setName("Black Bishop");
         blackPieces[5] = new JLabel(new ImageIcon("src/main/resources/blackBishop.png"));
+        blackPieces[5].setName("Black Bishop");
 
         blackPieces[0] = new JLabel(new ImageIcon("src/main/resources/blackRook.png"));
         blackPieces[7] = new JLabel(new ImageIcon("src/main/resources/blackRook.png"));

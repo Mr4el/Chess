@@ -1,6 +1,7 @@
 package com.oop.chess;
 
-import com.oop.chess.gui.MainMenu;
+import com.oop.chess.gui.*;
+import com.oop.chess.model.player.*;
 
 /**
  * The method from which the game is started and a new main menu will be launched.
@@ -8,6 +9,18 @@ import com.oop.chess.gui.MainMenu;
 public class ChessMain {
     GameState state;            // the current state of the program
     final static int FPS = 60;  // run main game loop 60 times per second
+
+    public static GUI gui;
+
+    public enum PieceEnum {
+        ANY,
+        PAWN,
+        KNIGHT,
+        BISHOP,
+        ROOK,
+        QUEEN,
+        KING
+    }
 
 
     public ChessMain() {
