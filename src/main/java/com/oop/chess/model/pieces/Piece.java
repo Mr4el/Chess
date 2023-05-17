@@ -17,10 +17,6 @@ public abstract class Piece {
     public int y = -1;
     public boolean isWhite;
 
-    public Piece() {
-
-    }
-
     public boolean isWhite() {
         return this.isWhite;
     }
@@ -54,6 +50,13 @@ public abstract class Piece {
         this.isCaptured = isCaptured;
     }
 
+    /**
+     * Returns an identical piece.
+     * @return a new identical piece.
+     */
+    public Piece clone() {
+        return null;
+    }
 
     /**
      * getLegalMoves() - Checks the board for all legal moves that this piece can do
@@ -61,4 +64,5 @@ public abstract class Piece {
      * @return int[][] - coordinates of all the tiles that the piece can legally move to
      **/
     public abstract ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY);
+
 }

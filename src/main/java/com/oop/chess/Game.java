@@ -4,6 +4,7 @@ import com.oop.chess.model.pieces.*;
 import com.oop.chess.model.player.*;
 import com.oop.chess.gui.*;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Game implements GameState {
@@ -21,7 +22,7 @@ public class Game implements GameState {
     Piece[] black_pieces;
 
     // The game's GUI;
-    GUI gui;
+    GuiGame gui;
 
     // the different values which the turn state can have.
     enum TURN_STATES {
@@ -46,16 +47,18 @@ public class Game implements GameState {
     }
 
     // the piece type chosen by the dice
-    PieceEnum legal_piece;
+    public static PieceEnum legal_piece;
 
     // constructor
     public Game(ChessMain parent, Player player1, Player player2) {
         this.parent = parent;
-        this.gui = new GuiGame();
+
+        initializeBoard();
+
+        this.gui = new GuiGame(board);
 
         //TODO: Initialize Dice.
 
-        initializeBoard();
 
         this.players[0] = player1;
         this.players[1] = player2;
@@ -63,6 +66,7 @@ public class Game implements GameState {
         current_player_index = 0;
         current_player = this.players[current_player_index];
     }
+
 
 
     // the main game loop
@@ -79,6 +83,8 @@ public class Game implements GameState {
                 legal_piece = Dice.roll(current_player.isWhite());
 
                 System.out.println("Which piece can choose?: " + legal_piece);
+
+                gui.setTitle(gui.getTitle() + " - Legal piece: " + legal_piece);
 
                 turn_state = TURN_STATES.CHOOSING_MOVE;
                 break;
@@ -99,6 +105,8 @@ public class Game implements GameState {
                 current_player = players[current_player_index];
 
                 turn_state = TURN_STATES.START;
+
+                System.out.println(Arrays.deepToString(board));
                 break;
 
             default:
@@ -111,7 +119,10 @@ public class Game implements GameState {
     // (x,y) = (0,0) -> top left corner of the board
     // (x,y) = (7,7) -> bottom right corner of the board
     public static Piece getPiece(int x, int y) {
-        Piece foundPiece = board[x][y];
+        if (x < 0 || x > board[0].length || y < 0 || y >= board.length)
+            return null;
+
+        Piece foundPiece = board[y][x];
         if (Objects.nonNull(foundPiece)) {
             return foundPiece;
         } else {
@@ -119,8 +130,20 @@ public class Game implements GameState {
         }
     }
 
+    public static void movePieceTo(int from_x, int from_y, int to_x, int to_y){
+        Piece p = getPiece(from_x,from_y);
+        if (p != null) {
+            board[to_y][to_x] = p.clone();
+            board[from_y][from_x] = null;
+        }
+    }
+
     public static Player getCurrentPlayer() {
         return current_player;
+    }
+
+    public static PieceEnum getLegalPiece() {
+        return legal_piece;
     }
 
     public void initializeBoard() {

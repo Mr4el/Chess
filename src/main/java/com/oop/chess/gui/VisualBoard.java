@@ -3,7 +3,7 @@ package com.oop.chess.gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class ChessBoard {
+public class VisualBoard {
 
     /**
      * Method to instantiate a chessboard.

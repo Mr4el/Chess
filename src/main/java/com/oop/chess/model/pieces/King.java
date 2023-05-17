@@ -4,14 +4,32 @@ import com.oop.chess.Game;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a King piece of the chess board.
+ */
 public class King extends Piece {
     boolean castle;
     private Rook Rook;
 
+    /**
+     * Constructs a King piece using the fact whether it is white or black and its initial location on the board.
+     * @param white The boolean determining whether the piece is black or white (true = white and false = black).
+     * @param i The initial x-position on the board starting at the bottom left corner.
+     * @param j The initial y-position on the board starting at the bottom left corner.
+     */
     public King(boolean white, int i, int j) {
         super.isWhite = white;
         super.x = i;
         super.y = j;
+    }
+
+    /**
+     * Returns an identical King piece.
+     * @return a new identical piece.
+     */
+    @Override
+    public King clone() {
+        return new King(isWhite, x, y);
     }
 
 
@@ -23,18 +41,16 @@ public class King extends Piece {
         int changeY = Math.abs(finalY - initialY);
 
         if (changeX <= 1 && changeY <= 1) {
-            if (changeX != 0 && changeY != 0) {
+            if (!(initialX == finalX && initialY == finalY)) {
                 int[] move = {finalX, finalY};
                 legalMoves.add(move);
             }
         }
 
-
         return legalMoves;
     }
 
     public boolean canCastle() {
-
         Piece rookWhite1 = Game.getPiece(0, 0);
         Piece rookWhite2 = Game.getPiece(0, 7);
         Piece rookBlack1 = Game.getPiece(7, 0);

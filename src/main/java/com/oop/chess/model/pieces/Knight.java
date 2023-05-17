@@ -4,12 +4,30 @@ import com.oop.chess.Game;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a Knight piece of the chess board.
+ */
 public class Knight extends Piece {
 
+    /**
+     * Constructs a Knight piece using the fact whether it is white or black and its initial location on the board.
+     * @param white The boolean determining whether the piece is black or white (true = white and false = black).
+     * @param i The initial x-position on the board starting at the bottom left corner.
+     * @param j The initial y-position on the board starting at the bottom left corner.
+     */
     public Knight(boolean white, int i, int j) {
         super.isWhite = white;
         super.x = i;
         super.y = j;
+    }
+
+    /**
+     * Returns an identical Knight piece.
+     * @return a new identical piece.
+     */
+    @Override
+    public Knight clone() {
+        return new Knight(isWhite, x, y);
     }
 
     @Override
