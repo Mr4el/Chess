@@ -1,15 +1,11 @@
 package com.oop.chess.model.pieces;
 
-public class Queen implements Piece {
+public class Queen extends Piece {
 
-    boolean isWhite;
-
-    public Queen(boolean white) {
-        isWhite = white;
-    }
-
-    public boolean isWhite() {
-        return isWhite;
+    public Queen(boolean white, int i, int j) {
+        super.isWhite = white;
+        super.x = i;
+        super.y = j;
     }
 
     public int[][] getLegalMoves() {

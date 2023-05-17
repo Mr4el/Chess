@@ -1,15 +1,11 @@
 package com.oop.chess.model.pieces;
 
-public class Rook implements Piece {
+public class Rook extends Piece {
 
-    boolean isWhite;
-
-    public Rook(boolean white) {
-        isWhite = white;
-    }
-
-    public boolean isWhite() {
-        return isWhite;
+    public Rook(boolean white, int i, int j) {
+        super.isWhite = white;
+        super.x = i;
+        super.y = j;
     }
 
     public int[][] getLegalMoves() {

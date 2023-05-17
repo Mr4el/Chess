@@ -1,15 +1,11 @@
 package com.oop.chess.model.pieces;
 
-public class Pawn implements Piece {
+public class Pawn extends Piece {
 
-    boolean isWhite;
-
-    public Pawn(boolean white) {
-        isWhite = white;
-    }
-
-    public boolean isWhite() {
-        return isWhite;
+    public Pawn(boolean white, int i, int j) {
+        super.isWhite = white;
+        super.x = i;
+        super.y = j;
     }
 
     public int[][] getLegalMoves() {

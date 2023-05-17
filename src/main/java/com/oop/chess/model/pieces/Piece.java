@@ -3,17 +3,26 @@ package com.oop.chess.model.pieces;
 /**
  * This class represents a piece of the chess board.
  */
-public interface Piece {
+public abstract class Piece {
     // x and y coordinates of the piece on the board
-    public int x = 0;
-    public int y = 0;
+    public int x = -1;
+    public int y = -1;
+    public boolean isWhite;
 
-    public boolean isWhite();
+    public boolean isWhite() {
+        return isWhite;
+    }
     /**
      * getLegalMoves() - Checks the board for all legal moves that this piece can do
      * @return int[][] - coordinates of all the tiles that the piece can legally move to
      **/
-    public int[][] getLegalMoves();
+    public abstract int[][] getLegalMoves();
 
+    public int getX(Piece piece) {
+        return x;
+    }
 
+    public int getY(Piece piece) {
+        return y;
+    }
 }

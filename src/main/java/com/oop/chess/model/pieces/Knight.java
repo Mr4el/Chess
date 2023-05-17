@@ -1,15 +1,11 @@
 package com.oop.chess.model.pieces;
 
-public class Knight implements Piece {
+public class Knight extends Piece {
 
-    boolean isWhite;
-
-    public Knight(boolean white) {
-        isWhite = white;
-    }
-
-    public boolean isWhite() {
-        return isWhite;
+    public Knight(boolean white, int i, int j) {
+        super.isWhite = white;
+        super.x = i;
+        super.y = j;
     }
 
     public int[][] getLegalMoves() {
