@@ -7,7 +7,7 @@ import com.oop.chess.gui.*;
 import java.util.Objects;
 
 public class Game implements GameState {
-
+    private static Piece[][] board;
     ChessMain parent;
 
     // store player 1 and 2 in array, players[current_player_index] accesses the current player (with current_player_index being either 0 or 1.)
@@ -16,7 +16,7 @@ public class Game implements GameState {
     public static Player current_player;
     int current_player_index;
 
-    Piece[][] board;
+    //Piece[][] board;
     Piece[] white_pieces;
     Piece[] black_pieces;
 
@@ -110,7 +110,7 @@ public class Game implements GameState {
     // get a piece from the board
     // (x,y) = (0,0) -> top left corner of the board
     // (x,y) = (7,7) -> bottom right corner of the board
-    public Piece getPiece(int x, int y) {
+    public static Piece getPiece(int x, int y) {
         Piece foundPiece = board[x][y];
         if (Objects.nonNull(foundPiece)) {
             return foundPiece;
