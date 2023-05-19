@@ -2,8 +2,7 @@ package com.oop.chess.model.pieces;
 
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
-
-import dicechess.Pieces.Rook;
+import com.oop.chess.CastleMove;
 
 import java.util.ArrayList;
 
@@ -48,33 +47,175 @@ public class King extends Piece {
 
         if (changeX <= 1 && changeY <= 1) {
             if (!(finalX == initialX && finalY == initialY)) {
-                int[] move = {finalX, finalY};
-                legalMoves.add(move);
+            	int[][] positions_to_check = {
+            			{1, 0},
+                        {0,  + 1},
+                        { + 1,  + 1},
+                        { - 1, 0},
+                        {0,  - 1},
+                        { - 1,  - 1},
+                        { - 1,  + 1},
+                        { + 1,  - 1}
+                };
+            	
+            	for (int i = 0; i < positions_to_check.length; i++) {
+                    int[] p = positions_to_check[i];
+                    
+                    if (!Game.xyInBounds(initialX + p[0], initialY + p[1]))
+                        continue;
+
+                    Piece existing_piece = Game.getPiece(initialX + p[0], initialY + p[1]);
+
+                    if (existing_piece == null || this.isWhite != existing_piece.isWhite) {
+                        int[] move = {initialX + p[0], initialY + p[1]};
+                        legalMoves.add(move);
+                    }
+                }
             }
         }
 
         return legalMoves;
     }
+    
+    public boolean canCastleLeft() {
 
-    public boolean canCastle() {
+        return this.castleLeft;
 
-        Piece rookWhite1 = Game.getPiece(0, 0);
-        Piece rookWhite2 = Game.getPiece(0, 7);
-        Piece rookBlack1 = Game.getPiece(7, 0);
-        Piece rookBlack2 = Game.getPiece(7, 7);
+    }
+
+    public boolean canCastleRight() {
+
+        return this.castleRight;
+
+    }
+
+    public void castleCheck() {
+
+
+        Piece rookWhite1 = Game.getPiece(7, 0);
+        Piece rookWhite2 = Game.getPiece(7, 7);
+
+        Piece rookBlack1 = Game.getPiece(0, 0);
+        Piece rookBlack2 = Game.getPiece(0, 7);
 
         if (isWhite) {
-            if ((this.getX() == 0 && this.getY() == 4) && (rookWhite1.equals(Rook) || rookWhite2.equals(Rook))) {
-                castle = true;
+
+            if (!(this.getX() == 0 && this.getY() == 4)) {
+
+                CastleMove.cantCastleLeft();
+                CastleMove.cantCastleRight();
+
             }
+
+            if (!(rookWhite1.piece_type == PieceEnum.ROOK && rook.isWhite)) {
+                CastleMove.cantCastleLeft();
+
+            }
+            if (!(rookWhite2.piece_type == PieceEnum.ROOK && rook.isWhite)) {
+
+                CastleMove.cantCastleRight();
+            }
+
+
         }
 
         if (!isWhite) {
-            if ((this.getX() == 7 && this.getY() == 4) && (rookBlack1.equals(Rook) || rookBlack2.equals(Rook))) {
-                castle = true;
+            if ((this.getX() == 7 && this.getY() == 4)) {
+
+                CastleMove.cantCastleLeft();
+                CastleMove.cantCastleRight();
+
+            }
+            if (!(rookBlack1.piece_type == PieceEnum.ROOK && !rook.isWhite)) {
+
+                CastleMove.cantCastleLeft();
+
+            }
+            if (!(rookBlack2.piece_type == PieceEnum.ROOK) && !rook.isWhite) {
+
+                CastleMove.cantCastleRight();
+
             }
         }
-        return castle;
+
     }
 
+    public void makeCastleMove() {
+
+        boolean castle = true;
+
+        if (this.isWhite) {
+
+            if (this.canCastleRight()) {
+
+                for (int i = 6; i > 4 && castle; i--) {
+
+                    Piece piece = Game.getPiece(7, i);
+                    if (piece != null) {
+                        castle = false;
+                    }
+
+                }
+                if (castle) {
+
+                    Game.movePieceTo(this.x, this.y, 7, 6);
+                    Game.movePieceTo(7, 7, 7, 5);
+                }
+            }
+
+            if (this.canCastleLeft()) {
+                castle = true;
+                for (int i = 1; i < 4 && castle; i++) {
+
+                    Piece piece = Game.getPiece(7, i);
+                    if (piece != null) {
+                        castle = false;
+                    }
+
+                }
+                if (castle) {
+                    Game.movePieceTo(this.x, this.y, 7, 2);
+                    Game.movePieceTo(0, 7, 7, 3);
+                }
+            }
+        }
+
+
+        if (!this.isWhite) {
+
+            if (this.canCastleRight()) {
+
+                castle = true;
+                for (int i = 5; i < 7 && castle; i++) {
+
+                    Piece piece = Game.getPiece(0, i);
+                    if (piece != null) {
+                        castle = false;
+                    }
+                }
+                if (castle) {
+
+                    Game.movePieceTo(this.x, this.y, 0, 6);
+                    Game.movePieceTo(7, 0, 0, 5);
+                }
+            }
+            if (this.canCastleLeft()) {
+
+                castle = true;
+                for (int i = 1; i < 4 && castle; i++) {
+
+                    Piece piece = Game.getPiece(0, i);
+                    if (piece != null) {
+                        castle = false;
+                    }
+                }
+                if (castle) {
+                    Game.movePieceTo(this.x, this.y, 0, 2);
+                    Game.movePieceTo(0, 0, 0, 3);
+                }
+            }
+        }
+    }
 }
+
+

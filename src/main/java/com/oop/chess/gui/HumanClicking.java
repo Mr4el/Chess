@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 
 import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.model.player.Human;
+import com.oop.chess.model.pieces.Piece;
 
 // The communication channel between player and the GUI
 public class HumanClicking implements MouseListener {
@@ -21,7 +22,10 @@ public class HumanClicking implements MouseListener {
     boolean pieceSelected;
     public boolean appliedToBoard = false;
     public boolean enabled = false;
-    ArrayList<int[]> moves;
+    ArrayList<int[]> moves, legalMoves;
+    ArrayList<Color> initialColorCodes;
+    Color initialBGColor;
+    boolean recolor;
 
     Human human;
 
@@ -41,6 +45,9 @@ public class HumanClicking implements MouseListener {
         oldTile = null;
         newTile = null;
         selectedPiece = null;
+        initialBGColor = null;
+        legalMoves = null;
+        initialColorCodes = null;
     }
 
     @Override
@@ -81,6 +88,26 @@ public class HumanClicking implements MouseListener {
                 resetVars();
                 return;
             }
+            
+            initialBGColor = oldTile.getBackground();
+            oldTile.setBackground(Color.decode("#ed8080"));
+            recolor = true;
+
+            Piece chosenPiece = Game.getPiece(oldtile_x, oldtile_y);
+            legalMoves = chosenPiece.getLegalMoves(oldtile_x, oldtile_y);
+            System.out.println(legalMoves.size());
+
+            initialColorCodes = new ArrayList<>();
+
+            for (int i = 0; i < legalMoves.size(); i++) {
+                int tileX = legalMoves.get(i)[0];
+                int tileY = legalMoves.get(i)[1];
+                System.out.println(tileX + "," + tileY);
+                JPanel tile = (JPanel) board.getComponent(tileY*8 + tileX);
+                initialColorCodes.add(tile.getBackground());
+                tile.setBackground(Color.decode("#ed8080"));
+            }
+            
         } else {
             resetVars();
             return;
@@ -93,6 +120,17 @@ public class HumanClicking implements MouseListener {
             return;
         Point p = e.getLocationOnScreen();
         SwingUtilities.convertPointFromScreen(p, (JComponent)board);
+        
+        if (recolor) {
+            oldTile.setBackground(initialBGColor);
+            for (int i = 0; i < legalMoves.size(); i++) {
+                int tileX = legalMoves.get(i)[0];
+                int tileY = legalMoves.get(i)[1];
+                JPanel tile = (JPanel) board.getComponent(tileY*8 + tileX);
+                tile.setBackground(initialColorCodes.get(i));
+            }
+            recolor = false;
+        }
 
         if (!pieceSelected)
             return;

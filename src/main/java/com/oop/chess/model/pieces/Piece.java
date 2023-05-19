@@ -1,9 +1,11 @@
 package com.oop.chess.model.pieces;
 
 import com.oop.chess.Game.PieceEnum;
+import com.oop.chess.Game;
 import com.oop.chess.model.Cell;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * This class represents a piece of the chess board.
@@ -82,8 +84,25 @@ public abstract class Piece {
             for(int ii = 0; ii < 8; ii++){
                 ArrayList<int[]> moves = getLegalMoves(initialX, initialY, i, ii);
 
-                if (moves != null)
-                    legalMoves.addAll(moves);
+                if (moves != null) {
+                    for(var iii = 0; iii < moves.size(); iii++){
+                        int[] m = moves.get(iii);
+                        if (Game.xyInBounds(m[0], m[1])){
+                            boolean already_in = false;
+
+                            check_duplicate:
+                            for(int[] item : legalMoves){
+                                if(Arrays.equals(m, item)){
+                                    already_in = true;
+                                    break check_duplicate;
+                                }
+                            }
+                            
+                            if (!already_in)
+                                legalMoves.add(m);
+                        }
+                    }
+                }
             }
         }
 

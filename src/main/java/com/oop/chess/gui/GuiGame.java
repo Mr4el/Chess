@@ -43,8 +43,6 @@ public class GuiGame extends GUI {
 
         String colour_string = (white ? "white" : "black");
 
-        System.out.println("A" + type + "B" + " C" + PieceEnum.KNIGHT);
-
         String type_string = "";
         switch(type){
             case ANY:
@@ -71,8 +69,6 @@ public class GuiGame extends GUI {
         }
 
         String image_file = "src/main/resources/" + colour_string + "" + type_string + ".png";
-
-        System.out.println(type + " " + image_file);
 
         VisualPiece visual_piece;
         visual_piece = new VisualPiece(new ImageIcon(image_file), white, type);

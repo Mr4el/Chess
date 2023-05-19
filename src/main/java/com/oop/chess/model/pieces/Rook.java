@@ -41,13 +41,12 @@ public class Rook extends Piece {
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY) {
         ArrayList<int[]> legalMoves = new ArrayList<>();
 
-        if (finalX == initialX && finalY == initialY) {
-            return legalMoves; //cannot move nothing
-        }
-        if (finalX < 0 || finalX > 7 || initialX < 0 || initialX > 7 || finalY < 0 || finalY > 7 || initialY < 0 || initialY > 7) {
-            System.err.println("here 1");
-            return legalMoves;
-        }
+//  		if (finalX == initialX && finalY == initialY) {
+//      		return legalMoves; //cannot move nothing
+//  		}
+//  		if (finalX < 0 || finalX > 7 || initialX < 0 || initialX > 7 || finalY < 0 || finalY > 7 || initialY < 0 || initialY > 7) {
+//      		return legalMoves;
+//  		}    
 
         // right
         boolean noMoves = true;
@@ -141,7 +140,9 @@ public class Rook extends Piece {
 
         }
         for (int[] legalMove : legalMoves) {
-            System.out.println(Arrays.toString(legalMove));
+            System.out.println("ROOOOOOOOOOK");
+            int[] tmp = legalMove;
+            System.out.println(Arrays.toString(tmp));
         }
         return legalMoves;
     }
