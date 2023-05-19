@@ -3,6 +3,8 @@ package com.oop.chess.model.pieces;
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
 
+import dicechess.Pieces.Rook;
+
 import java.util.ArrayList;
 
 /**
@@ -10,8 +12,9 @@ import java.util.ArrayList;
  */
 public class King extends Piece {
 
-    boolean castle;
-    private Rook Rook;
+	public static boolean castleRight = true;
+    public static boolean castleLeft = true;
+    public Rook rook;
 
     /**
      * Constructs a King piece using the fact whether it is white or black and its initial location on the board.

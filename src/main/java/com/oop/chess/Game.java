@@ -81,13 +81,14 @@ public class Game implements GameState {
             // roll the dice to determine which pieces the player is allowed to move
             case DICE_ROLL:
                 legal_piece = Dice.roll(current_player.isWhite());
+                if (legal_piece != null) {
+                    System.out.println("legal piece: " + legal_piece);
 
-                System.out.println("Which piece can choose?: " + legal_piece);
+                    gui.setTitle(gui.getTitle() + " - Legal piece: " + legal_piece);
 
-                gui.setTitle(gui.getTitle() + " - Legal piece: " + legal_piece);
-
-                turn_state = TURN_STATES.CHOOSING_MOVE;
-                break;
+                    turn_state = TURN_STATES.CHOOSING_MOVE;
+                    break;
+                }
 
             // the player is currently making a move
             case CHOOSING_MOVE:
