@@ -90,6 +90,10 @@ public class Game implements GameState {
                     break;
                 }
 
+                else {
+                    System.out.println("No moves can be made");
+                }
+
             // the player is currently making a move
             case CHOOSING_MOVE:
                 // if this returns true, then the player has successfully finished a round
