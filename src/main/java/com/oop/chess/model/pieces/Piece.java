@@ -12,6 +12,8 @@ import java.util.Arrays;
  */
 public abstract class Piece {
     public PieceEnum piece_type;
+    
+    public boolean pawnPromotion;
 
     // x and y coordinates of the piece on the board
 
@@ -111,5 +113,23 @@ public abstract class Piece {
 
     public void makeMove(int initialX, int initialY, int finalX, int finalY) {
 
+    }
+    
+    public boolean hasX(int x) {
+        if (getX() == x) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean hasY(int y) {
+        if (getY() == y) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

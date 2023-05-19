@@ -34,7 +34,7 @@ public class Rook extends Piece {
      */
     @Override
     public Rook clone() {
-    	Rook r = new Rook(isWhite,x,y);
+    	Rook r = new Rook(isWhite, x, y);
         r.moved = true;
         return r;
     }
@@ -148,6 +148,7 @@ public class Rook extends Piece {
             }
 
         }
+        
         return legalMoves;
     }
 

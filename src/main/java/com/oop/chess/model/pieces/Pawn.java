@@ -92,8 +92,10 @@ public class Pawn extends Piece {
             b = (initialY == 6);
         else
             b = (initialY == 1);
+        
+        Piece piece_in_the_way = Game.getPiece(initialX,initialY + direction);
 
-        if (b) {
+        if (b == true && piece_in_the_way == null) {
             if (finalY - initialY == 2*direction) {
                 if (finalX == initialX && piece == null) {
                     int[] move = {finalX, finalY};
@@ -109,6 +111,18 @@ public class Pawn extends Piece {
     // Execute specific actions on a move
     public void makeMove(int initialX, int initialY, int finalX, int finalY) {
         Piece piece = Game.getPiece(finalX, finalY);
+        
+        if (isWhite) {
+            if (finalY == 0) {
+                createNewPiece(finalX, finalY, isWhite);
+            }
+        }
+
+        else {
+            if (finalY == 7) {
+                createNewPiece(finalX, finalY, isWhite);
+            }
+        }
 
         int direction;
         if (isWhite)
@@ -145,6 +159,39 @@ public class Pawn extends Piece {
                 // delete the en passant piece
                 Game.board[finalY - direction][finalX] = null;
                 Game.GUIdeletePiece(finalX, finalY - direction);
+            }
+        }      
+    }
+    
+    public void createNewPiece(int finalX, int finalY, boolean isWhite) {
+        switch (Game.getLegalPiece()) {
+            case ANY: {
+                Game.board[finalY][finalX] = new Pawn(isWhite, finalX, finalY);
+                break;
+            }
+            case PAWN: {
+                Game.board[finalY][finalX] = new Pawn(isWhite, finalX, finalY);
+                break;
+            }
+            case KNIGHT: {
+                Game.board[finalY][finalX] = new Knight(isWhite, finalX, finalY);
+                break;
+            }
+            case BISHOP: {
+                Game.board[finalY][finalX] = new Bishop(isWhite, finalX, finalY);
+                break;
+            }
+            case ROOK: {
+                Game.board[finalY][finalX] = new Rook(isWhite, finalX, finalY);
+                break;
+            }
+            case QUEEN: {
+                Game.board[finalY][finalX] = new Queen(isWhite, finalX, finalY);
+                break;
+            }
+            case KING: {
+                Game.board[finalY][finalX] = new King(isWhite, finalX, finalY);
+                break;
             }
         }
     }

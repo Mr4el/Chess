@@ -23,6 +23,7 @@ public class HumanClicking implements MouseListener {
     public boolean appliedToBoard = false;
     public boolean enabled = false;
     ArrayList<int[]> moves, legalMoves;
+    Piece[][] currentBoard = Game.board;
     ArrayList<Color> initialColorCodes;
     Color initialBGColor;
     boolean recolor;
@@ -61,7 +62,7 @@ public class HumanClicking implements MouseListener {
 
         // What tile is being clicked on?
         Point p = e.getLocationOnScreen();
-        SwingUtilities.convertPointFromScreen(p, (JComponent)board);
+        SwingUtilities.convertPointFromScreen(p, (JComponent) board);
 
         oldTile = (JPanel) e.getComponent().getComponentAt(p);
 
@@ -69,8 +70,8 @@ public class HumanClicking implements MouseListener {
         double w = board_dimensions.getWidth();
         double h = board_dimensions.getHeight();
 
-        oldtile_x = (int)Math.round(oldTile.getX()*8/w);
-        oldtile_y = (int)Math.round(oldTile.getY()*8/h);
+        oldtile_x = (int) Math.round(oldTile.getX() * 8 / w);
+        oldtile_y = (int) Math.round(oldTile.getY() * 8 / h);
 
         // If tile has a piece on it
         if (oldTile.getComponents().length >= 1) {
@@ -78,6 +79,25 @@ public class HumanClicking implements MouseListener {
 
             // TODO: Account for pawn promotion
 
+          //TODO: Add to the if statement below that a pawn to be promoted is also to be selected.
+            Piece[][] currentBoard = Game.board;
+            if (Game.getCurrentPlayer().isWhite()) {
+                for (int col = 0; col < currentBoard.length; col++) {
+                    Piece foundPiece = currentBoard[col][1];
+                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN) {
+                        foundPiece.pawnPromotion = true;
+                    }
+                }
+            }
+            else {
+                for (int col = 0; col < currentBoard.length; col++) {
+                    Piece foundPiece = currentBoard[col][6];
+                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN) {
+                        foundPiece.pawnPromotion = true;
+                    }
+                }
+            }
+            
             if (!(Game.getLegalPiece() == PieceEnum.ANY || Game.getLegalPiece() == chosen_piece.piece_type)) {
                 resetVars();
                 //TODO: Maybe display a message on the side of the board displaying that we cannot choose this piece.
@@ -99,6 +119,67 @@ public class HumanClicking implements MouseListener {
 
             Piece chosenPiece = Game.getPiece(oldtile_x, oldtile_y);
             legalMoves = chosenPiece.getLegalMoves(oldtile_x, oldtile_y);
+            
+            if (chosen_piece.white) {
+                for (int col = 0; col < currentBoard.length; col++) {
+                    Piece foundPiece = Game.getPiece(col, 1);
+                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN && foundPiece.isWhite) {
+
+                        Piece promotionSquare = Game.getPiece(col, 0);
+                        Piece leftPromotion = Game.getPiece(col + 1, 0);
+                        Piece rightPromotion = Game.getPiece(col - 1, 0);
+
+                        if (promotionSquare == null) {
+                            int[] move = {col, 0};
+                            legalMoves.add(move);
+                        }
+
+                        if (leftPromotion != null && !leftPromotion.isWhite) {
+                            int[] move = {col + 1, 0};
+                            legalMoves.add(move);
+                        }
+
+                        if (rightPromotion != null && !rightPromotion.isWhite) {
+                            int[] move = {col - 1, 0};
+                            legalMoves.add(move);
+                        }
+
+                    } else if (foundPiece == null) {
+                        System.out.println("");
+                    }
+                }
+
+            } else {
+                for (int col = 0; col < currentBoard.length; col++) {
+                    Piece foundPiece = Game.getPiece(col, 6);
+                    System.out.println(foundPiece);
+                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN && !foundPiece.isWhite) {
+                        Piece promotionSquare = Game.getPiece(col, 6 + 1);
+                        Piece leftPromotion = Game.getPiece(col + 1, 7);
+                        Piece rightPromotion = Game.getPiece(col - 1, 7);
+
+                        if (promotionSquare == null) {
+                            int[] move = {col, 6 + 1};
+                            legalMoves.add(move);
+                        }
+
+                        if (leftPromotion != null && leftPromotion.isWhite) {
+                            int[] move = {col + 1, 7};
+                            legalMoves.add(move);
+                        }
+
+                        if (rightPromotion != null && rightPromotion.isWhite) {
+                            int[] move = {col - 1, 7};
+                            legalMoves.add(move);
+                        }
+
+                    } else if (foundPiece == null) {
+                        System.out.println("");
+                    }
+                }
+
+            }
+            
             System.out.println(legalMoves.size());
 
             initialColorCodes = new ArrayList<>();
@@ -107,7 +188,7 @@ public class HumanClicking implements MouseListener {
                 int tileX = legalMoves.get(i)[0];
                 int tileY = legalMoves.get(i)[1];
                 System.out.println(tileX + "," + tileY);
-                JPanel tile = (JPanel) board.getComponent(tileY*8 + tileX);
+                JPanel tile = (JPanel) board.getComponent(tileY * 8 + tileX);
                 initialColorCodes.add(tile.getBackground());
                 tile.setBackground(Color.decode("#ed8080"));
             }
@@ -127,14 +208,14 @@ public class HumanClicking implements MouseListener {
         if (!enabled)
             return;
         Point p = e.getLocationOnScreen();
-        SwingUtilities.convertPointFromScreen(p, (JComponent)board);
+        SwingUtilities.convertPointFromScreen(p, (JComponent) board);
         
         if (recolor) {
             oldTile.setBackground(initialBGColor);
             for (int i = 0; i < legalMoves.size(); i++) {
                 int tileX = legalMoves.get(i)[0];
                 int tileY = legalMoves.get(i)[1];
-                JPanel tile = (JPanel) board.getComponent(tileY*8 + tileX);
+                JPanel tile = (JPanel) board.getComponent(tileY * 8 + tileX);
                 tile.setBackground(initialColorCodes.get(i));
             }
             recolor = false;
@@ -146,7 +227,7 @@ public class HumanClicking implements MouseListener {
         newTile = (JPanel) e.getComponent().getComponentAt(p);
 
         if (newTile.getComponents().length >= 1) {
-            VisualPiece destination_piece = (VisualPiece)newTile.getComponent(0);
+            VisualPiece destination_piece = (VisualPiece) newTile.getComponent(0);
 
             if (destination_piece.white == Game.current_player.isWhite()) {
                 resetVars();
@@ -158,8 +239,8 @@ public class HumanClicking implements MouseListener {
         double w = board_dimensions.getWidth();
         double h = board_dimensions.getHeight();
 
-        int newtile_x = (int)Math.round(newTile.getX()*8/w);
-        int newtile_y = (int)Math.round(newTile.getY()*8/h);
+        int newtile_x = (int)Math.round(newTile.getX() * 8 / w);
+        int newtile_y = (int)Math.round(newTile.getY() * 8 /h);
 
         int[] final_pos = {newtile_x, newtile_y};
         moves = Game.getPiece(oldtile_x,oldtile_y).getLegalMoves(oldtile_x, oldtile_y, newtile_x, newtile_y);
