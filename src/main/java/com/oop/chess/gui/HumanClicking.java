@@ -83,22 +83,22 @@ public class HumanClicking implements MouseListener {
             Piece[][] currentBoard = Game.board;
             if (Game.getCurrentPlayer().isWhite()) {
                 for (int col = 0; col < currentBoard.length; col++) {
-                    Piece foundPiece = currentBoard[col][1];
-                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN) {
+                	Piece foundPiece = Game.getPiece(col, 1);
+                	if (foundPiece != null && foundPiece.isWhite() && foundPiece.getType() == PieceEnum.PAWN) {
                         foundPiece.pawnPromotion = true;
                     }
                 }
             }
             else {
                 for (int col = 0; col < currentBoard.length; col++) {
-                    Piece foundPiece = currentBoard[col][6];
-                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN) {
+                	Piece foundPiece = Game.getPiece(col, 6);
+                	if (foundPiece != null && !foundPiece.isWhite() && foundPiece.getType() == PieceEnum.PAWN) {
                         foundPiece.pawnPromotion = true;
                     }
                 }
             }
             
-            if (!(Game.getLegalPiece() == PieceEnum.ANY || Game.getLegalPiece() == chosen_piece.piece_type)) {
+            if (!(Game.getLegalPiece() == PieceEnum.ANY || Game.getLegalPiece() == chosen_piece.piece_type || (Game.getPiece(oldtile_x, oldtile_y) != null && Game.getPiece(oldtile_x, oldtile_y).getType() == PieceEnum.PAWN && Game.getPiece(oldtile_x, oldtile_y).pawnPromotion == true && Game.getLegalPiece() != PieceEnum.KING))) {
                 resetVars();
                 //TODO: Maybe display a message on the side of the board displaying that we cannot choose this piece.
                 return;
@@ -119,66 +119,6 @@ public class HumanClicking implements MouseListener {
 
             Piece chosenPiece = Game.getPiece(oldtile_x, oldtile_y);
             legalMoves = chosenPiece.getLegalMoves(oldtile_x, oldtile_y);
-            
-            if (chosen_piece.white) {
-                for (int col = 0; col < currentBoard.length; col++) {
-                    Piece foundPiece = Game.getPiece(col, 1);
-                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN && foundPiece.isWhite) {
-
-                        Piece promotionSquare = Game.getPiece(col, 0);
-                        Piece leftPromotion = Game.getPiece(col + 1, 0);
-                        Piece rightPromotion = Game.getPiece(col - 1, 0);
-
-                        if (promotionSquare == null) {
-                            int[] move = {col, 0};
-                            legalMoves.add(move);
-                        }
-
-                        if (leftPromotion != null && !leftPromotion.isWhite) {
-                            int[] move = {col + 1, 0};
-                            legalMoves.add(move);
-                        }
-
-                        if (rightPromotion != null && !rightPromotion.isWhite) {
-                            int[] move = {col - 1, 0};
-                            legalMoves.add(move);
-                        }
-
-                    } else if (foundPiece == null) {
-                        System.out.println("");
-                    }
-                }
-
-            } else {
-                for (int col = 0; col < currentBoard.length; col++) {
-                    Piece foundPiece = Game.getPiece(col, 6);
-                    System.out.println(foundPiece);
-                    if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN && !foundPiece.isWhite) {
-                        Piece promotionSquare = Game.getPiece(col, 6 + 1);
-                        Piece leftPromotion = Game.getPiece(col + 1, 7);
-                        Piece rightPromotion = Game.getPiece(col - 1, 7);
-
-                        if (promotionSquare == null) {
-                            int[] move = {col, 6 + 1};
-                            legalMoves.add(move);
-                        }
-
-                        if (leftPromotion != null && leftPromotion.isWhite) {
-                            int[] move = {col + 1, 7};
-                            legalMoves.add(move);
-                        }
-
-                        if (rightPromotion != null && rightPromotion.isWhite) {
-                            int[] move = {col - 1, 7};
-                            legalMoves.add(move);
-                        }
-
-                    } else if (foundPiece == null) {
-                        System.out.println("");
-                    }
-                }
-
-            }
             
             System.out.println(legalMoves.size());
 

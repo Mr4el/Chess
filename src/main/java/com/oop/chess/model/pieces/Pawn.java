@@ -60,6 +60,66 @@ public class Pawn extends Piece {
 
         // Check if there's a piece already at the final position
         Piece piece = Game.getPiece(finalX, finalY);
+        
+        if (Game.getPiece(initialX, initialY) != null && initialY == 1 && Game.getPiece(initialX, initialY).isWhite) {
+            for (int col = 0; col < Game.board.length; col++) {
+                Piece foundPiece = Game.getPiece(col, 1);
+                if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN && foundPiece.isWhite) {
+
+                    Piece promotionSquare = Game.getPiece(col, 0);
+                    Piece leftPromotion = Game.getPiece(col + 1, 0);
+                    Piece rightPromotion = Game.getPiece(col - 1, 0);
+
+                    if (promotionSquare == null) {
+                        int[] move = {col, 0};
+                        legalMoves.add(move);
+                    }
+
+                    if (leftPromotion != null && !leftPromotion.isWhite) {
+                        int[] move = {col + 1, 0};
+                        legalMoves.add(move);
+                    }
+
+                    if (rightPromotion != null && !rightPromotion.isWhite) {
+                        int[] move = {col - 1, 0};
+                        legalMoves.add(move);
+                    }
+
+                } else if (foundPiece == null) {
+                    System.out.println("");
+                }
+            }
+
+        } else if (Game.getPiece(initialX, initialY) != null && initialY == 6 && !Game.getPiece(initialX, initialY).isWhite){
+            for (int col = 0; col < Game.board.length; col++) {
+                Piece foundPiece = Game.getPiece(col, 6);
+                System.out.println(foundPiece);
+                if (foundPiece != null && foundPiece.getType() == PieceEnum.PAWN && !foundPiece.isWhite) {
+                    Piece promotionSquare = Game.getPiece(col, 7);
+                    Piece leftPromotion = Game.getPiece(col + 1, 7);
+                    Piece rightPromotion = Game.getPiece(col - 1, 7);
+
+                    if (promotionSquare == null) {
+                        int[] move = {col, 6 + 1};
+                        legalMoves.add(move);
+                    }
+
+                    if (leftPromotion != null && leftPromotion.isWhite) {
+                        int[] move = {col + 1, 7};
+                        legalMoves.add(move);
+                    }
+
+                    if (rightPromotion != null && rightPromotion.isWhite) {
+                        int[] move = {col - 1, 7};
+                        legalMoves.add(move);
+                    }
+
+                } else if (foundPiece == null) {
+                    System.out.println("");
+                }
+            }
+
+        }
 
         // 1 tile movement
         if (finalY - initialY == direction) {
@@ -114,13 +174,13 @@ public class Pawn extends Piece {
         
         if (isWhite) {
             if (finalY == 0) {
-                createNewPiece(finalX, finalY, isWhite);
+                createNewPiece(initialX, initialY, isWhite);
             }
         }
 
         else {
             if (finalY == 7) {
-                createNewPiece(finalX, finalY, isWhite);
+                createNewPiece(initialX, initialY, isWhite);
             }
         }
 
@@ -163,34 +223,31 @@ public class Pawn extends Piece {
         }      
     }
     
-    public void createNewPiece(int finalX, int finalY, boolean isWhite) {
+    public void createNewPiece(int initialX, int initialY, boolean isWhite) {
         switch (Game.getLegalPiece()) {
             case ANY: {
-                Game.board[finalY][finalX] = new Pawn(isWhite, finalX, finalY);
+                Game.board[initialY][initialX] = new Pawn(isWhite, initialX, initialY);
                 break;
             }
             case PAWN: {
-                Game.board[finalY][finalX] = new Pawn(isWhite, finalX, finalY);
+            	//TODO: Create functionality that the player can change it to any other piece, except king.
+                Game.board[initialY][initialX] = new Pawn(isWhite, initialX, initialY);
                 break;
             }
             case KNIGHT: {
-                Game.board[finalY][finalX] = new Knight(isWhite, finalX, finalY);
+                Game.board[initialY][initialX] = new Knight(isWhite, initialX, initialY);
                 break;
             }
             case BISHOP: {
-                Game.board[finalY][finalX] = new Bishop(isWhite, finalX, finalY);
+                Game.board[initialY][initialX] = new Bishop(isWhite, initialX, initialY);
                 break;
             }
             case ROOK: {
-                Game.board[finalY][finalX] = new Rook(isWhite, finalX, finalY);
+                Game.board[initialY][initialX] = new Rook(isWhite, initialX, initialY);
                 break;
             }
             case QUEEN: {
-                Game.board[finalY][finalX] = new Queen(isWhite, finalX, finalY);
-                break;
-            }
-            case KING: {
-                Game.board[finalY][finalX] = new King(isWhite, finalX, finalY);
+                Game.board[initialY][initialX] = new Queen(isWhite, initialX, initialY);
                 break;
             }
         }

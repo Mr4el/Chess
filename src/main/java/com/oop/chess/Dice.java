@@ -9,19 +9,6 @@ public class Dice {
         Piece[][] currentBoard = Game.board;
         boolean pieceIsWhite = white;
         boolean aPieceIsMoveable = findMoveablePiece(currentBoard, pieceIsWhite);
-
-//      if (white) {
-//      	for (int col = 0; col < currentBoard.length; col++) {
-//          	Piece foundPiece = currentBoard[1][col];
-//          	if (foundPiece.getType() == PieceEnum.PAWN) {
-//              	//TODO: Logic adding legal moves.
-//              	PieceEnum.PAWN
-//          	}
-//      	}
-//  	}
-//  	else {
-//
-//  	}
         
         //TODO: Maybe here add an if-statement which first checks whether a pawn is to be promoted.
         if (aPieceIsMoveable) {

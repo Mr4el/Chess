@@ -84,6 +84,9 @@ public class Game implements GameState {
             // roll the dice to determine which pieces the player is allowed to move
             case DICE_ROLL:
                 legal_piece = Dice.roll(current_player.isWhite());
+                //while (!(legal_piece == PieceEnum.PAWN || legal_piece == PieceEnum.KING || legal_piece == PieceEnum.KNIGHT)) {
+                //    legal_piece = Dice.roll(current_player.isWhite());
+                //}
                 //legal_piece = PieceEnum.ANY;
             	if (legal_piece != null) {
                     gui.setTitle(gui.getTitle() + " - Legal piece: " + legal_piece);
@@ -165,6 +168,8 @@ public class Game implements GameState {
         if (p != null) {
             p.makeMove(from_x,from_y,to_x,to_y);
 
+            p = getPiece(from_x,from_y);
+            
             // check if tile on to_x,to_y is king
             Piece p2 = getPiece(to_x,to_y);
             if (p2 != null && p2.piece_type == PieceEnum.KING)
