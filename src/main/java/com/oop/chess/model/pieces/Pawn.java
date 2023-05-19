@@ -60,7 +60,6 @@ public class Pawn extends Piece {
 
         // Check if there's a piece already at the final position
         Piece piece = Game.getPiece(finalX, finalY);
-        System.out.println("There is a piece: " + piece);
 
         // 1 tile movement
         if (finalY - initialY == direction) {
@@ -79,7 +78,6 @@ public class Pawn extends Piece {
             // En-passant movement
             Piece enPassantPiece = Game.getPiece(finalX, finalY - direction);
             if (enPassantPiece != null && enPassantPiece instanceof Pawn) {
-                System.out.println(((Pawn) enPassantPiece).enPassantPossible);
                 if (Math.abs(initialX - finalX) == 1 && ((Pawn) enPassantPiece).enPassantPossible && enPassantPiece.isWhite != isWhite) {
                     int[] move = {finalX, finalY};
                     legalMoves.add(move);
@@ -143,7 +141,6 @@ public class Pawn extends Piece {
         // execute en passant
         Piece enPassantPiece = Game.getPiece(finalX, finalY - direction);
         if (enPassantPiece != null && enPassantPiece instanceof Pawn) {
-            System.out.println(((Pawn) enPassantPiece).enPassantPossible);
             if (Math.abs(initialX - finalX) == 1 && ((Pawn) enPassantPiece).enPassantPossible && enPassantPiece.isWhite != isWhite) {
                 // delete the en passant piece
                 Game.board[finalY - direction][finalX] = null;

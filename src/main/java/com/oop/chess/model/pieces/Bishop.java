@@ -62,6 +62,9 @@ public class Bishop extends Piece {
             int y = initialY + d[1];
 
             boolean check = true;
+            
+            if (!Game.xyInBounds(x, y) )
+                continue;
 
             while(check) {
                 Piece piece = Game.getPiece(x,y);

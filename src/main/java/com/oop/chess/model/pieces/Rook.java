@@ -52,6 +52,9 @@ public class Rook extends Piece {
         boolean noMoves = true;
         for (int i = initialX + 1; i <= 7 && noMoves; i++) {
 
+        	if (!Game.xyInBounds(i, initialY))
+                continue;
+        	
             Piece piece = Game.getPiece(i, initialY);
             if (piece == null) {
                 int[] move = {i, initialY};
@@ -75,7 +78,8 @@ public class Rook extends Piece {
         // left
         noMoves = true;
         for (int i = initialX - 1; i >= 0 && noMoves; i--) {
-
+        	if (!Game.xyInBounds(i, initialY))
+                continue;
             Piece piece = Game.getPiece(i, initialY);
             if (piece == null) {
                 int[] move = {i, initialY};
@@ -98,7 +102,8 @@ public class Rook extends Piece {
         // down
         noMoves = true;
         for (int i = initialY + 1; i <= 7 && noMoves; i++) {
-
+        	if (!Game.xyInBounds(initialX, i))
+                continue;
             Piece piece = Game.getPiece(initialX, i);
             if (piece == null) {
                 int[] move = {initialX, i};
@@ -121,7 +126,9 @@ public class Rook extends Piece {
         // up
         noMoves = true;
         for (int i = initialY - 1; i >= 0 && noMoves; i--) {
-            Piece piece = Game.getPiece(initialX, i);
+        	if (!Game.xyInBounds(initialX, i))
+                continue;
+        	Piece piece = Game.getPiece(initialX, i);
             if (piece == null) {
                 int[] move = {initialX, i};
                 legalMoves.add(move);
@@ -138,11 +145,6 @@ public class Rook extends Piece {
                 noMoves = false;
             }
 
-        }
-        for (int[] legalMove : legalMoves) {
-            System.out.println("ROOOOOOOOOOK");
-            int[] tmp = legalMove;
-            System.out.println(Arrays.toString(tmp));
         }
         return legalMoves;
     }

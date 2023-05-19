@@ -16,6 +16,8 @@ public class Game implements GameState {
     Player[] players = {null, null};
     public static Player current_player;
     int current_player_index;
+    
+    static boolean king_captured = false;
 
     //Piece[][] board;
     Piece[] white_pieces;
@@ -29,7 +31,8 @@ public class Game implements GameState {
         START,              // basic initilization
         DICE_ROLL,          // rolling dice & determining legal pieces
         CHOOSING_MOVE,      // player choosing a move
-        SWITCH_TURN         // switching turns (so player 2 plays after player 1)
+        SWITCH_TURN,        // switching turns (so player 2 plays after player 1)
+        GAME_END
     }
 
     // what is the current state of the turn?
@@ -82,8 +85,6 @@ public class Game implements GameState {
             case DICE_ROLL:
                 legal_piece = Dice.roll(current_player.isWhite());
                 if (legal_piece != null) {
-                    System.out.println("legal piece: " + legal_piece);
-
                     gui.setTitle(gui.getTitle() + " - Legal piece: " + legal_piece);
 
                     turn_state = TURN_STATES.CHOOSING_MOVE;
@@ -105,6 +106,10 @@ public class Game implements GameState {
 
             // next player's turn
             case SWITCH_TURN:
+            	if (king_captured) {
+                    turn_state = TURN_STATES.GAME_END;
+                    break;
+                }
                 current_player_index++;
                 if (current_player_index > 1)
                     current_player_index = 0;
@@ -112,6 +117,17 @@ public class Game implements GameState {
                 current_player = players[current_player_index];
 
                 turn_state = TURN_STATES.START;
+                break;
+                
+            // King captured
+            case GAME_END:
+                String title = "";
+                if (current_player.isWhite())
+                    title = "White captured Black's King!";
+                else
+                    title = "Black captured White's King!";
+                
+                gui.setTitle(title);
                 break;
 
             default:
@@ -124,15 +140,14 @@ public class Game implements GameState {
     // (x,y) = (0,0) -> top left corner of the board
     // (x,y) = (7,7) -> bottom right corner of the board
     public static Piece getPiece(int x, int y) {
-        if (!xyInBounds(x,y))
-            return null;
-
-        Piece foundPiece = board[y][x];
-        if (Objects.nonNull(foundPiece)) {
-            return foundPiece;
-        } else {
-            return null;
+    	if (xyInBounds(x,y)) {
+            Piece foundPiece = board[y][x];
+            if (Objects.nonNull(foundPiece)) {
+                return foundPiece;
+            }
         }
+
+        return null;
     }
 
     // Check if coordinates x y are within the bounds of the board
@@ -149,6 +164,11 @@ public class Game implements GameState {
         if (p != null) {
             p.makeMove(from_x,from_y,to_x,to_y);
 
+            // check if tile on to_x,to_y is king
+            Piece p2 = getPiece(to_x,to_y);
+            if (p2 != null && p2.piece_type == PieceEnum.KING)
+            king_captured = true;
+            
             Piece p_clone = p.clone();
             board[to_y][to_x] = p_clone;
             board[from_y][from_x] = null;

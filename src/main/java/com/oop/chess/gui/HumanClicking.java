@@ -90,7 +90,7 @@ public class HumanClicking implements MouseListener {
             }
             
             initialBGColor = oldTile.getBackground();
-            oldTile.setBackground(Color.decode("#ed8080"));
+            oldTile.setBackground(Color.decode("#6ff2ac"));
             recolor = true;
 
             Piece chosenPiece = Game.getPiece(oldtile_x, oldtile_y);

@@ -74,7 +74,7 @@ public class Dice {
             for (int col = 0; col < currentBoard[row].length; col++) {
                 Piece foundPiece = currentBoard[row][col];
                 if (foundPiece != null && (foundPiece.isWhite == pieceIsWhite)) {
-                    if (!foundPiece.getLegalMoves(row, col).isEmpty()) {
+                    if (!foundPiece.getLegalMoves(col, row).isEmpty()) {
                         return true;
 
                     }
@@ -89,6 +89,9 @@ public class Dice {
         for (int row = 0; row < currentBoard.length; row++) {
             for (int col = 0; col < currentBoard[row].length; col++) {
                 Piece foundPiece = currentBoard[row][col];
+                if (foundPiece == null)
+                	continue;
+                
                 if ((foundPiece.getType() == piece) && (foundPiece.isWhite == pieceIsWhite)) {
                     if (!foundPiece.getLegalMoves(row, col).isEmpty()) {
                         return true;
