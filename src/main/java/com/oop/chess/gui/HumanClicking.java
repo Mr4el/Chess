@@ -52,6 +52,10 @@ public class HumanClicking implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+    	if (e.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
+    	
         if (!enabled)
             return;
 
@@ -116,6 +120,10 @@ public class HumanClicking implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+    	if (e.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
+    	
         if (!enabled)
             return;
         Point p = e.getLocationOnScreen();

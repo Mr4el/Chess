@@ -10,6 +10,8 @@ public class GuiGame extends GUI {
     public static JFrame frame;
 
     public GuiGame(Piece[][] board) {
+    	frame = this;
+    	
         setTitle("Dice Chess!");
 
         setSize(550,550);
@@ -21,8 +23,6 @@ public class GuiGame extends GUI {
         setLocationRelativeTo(null);
         //setResizable(false);
         setVisible(true);
-
-        frame = this;
     }
 
     public static void removeVisualPiece(int x, int y) {

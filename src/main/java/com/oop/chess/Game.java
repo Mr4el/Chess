@@ -215,11 +215,11 @@ public class Game implements GameState {
         board[0][7] = new Rook(false, 0, 7);
 
         for (int j = 0; j < board.length; j++) {
-            board[1][j] = new Pawn(false, 1, j);
+            board[1][j] = new Pawn(false,1,j);
         }
 
         for (int j = 0; j < board.length; j++) {
-            board[6][j] = new Pawn(true, 6, j);
+            board[6][j] = new Pawn(true,6,j);
         }
 
         board[7][0] = new Rook(true, 7, 0);

@@ -14,6 +14,10 @@ public class King extends Piece {
 	public static boolean castleRight = true;
     public static boolean castleLeft = true;
     public Rook rook;
+    
+    boolean moved = false;  // has king moved yet?
+    int castleMoveLeftX = -1;
+    int castleMoveRightX = -1;
 
     /**
      * Constructs a King piece using the fact whether it is white or black and its initial location on the board.
@@ -34,7 +38,9 @@ public class King extends Piece {
      */
     @Override
     public King clone() {
-        return new King(isWhite, x, y);
+    	King k = new King(isWhite, x, y);
+        k.moved = true;
+        return k;
     }
 
 
@@ -45,33 +51,54 @@ public class King extends Piece {
         int changeX = Math.abs(finalX - initialX);
         int changeY = Math.abs(finalY - initialY);
 
-        if (changeX <= 1 && changeY <= 1) {
-            if (!(finalX == initialX && finalY == initialY)) {
-            	int[][] positions_to_check = {
-            			{1, 0},
-                        {0,  + 1},
-                        { + 1,  + 1},
-                        { - 1, 0},
-                        {0,  - 1},
-                        { - 1,  - 1},
-                        { - 1,  + 1},
-                        { + 1,  - 1}
-                };
-            	
-            	for (int i = 0; i < positions_to_check.length; i++) {
-                    int[] p = positions_to_check[i];
-                    
-                    if (!Game.xyInBounds(initialX + p[0], initialY + p[1]))
-                        continue;
+        if (!(finalX == initialX && finalY == initialY)) {
 
-                    Piece existing_piece = Game.getPiece(initialX + p[0], initialY + p[1]);
+            int[][] positions_to_check = {
+                    { 1,  0},
+                    { 0,  1},
+                    { 1,  1},
+                    {-1,  0},
+                    { 0, -1},
+                    {-1, -1},
+                    {-1,  1},
+                    { 1, -1}
+            };
 
-                    if (existing_piece == null || this.isWhite != existing_piece.isWhite) {
-                        int[] move = {initialX + p[0], initialY + p[1]};
-                        legalMoves.add(move);
+            // check if castle can be performed
+            if (!this.moved) {
+
+                castleCheck(initialX, initialY);
+
+                if (canCastleLeft()) {
+                    if (Game.getPiece(initialX-2,initialY) == null) {
+                        int[] m = {initialX-2,initialY};
+                        legalMoves.add(m);
+                    }
+                }
+
+                if (canCastleRight()) {
+                    if (Game.getPiece(initialX+2,initialY) == null) {
+                        int[] m = {initialX+2,initialY};
+                        legalMoves.add(m);
                     }
                 }
             }
+
+
+            for (int i = 0; i < positions_to_check.length; i++) {
+                int[] p = positions_to_check[i];
+
+                if (!Game.xyInBounds(initialX + p[0], initialY + p[1]))
+                    continue;
+
+                Piece existing_piece = Game.getPiece(initialX + p[0], initialY + p[1]);
+
+                if (existing_piece == null || this.isWhite != existing_piece.isWhite) {
+                    int[] move = {initialX + p[0], initialY + p[1]};
+                    legalMoves.add(move);
+                }
+            }
+
         }
 
         return legalMoves;
@@ -89,132 +116,66 @@ public class King extends Piece {
 
     }
 
-    public void castleCheck() {
+    public void castleCheck(int initialX, int initialY) {
+        int check_y;
 
+        if (isWhite) 
+            check_y = 7;
+        else
+            check_y = 0;
 
-        Piece rookWhite1 = Game.getPiece(7, 0);
-        Piece rookWhite2 = Game.getPiece(7, 7);
+        // left rook
+        Piece rook1 = Game.getPiece(0,check_y);
+        // right rook
+        Piece rook2 = Game.getPiece(7,check_y);
 
-        Piece rookBlack1 = Game.getPiece(0, 0);
-        Piece rookBlack2 = Game.getPiece(0, 7);
-
-        if (isWhite) {
-
-            if (!(this.getX() == 0 && this.getY() == 4)) {
-
-                CastleMove.cantCastleLeft();
-                CastleMove.cantCastleRight();
-
-            }
-
-            if (!(rookWhite1.piece_type == PieceEnum.ROOK && rook.isWhite)) {
-                CastleMove.cantCastleLeft();
-
-            }
-            if (!(rookWhite2.piece_type == PieceEnum.ROOK && rook.isWhite)) {
-
-                CastleMove.cantCastleRight();
-            }
-
-
+        if (this.moved) {
+            CastleMove.cantCastleLeft();
+            CastleMove.cantCastleRight();
         }
 
-        if (!isWhite) {
-            if ((this.getX() == 7 && this.getY() == 4)) {
-
-                CastleMove.cantCastleLeft();
-                CastleMove.cantCastleRight();
-
+        boolean piece_in_the_way_left = false;
+        check_left:
+        for(int i = initialX-1; i > 0; i--) {
+            Piece p = Game.getPiece(i, check_y);
+            if (p != null){
+                piece_in_the_way_left = true;
+                break check_left;
             }
-            if (!(rookBlack1.piece_type == PieceEnum.ROOK && !rook.isWhite)) {
+        }
+        if (piece_in_the_way_left || !(rook1 != null && rook1.piece_type == PieceEnum.ROOK && rook1.isWhite == this.isWhite && !((Rook)rook1).moved)) {
+            CastleMove.cantCastleLeft();
+        }
 
-                CastleMove.cantCastleLeft();
-
+        boolean piece_in_the_way_right = false;
+        check_right:
+        for(int i = initialX+1; i < 7; i++) {
+            Piece p = Game.getPiece(i, check_y);
+            if (p != null){
+                piece_in_the_way_right = true;
+                break check_right;
             }
-            if (!(rookBlack2.piece_type == PieceEnum.ROOK) && !rook.isWhite) {
-
-                CastleMove.cantCastleRight();
-
-            }
+        }
+        if (piece_in_the_way_right || !(rook2 != null && rook2.piece_type == PieceEnum.ROOK && rook2.isWhite == this.isWhite && !((Rook)rook2).moved)) {
+            CastleMove.cantCastleRight();
         }
 
     }
 
-    public void makeCastleMove() {
+    public void makeCastleMove(int ix, int iy, int fx, int fy) {
+        if (fy != iy)
+            return;
 
-        boolean castle = true;
+        // if castled right, move rook to the left of king
+        if (fx - ix == 2) 
+            Game.movePieceTo(7, iy, fx-1, fy);
+        // if castled left, move rook to the right of king
+        if (fx - ix == -2) 
+            Game.movePieceTo(0, iy, fx+1, fy);
+    }
 
-        if (this.isWhite) {
-
-            if (this.canCastleRight()) {
-
-                for (int i = 6; i > 4 && castle; i--) {
-
-                    Piece piece = Game.getPiece(7, i);
-                    if (piece != null) {
-                        castle = false;
-                    }
-
-                }
-                if (castle) {
-
-                    Game.movePieceTo(this.x, this.y, 7, 6);
-                    Game.movePieceTo(7, 7, 7, 5);
-                }
-            }
-
-            if (this.canCastleLeft()) {
-                castle = true;
-                for (int i = 1; i < 4 && castle; i++) {
-
-                    Piece piece = Game.getPiece(7, i);
-                    if (piece != null) {
-                        castle = false;
-                    }
-
-                }
-                if (castle) {
-                    Game.movePieceTo(this.x, this.y, 7, 2);
-                    Game.movePieceTo(0, 7, 7, 3);
-                }
-            }
-        }
-
-
-        if (!this.isWhite) {
-
-            if (this.canCastleRight()) {
-
-                castle = true;
-                for (int i = 5; i < 7 && castle; i++) {
-
-                    Piece piece = Game.getPiece(0, i);
-                    if (piece != null) {
-                        castle = false;
-                    }
-                }
-                if (castle) {
-
-                    Game.movePieceTo(this.x, this.y, 0, 6);
-                    Game.movePieceTo(7, 0, 0, 5);
-                }
-            }
-            if (this.canCastleLeft()) {
-
-                castle = true;
-                for (int i = 1; i < 4 && castle; i++) {
-
-                    Piece piece = Game.getPiece(0, i);
-                    if (piece != null) {
-                        castle = false;
-                    }
-                }
-                if (castle) {
-                    Game.movePieceTo(this.x, this.y, 0, 2);
-                    Game.movePieceTo(0, 0, 0, 3);
-                }
-            }
-        }
+    public void makeMove(int initialX, int initialY, int finalX, int finalY) {
+        makeCastleMove(initialX, initialY, finalX, finalY);
     }
 }
 
