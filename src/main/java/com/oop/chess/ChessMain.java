@@ -26,6 +26,7 @@ public class ChessMain {
     static ChessMain dc_instance = null;
 
     public static String session_launch_time;
+    public static String game_launch_time;
     public static int session_games_played;
     public static boolean SearchBotWhite = false;
 
@@ -73,7 +74,7 @@ public class ChessMain {
     /**
      * Starts a game between two players.
      *
-     * @param hints         A boolean indicating whether the player has chosen to use hints.
+     * @param hints A boolean indicating whether the player has chosen to use hints.
      */
     public static void startGame(boolean hints) {
         Player player1 = null;
@@ -142,6 +143,11 @@ public class ChessMain {
             player1 = new Human(true, hints);
             player2 = new Human(false, hints);
         }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd__HH-mm-ss");
+        LocalDateTime ldt = LocalDateTime.now();
+
+        game_launch_time = ldt.format(formatter).toString();
 
         Game.initializeGame(player1, player2);
         Game.runNextState(Game.TURN_STATES.START);

@@ -2,6 +2,9 @@ package com.oop.chess;
 
 import com.oop.chess.model.pieces.Piece;
 
+/**
+ * This class represents all the Evaluation Functions that can be used for the Minimax and the Expectimax algorithms.
+ */
 public class EvaluationFunction {
     /**
      * This method computes the evaluation function that belongs to the current board and current string fen.
@@ -49,6 +52,7 @@ public class EvaluationFunction {
 
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[0].length; j++) {
+
                     if ((board[i][j] != null) && (board[i][j].piece_type == Game.PieceEnum.PAWN)) {
                         if (board[i][j].isWhite()) {
                             for (int k = i - 1; k >= 0; k--) {
@@ -270,19 +274,19 @@ public class EvaluationFunction {
                 else if ((fen.charAt(i)) == ('q')) { blackQueens++; }
             }
 
-            double kingsDifference = whiteKings - blackKings;
-            double queensDifference = whiteQueens - blackQueens;
-            double rooksDifference = whiteRooks - blackRooks;
-            double bishopsDifference = whiteBishops - blackBishops;
-            double knightsDifference = whiteKnights - blackKnights;
-            double pawnsDifference = whitePawns - blackPawns;
+            double kingsDifference      = whiteKings    - blackKings;
+            double queensDifference     = whiteQueens   - blackQueens;
+            double rooksDifference      = whiteRooks    - blackRooks;
+            double bishopsDifference    = whiteBishops  - blackBishops;
+            double knightsDifference    = whiteKnights  - blackKnights;
+            double pawnsDifference      = whitePawns    - blackPawns;
 
-            double kingsCoefficient = 200;
-            double queensCoefficient = 9;
-            double rooksCoefficient = 5;
-            double bishopsCoefficient = 3;
-            double knightsCoefficient = 3;
-            double pawnsCoefficient = 1;
+            double kingsCoefficient     = 200;
+            double queensCoefficient    = 9;
+            double rooksCoefficient     = 5;
+            double bishopsCoefficient   = 3;
+            double knightsCoefficient   = 3;
+            double pawnsCoefficient     = 1;
 
             evaluationFunctionMaterial = kingsCoefficient*kingsDifference + queensCoefficient*queensDifference + rooksCoefficient*rooksDifference + bishopsCoefficient*bishopsDifference + knightsCoefficient*knightsDifference + pawnsCoefficient*pawnsDifference;
 

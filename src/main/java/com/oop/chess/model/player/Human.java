@@ -87,6 +87,10 @@ public class Human extends Player {
         return white;
     }
 
+    /**
+     * Gets a String of information about the current human player.
+     * @return A String of information about the current human player.
+     */
     public String toString() {
         return "(Human Player," + (white ? "White" : "Black") + ")";
     }

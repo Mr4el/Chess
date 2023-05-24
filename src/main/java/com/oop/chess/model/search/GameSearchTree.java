@@ -2,6 +2,7 @@ package com.oop.chess.model.search;
 
 import com.oop.chess.EvaluationFunction;
 import com.oop.chess.Game;
+import com.oop.chess.debug.GameLogger;
 import com.oop.chess.gui.GuiGame;
 
 import java.util.ArrayList;
@@ -28,6 +29,14 @@ public class GameSearchTree {
     static int rounds = 0;
 
     // Method that does the search and then returns the static bestmove
+
+    /**
+     * Retrieves the best move while performing the search using the Minimax algorithm.
+     * @param depth The maximum depth at which the algorithm will search.
+     * @param is_white Whether the player is white or black.
+     * @param alpha_beta Whether Alpha-Beta Pruning is used or not.
+     * @return The best move.
+     */
     public static int[] search(int depth, boolean is_white, boolean alpha_beta) {
         GameSearchTree.alpha_beta = alpha_beta;
 
@@ -36,6 +45,8 @@ public class GameSearchTree {
         depthSearch(depth, is_white, true, true, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
         System.out.println("[SEARCH AI] Best score: " + optimal_value + ", " + states_evaluated + " states evaluated.");
+
+        GameLogger.logStatesSearched(states_evaluated, optimal_value);
 
         if (visual_search)
             Game.rebuildBoard();
@@ -46,8 +57,17 @@ public class GameSearchTree {
         return bestMove;
     }
 
-
-    // this is the AI's brain
+    /**
+     * Performs the search at the given depth. This method contains the implementation of the Minimax algorithm.
+     *
+     * @param depth The depth at which the search will be performed.
+     * @param is_white Whether the player is white or black.
+     * @param root Whether the current board is the root.
+     * @param maximizingPlayer Whether the current player is the maximizing player or not.
+     * @param alpha The alpha value.
+     * @param beta The beta value.
+     * @return The value of the evaluation function at the root.
+     */
     public static double depthSearch(int depth, boolean is_white, boolean root, boolean maximizingPlayer, double alpha, double beta) {
         states_evaluated++;
 
@@ -71,7 +91,7 @@ public class GameSearchTree {
         } else
             moves = Game.getEveryLegalMoveOfPlayer(is_white, Game.PieceEnum.ANY);
 
-
+        // If the current player is the maximizing player we look at the next depth where the player is then the minimizing player.
         if (maximizingPlayer) {
             double maxEva = Double.NEGATIVE_INFINITY;
 
@@ -102,6 +122,7 @@ public class GameSearchTree {
             }
             return maxEva;
 
+            // If the current player is not the maximizing player we look at the next depth where the player is then the maximizing player.
         } else {
             double minEva = Double.POSITIVE_INFINITY;
 

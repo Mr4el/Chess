@@ -2,7 +2,6 @@ package com.oop.chess.model.pieces;
 
 import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.Game;
-import com.oop.chess.model.Cell;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,8 +14,6 @@ public abstract class Piece {
 
     public boolean pawnPromotion;
     // x and y coordinates of the piece on the board
-
-    public Cell currentCell;
 
     private boolean isCaptured = false;
 
@@ -132,6 +129,13 @@ public abstract class Piece {
         return null;
     };
 
+    /**
+     * Retrieves all the legal moves of the current piece.
+     *
+     * @param initialX The initial X-coordinate of the piece.
+     * @param initialY The initial Y-coordinate of the piece.
+     * @return Returns an array of all the legal moves.
+     */
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY) {
         ArrayList<int[]> legalMoves = new ArrayList<int[]>();
 
@@ -204,6 +208,11 @@ public abstract class Piece {
         }
     }
 
+    /**
+     * Checks whether the current piece is equal to the passed on piece.
+     * @param obj The passed on piece.
+     * @return Whether the current piece is equal to the passed on piece.
+     */
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (obj == this) return true;
@@ -212,6 +221,10 @@ public abstract class Piece {
         return (piece_type == ((Piece)obj).piece_type && x == ((Piece)obj).x && y == ((Piece)obj).y);
     }
 
+    /**
+     * Gets a String of information about the current piece.
+     * @return The String with information about the current piece.
+     */
     public String toString() {
         return "( " + piece_type + " : " + (isWhite ? "White" : "Black") + ", x=" + x + ", y=" + y + ")";
     }

@@ -8,11 +8,10 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * This class represents a random bot that makes random moves.
+ */
 public class RandomBot {
-
-    /*
-     * TODO In main menu, new button AI vs AI
-     */
 
     JPanel board;
     static int oldTile_x, oldTile_y, newTile_x, newTile_y;
@@ -20,11 +19,19 @@ public class RandomBot {
 
     RandomAI ai;
 
+    /**
+     * Creates a new random bot.
+     * @param ai The random AI player.
+     */
     public RandomBot(RandomAI ai) {
         board = GuiGame.visualBoard;
         this.ai = ai;
     }
 
+    /**
+     * Makes a random move of the legal moves of the passed on piece type.
+     * @param type The type of the piece which has to perform a random move.
+     */
     public static void randomPlay(Game.PieceEnum type) {
         ArrayList<Piece> possiblePieces = new ArrayList<>();
         ArrayList<int[]> pieceLocations = new ArrayList<>();
@@ -52,6 +59,7 @@ public class RandomBot {
 
         newTile_x = legalMoves.get(rando)[0];
         newTile_y = legalMoves.get(rando)[1];
+
         Game.movePieceTo(oldTile_x, oldTile_y, newTile_x, newTile_y);
     }
 }

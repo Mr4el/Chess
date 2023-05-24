@@ -15,11 +15,15 @@ import java.util.ArrayList;
 public class RandomAI extends Player {
     boolean white;
     boolean move = false;
-
     boolean help;
+    int oldtile_x = 0;
+    int oldtile_y = 0;
+    int newtile_x = 0;
+    int newtile_y = 0;
+    RandomBot randomBot;
 
     /**
-     * Craetes a new AI player.
+     * Creates a new AI player.
      *
      * @param white A boolean indicating whether the player is white or black.
      * @param help A boolean indicating whether the player wants any help, which is to present the player the different moves it can make.
@@ -28,7 +32,7 @@ public class RandomAI extends Player {
         this.white = white;
         this.help = help;
 
-        pieces = new ArrayList<Piece>();
+        pieces = new ArrayList<>();
     }
 
     /**
@@ -40,11 +44,12 @@ public class RandomAI extends Player {
     public boolean turn(PieceEnum piece) {
         // Wait 1 millisecond so the screen can update
         ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt)
+            {
                 RandomBot.randomPlay(Game.getLegalPiece());
             }
         };
-        Timer timer = new Timer(100, taskPerformer);
+        Timer timer = new Timer(100,taskPerformer);
         timer.setRepeats(false);
         timer.start();
 
@@ -60,10 +65,26 @@ public class RandomAI extends Player {
      * @param ny The Y-coordinate to which the piece will be moved.
      */
     public void setMove(int ox, int oy, int nx, int ny) {
+        this.oldtile_x = ox;
+        this.oldtile_y = oy;
+        this.newtile_x = nx;
+        this.newtile_y = ny;
 
+        this.move = true;
     }
 
+    /**
+     * Checks whether the current AI player is white or black.
+     * @return Whether the current AI player is white or black.
+     */
+    public boolean isWhite() {
+        return white;
+    }
 
+    /**
+     * Gets a String of information about the current AI player.
+     * @return A String of information about the current AI player.
+     */
     public String toString() {
         return "(AI Player," + (white ? "White" : "Black") + ")";
     }

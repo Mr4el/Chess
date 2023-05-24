@@ -71,7 +71,6 @@ public class Game {
      * @param player1 The first player of the game.
      * @param player2 The second player of the game, which allows for switching between a human and AI player.
      */
-
     public static void initializeGame(Player player1, Player player2) {
         players[0] = player1;
         players[1] = player2;
@@ -91,6 +90,9 @@ public class Game {
     }
 
 
+    /**
+     * Restarts the game.
+     */
     public static void restart() {
         GuiGame.frame.dispose();
 
@@ -106,6 +108,10 @@ public class Game {
             ChessMain.startGame(GuiMenu.getShowPossibleMoves(false));
     }
 
+    /**
+     * Sets the number of games to be played to the passed on value.
+     * @param playGames The value to which the games to be played will be set.
+     */
     public static void setGamesToBePlayed(int playGames) {
 
         gamesToBePlayed = playGames;
@@ -231,6 +237,7 @@ public class Game {
     public static ArrayList<Piece> getPlayerPieces(Player player) {
         return player.pieces;
     }
+
     /**
      * Returns whether the given coordinates are within the bounds of the board.
      *
@@ -244,10 +251,19 @@ public class Game {
         return true;
     }
 
+    /**
+     * Moves a piece from the first two parameter to the second two parameters.
+     *
+     * @param from_x The X-coordinate from where the piece will be moved.
+     * @param from_y The Y-coordinate from where the piece will be moved.
+     * @param to_x   The X-coordinate to which the piece will be moved.
+     * @param to_y   The Y-coordinate to which the piece will be moved.
+     */
     public static void movePieceTo(int from_x, int from_y, int to_x, int to_y) {
         movePieceTo(from_x, from_y, to_x, to_y, true, true);
 
     }
+
     /**
      * Moves a piece from the first two parameter to the second two parameters.
      *
@@ -363,6 +379,9 @@ public class Game {
         }
     }
 
+    /**
+     * Resets the turn state.
+     */
     public static void resetTurnState() {
 //        this.turn_state = turn_state;
         king_captured = false;
@@ -378,7 +397,6 @@ public class Game {
     public static ArrayList<int[]> getEveryLegalMoveOfPlayer(boolean is_white) {
         return getEveryLegalMoveOfPlayer(is_white, PieceEnum.ANY);
     }
-
 
     /**
      * Gets every legal move of a player with 4 integer elements with a required piece type
@@ -409,7 +427,6 @@ public class Game {
 
         return moves;
     }
-
 
     /**
      * Initializing the board with all the different pieces such that the board represents the actual starting positions for all the pieces.

@@ -21,16 +21,22 @@ public class SearchAI extends Player {
     int newtile_x = 0;
     int newtile_y = 0;
 
-
+    /**
+     * Enum for the different implemented algorithms.
+     */
     public static enum ALGORITHMS {
         MINIMAX,
         MINIMAX_ALPHABETA,
         EXPECTIMAX
     }
 
-    static ALGORITHMS ALGORITHM = ALGORITHMS.MINIMAX_ALPHABETA;    // 0 = minimax, 1 = minimax + alphabeta, 2 = expectimax
-    final int DEPTH = 3;
+    public static ALGORITHMS ALGORITHM = ALGORITHMS.MINIMAX_ALPHABETA;
+    public static final int DEPTH = 3;
 
+    /**
+     * Sets the algorithm to be used to the passed on algorithm.
+     * @param algorithm The passed on algorithm which will be used for the search.
+     */
     public static void setAlgorithm(ALGORITHMS algorithm) {
         ALGORITHM = algorithm;
     }
@@ -65,7 +71,6 @@ public class SearchAI extends Player {
         timer.setRepeats(false);
         timer.start();
 
-
         return false;
     }
 
@@ -86,16 +91,26 @@ public class SearchAI extends Player {
         this.move = true;
     }
 
+    /**
+     * Checks whether the current AI player is white or black.
+     * @return Whether the current AI player is white or black.
+     */
     public boolean isWhite() {
         return white;
     }
 
+    /**
+     * Gets a String of information about the current AI player.
+     * @return A String of information about the current AI player.
+     */
     public String toString() {
         return "(AI Player," + (white ? "White" : "Black") + ")";
     }
 
+    /**
+     * Determines which algorithm is selected and therefore will be used as the search algorithm.
+     */
     private void searchForMove() {
-        System.out.println(DEPTH);
 
         int[] my_best_move = new int[4];
 
@@ -119,10 +134,19 @@ public class SearchAI extends Player {
         Game.movePieceTo(my_best_move[0], my_best_move[1], my_best_move[2], my_best_move[3]);
     }
 
+    /**
+     * Starts the search using the Minimax algorithm.
+     * @param alphabeta Whether Alpha-Beta Prunining is used or not.
+     * @return The best moves found by the algorithm.
+     */
     private int[] minimax(boolean alphabeta) {
         return GameSearchTree.search(DEPTH, white, alphabeta);
     }
 
+    /**
+     * Starts the search using the Expectimax algorithm.
+     * @return The best moves found by the algorithm.
+     */
     private int[] expectimax() {
         return Expectimax.expectimaxSearch(DEPTH, white);
     }

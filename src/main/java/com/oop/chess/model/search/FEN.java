@@ -8,6 +8,11 @@ import java.util.ArrayList;
 // Special notation for current state of board, useful for storing states without using too much memory
 // Information on FEN: https://www.chessprogramming.org/Forsyth-Edwards_Notation
 
+/**
+ * This class represents how a game board is transformed into a much more compact FEN (Forsyth-Edwards Notation) String.
+ * Special notation for current state of board, useful for storing states without using too much memory.
+ * Information on FEN: https://www.chessprogramming.org/Forsyth-Edwards_Notation
+ */
 public class FEN {
     static ArrayList<Piece> kings;
     static int[] enpassantcoords = {-1,-1};
@@ -16,15 +21,27 @@ public class FEN {
     /**
      * Encode a board to a FEN string.
      * Note: The encoding process is split up into multiple sub-methods.
+     *       The encoding of the actual board and additional information is kept separate.
      *
-     * @param board The board to be converted into FEN
+     * @param board The board to be converted into FEN.
      * @param current_player_index Current player is white or black?
-     * @return FEN string of board
+     * @return FEN string of board.
      */
     public static String encode(Piece[][] board, int current_player_index) {
         return encode(board, current_player_index, 0, 0);
     }
 
+    /**
+     * Encode a board to a FEN string.
+     * Note: The encoding process is split up into multiple sub-methods.
+     *       The encoding of the actual board and additional information is kept separate.
+     *
+     * @param board The board to be converted into FEN.
+     * @param current_player_index Current player is white or black?
+     * @param half_moves The number of half moves.
+     * @param full_moves The number of full moves.
+     * @return FEN string of board.
+     */
     public static String encode(Piece[][] board, int current_player_index, int half_moves, int full_moves) {
         String fen_string = "";
 
@@ -43,15 +60,16 @@ public class FEN {
 
         fen_string += enpassanttile + " ";
 
-        // todo: encode en-passant piece (maybe not needed because of how we coded en passant?)
-
         fen_string += "" + half_moves + " " + full_moves;
 
         return fen_string;
     }
 
-
-
+    /**
+     * Encodes the current board to a FEN String.
+     * @param board The current board.
+     * @return The FEN string
+     */
     public static String encodeBoard(Piece[][] board) {
         String board_string = "";
 
@@ -132,6 +150,10 @@ public class FEN {
         return board_string;
     }
 
+    /**
+     * Encodes the castling of the current board to part of the FEN String.
+     * @return Part of the FEN String that contains the castling.
+     */
     public static String encodeCastling() {
         String castling_string = "";
 
@@ -166,8 +188,6 @@ public class FEN {
      * @param fen_string String to be converted into a board
      * @return converted board
      */
-
-    // TODO: add castling/en passant information to the decoding process
     public static Piece[][] decode(String fen_string) {
 
         Piece[][] board = new Piece[8][8];
