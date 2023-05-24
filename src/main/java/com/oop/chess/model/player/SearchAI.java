@@ -1,8 +1,12 @@
 package com.oop.chess.model.player;
 
 import com.oop.chess.Game;
+import com.oop.chess.model.search.Expectimax;
 import com.oop.chess.model.search.GameSearchTree;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +20,20 @@ public class SearchAI extends Player {
     int oldtile_y = 0;
     int newtile_x = 0;
     int newtile_y = 0;
+
+
+    public static enum ALGORITHMS {
+        MINIMAX,
+        MINIMAX_ALPHABETA,
+        EXPECTIMAX
+    }
+
+    static ALGORITHMS ALGORITHM = ALGORITHMS.MINIMAX_ALPHABETA;    // 0 = minimax, 1 = minimax + alphabeta, 2 = expectimax
+    final int DEPTH = 3;
+
+    public static void setAlgorithm(ALGORITHMS algorithm) {
+        ALGORITHM = algorithm;
+    }
 
     /**
      * Creates a new AI player.
@@ -37,18 +55,16 @@ public class SearchAI extends Player {
      * @return Since this method is to be used for the implementation in the second phase, it serves as a placeholder.
      */
     public boolean turn(Game.PieceEnum piece) {
+        // Search to depth 2 for now
+        ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                searchForMove();
+            }
+        };
+        Timer timer = new Timer(1,taskPerformer);
+        timer.setRepeats(false);
+        timer.start();
 
-        // If the clicker calls setMove(x,y,x,y), then the player can make their move
-        if (move) {
-
-            // Search to depth 2 for now
-            int[] my_best_move = GameSearchTree.search(3,white);
-
-            Game.movePieceTo(my_best_move[0], my_best_move[1], my_best_move[2], my_best_move[3]);
-
-            move = false;
-            // return true;
-        }
 
         return false;
     }
@@ -58,7 +74,7 @@ public class SearchAI extends Player {
      *
      * @param ox The X-coordinate from where the piece will be moved.
      * @param oy The Y-coordinate from where the piece will be moved.
-     * @param nx The X-cooridnate to which the piece will be moved.
+     * @param nx The X-coordinate to which the piece will be moved.
      * @param ny The Y-coordinate to which the piece will be moved.
      */
     public void setMove(int ox, int oy, int nx, int ny) {
@@ -76,5 +92,38 @@ public class SearchAI extends Player {
 
     public String toString() {
         return "(AI Player," + (white ? "White" : "Black") + ")";
+    }
+
+    private void searchForMove() {
+        System.out.println(DEPTH);
+
+        int[] my_best_move = new int[4];
+
+        switch(ALGORITHM) {
+            // Minimax without alphabeta
+            case MINIMAX:
+                my_best_move = minimax(false);
+                break;
+
+            // Minimax with alphabeta
+            case MINIMAX_ALPHABETA:
+                my_best_move = minimax(true);
+                break;
+
+            // Expectimax
+            case EXPECTIMAX:
+                my_best_move = expectimax();
+                break;
+        }
+
+        Game.movePieceTo(my_best_move[0], my_best_move[1], my_best_move[2], my_best_move[3]);
+    }
+
+    private int[] minimax(boolean alphabeta) {
+        return GameSearchTree.search(DEPTH, white, alphabeta);
+    }
+
+    private int[] expectimax() {
+        return Expectimax.expectimaxSearch(DEPTH, white);
     }
 }

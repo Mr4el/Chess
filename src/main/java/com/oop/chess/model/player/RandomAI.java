@@ -1,8 +1,12 @@
 package com.oop.chess.model.player;
 
+import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.model.pieces.Piece;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -34,7 +38,17 @@ public class RandomAI extends Player {
      * @return Since this method is to be used for the implementation in the second phase, it serves as a placeholder.
      */
     public boolean turn(PieceEnum piece) {
-        return false;
+        // Wait 1 millisecond so the screen can update
+        ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                RandomBot.randomPlay(Game.getLegalPiece());
+            }
+        };
+        Timer timer = new Timer(100, taskPerformer);
+        timer.setRepeats(false);
+        timer.start();
+
+        return true;
     }
 
     /**
@@ -42,7 +56,7 @@ public class RandomAI extends Player {
      *
      * @param ox The X-coordinate from where the piece will be moved.
      * @param oy The Y-coordinate from where the piece will be moved.
-     * @param nx The X-cooridnate to which the piece will be moved.
+     * @param nx The X-coordinate to which the piece will be moved.
      * @param ny The Y-coordinate to which the piece will be moved.
      */
     public void setMove(int ox, int oy, int nx, int ny) {

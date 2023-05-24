@@ -59,9 +59,6 @@ public class Dice {
             Piece foundPiece = p;
             if (foundPiece != null && (foundPiece.isWhite == pieceIsWhite)) {
                 if (!foundPiece.getLegalMoves(p.x, p.y).isEmpty()) {
-
-                    System.out.println(foundPiece.getLegalMoves(p.x,p.y));
-
                     return true;
                 }
             }

@@ -358,6 +358,8 @@ public class Pawn extends Piece {
                 Game.board[initialY][initialX] = new Queen(isWhite, initialX, initialY);
                 break;
             }
+            default:
+                break;
         }
     }
 }

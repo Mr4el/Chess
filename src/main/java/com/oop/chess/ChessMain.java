@@ -3,6 +3,8 @@ package com.oop.chess;
 import com.oop.chess.gui.*;
 import com.oop.chess.model.player.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +24,10 @@ public class ChessMain {
 
     // game singleton
     static ChessMain dc_instance = null;
+
+    public static String session_launch_time;
+    public static int session_games_played;
+    public static boolean SearchBotWhite = false;
 
     /**
      * Diverges a call to create a new game but only when no such game has been created already (using the singleton design pattern).
@@ -57,8 +63,9 @@ public class ChessMain {
 
             @Override
             public void run() {
-                if (game != null) {}
-                    //game.run();
+                if (game != null) {
+                }
+                //game.run();
             }
         }, 0, t);
     }
@@ -66,19 +73,78 @@ public class ChessMain {
     /**
      * Starts a game between two players.
      *
-     * @param player1_human A boolean indicating whether the first player is human.
-     * @param player2_human A boolean indicating whether the second player is human.
-     * @param hints A boolean indicating whether the player has chosen to use hints.
+     * @param hints         A boolean indicating whether the player has chosen to use hints.
      */
-    public static void startGame(boolean player1_human, boolean player2_human, boolean hints) {
-        Player player1;
-        Player player2;
+    public static void startGame(boolean hints) {
+        Player player1 = null;
+        Player player2 = null;
 
-        player1 = (player1_human ? new Human(true, hints) : new SearchAI(false,hints));
-        player2 = (player2_human ? new Human(false, hints) : new SearchAI(false, hints));
+        if (GuiMenu.AIGame) {
+            switch (GuiMenu.aiPlayer0ComboBox.getItemAt(GuiMenu.aiPlayer0ComboBox.getSelectedIndex())) {
+                case "Random Moves Bot":
+                    SearchBotWhite = false;
+                    player1 = new RandomAI(true, false);
+                    break;
+                case "Minimax Bot":
+                    SearchBotWhite = true;
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                    player1 = new SearchAI(true, false);
+                    break;
+                case "Minimax with alpha-beta Bot":
+                    SearchBotWhite = true;
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    player1 = new SearchAI(true, false);
+                    break;
+                case "Expectimax Bot":
+                    SearchBotWhite = true;
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                    player1 = new SearchAI(true, false);
+                    break;
+            }
 
-        ChessMain dc = ChessMain.getInstance();
-        dc.game = new Game(dc, player1, player2);
+            switch (GuiMenu.aiPlayer1ComboBox.getItemAt(GuiMenu.aiPlayer1ComboBox.getSelectedIndex())) {
+                case "Random Moves Bot":
+                    player2 = new RandomAI(false, false);
+                    break;
+                case "Minimax Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                    player2 = new SearchAI(false, false);
+                    break;
+                case "Minimax with alpha-beta Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    player2 = new SearchAI(false, false);
+                    break;
+                case "Expectimax Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                    player2 = new SearchAI(false, false);
+                    break;
+            }
+        } else if (GuiMenu.playingAI) {
+            player1 = new Human(true, hints);
+            switch (GuiMenu.aiComboBox.getItemAt(GuiMenu.aiComboBox.getSelectedIndex())) {
+                case "Random Moves Bot":
+                    player2 = new RandomAI(false, false);
+                    break;
+                case "Minimax Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                    player2 = new SearchAI(false, false);
+                    break;
+                case "Minimax with alpha-beta Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    player2 = new SearchAI(false, false);
+                    break;
+                case "Expectimax Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                    player2 = new SearchAI(false, false);
+                    break;
+            }
+        } else {
+            player1 = new Human(true, hints);
+            player2 = new Human(false, hints);
+        }
+
+        Game.initializeGame(player1, player2);
+        Game.runNextState(Game.TURN_STATES.START);
     }
 
     /**
@@ -87,6 +153,11 @@ public class ChessMain {
      * @param args The arguments to be handled by the main method.
      */
     public static void main(String[] args) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd__HH-mm-ss");
+        LocalDateTime ldt = LocalDateTime.now();
+
+        session_launch_time = ldt.format(formatter).toString();
+
         new GuiMenu();
     }
 }

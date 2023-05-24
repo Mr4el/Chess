@@ -26,7 +26,6 @@ public class RandomBot {
     }
 
     public static void randomPlay(Game.PieceEnum type) {
-
         ArrayList<Piece> possiblePieces = new ArrayList<>();
         ArrayList<int[]> pieceLocations = new ArrayList<>();
         Piece foundPiece;
@@ -34,7 +33,7 @@ public class RandomBot {
             for (int column = 0; column < 8; column++) {
                 if (Game.getPiece(column, row) != null) {
                     foundPiece = Game.getPiece(column, row);
-                    if (foundPiece.getType() == type && (foundPiece.getLegalMoves(column, row).size() >= 1) && !foundPiece.isWhite()) {
+                    if (foundPiece.getType() == type && (foundPiece.getLegalMoves(column, row).size() >= 1) && (foundPiece.isWhite() == Game.current_player.isWhite())) {
                         possiblePieces.add(foundPiece);
                         pieceLocations.add(new int[]{column, row});
                     }
@@ -53,6 +52,6 @@ public class RandomBot {
 
         newTile_x = legalMoves.get(rando)[0];
         newTile_y = legalMoves.get(rando)[1];
-        Game.getCurrentPlayer().setMove(oldTile_x, oldTile_y, newTile_x, newTile_y);
+        Game.movePieceTo(oldTile_x, oldTile_y, newTile_x, newTile_y);
     }
 }

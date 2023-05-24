@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -24,10 +23,15 @@ public class GuiMenu extends JFrame {
     private JLabel gameTitle1;
     private Font markerFelt;
 
-    private JButton backButton;
     private static JCheckBox showPossibleMovesHuman;
     private static JCheckBox showPossibleMovesAI;
     public static boolean playingAI;
+    public static boolean AIGame;
+    public static JComboBox<String> aiComboBox;
+    public static JComboBox<String> aiPlayer0ComboBox;
+    public static JComboBox<String> aiPlayer1ComboBox;
+    public static SpinnerModel model;
+    public static  JSpinner spinner;
 
     private JPanel mainPanel;
     private CardLayout cardLayout;
@@ -55,9 +59,11 @@ public class GuiMenu extends JFrame {
         JPanel menuPanel = this.createMenuPanel();
         JPanel start1Panel = this.createStart1Panel();
         JPanel start2Panel = this.createStart2Panel();
+        JPanel start3Panel = this.createStart3Panel();
         this.mainPanel.add(menuPanel, "Main Menu");
         this.mainPanel.add(start1Panel, "Player vs Computer");
         this.mainPanel.add(start2Panel, "Pass & Play");
+        this.mainPanel.add(start3Panel, "AI vs AI");
         this.cardLayout = (CardLayout) this.mainPanel.getLayout();
         this.cardLayout.show(this.mainPanel, "Main Menu");
         super.add(this.mainPanel);
@@ -79,40 +85,33 @@ public class GuiMenu extends JFrame {
         background.setLayout(null);
         resource = GuiGame.class.getResource("/logo.png");
         this.gameTitle = new JLabel(new ImageIcon(resource));
-        gameTitle.setBounds(120, 5, 150, 200);
-
-        try {
-            resource = GuiGame.class.getResource("/font/MarkerFelt.ttc");
-            markerFelt = Font.createFont(Font.TRUETYPE_FONT, resource.openStream()).deriveFont(60f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(markerFelt);
-        } catch (IOException | FontFormatException e) {
-            System.out.println("Cannot load the font");
-        }
-
-        this.gameTitle1 = new JLabel("DICE       CHESS");
-        gameTitle1.setBounds(45, 50, 400, 100);
-        gameTitle1.setForeground(Color.WHITE);
-        gameTitle1.setFont(markerFelt);
+        setGameTitle();
 
         JButton playButton = new JButton("Human vs AI");
         playButton.setFont(new Font("Serif", Font.PLAIN, 50));
         playButton.setForeground(Color.WHITE);
-        playButton.setBounds(45, 220, 275, 50);
+        playButton.setBounds(45, 200, 275, 50);
         initButton(playButton);
         playButton.addActionListener(e -> cardLayout.show(mainPanel, "Player vs Computer"));
 
         JButton multiplayerButton = new JButton("Human vs Human");
         multiplayerButton.setForeground(Color.WHITE);
         multiplayerButton.setFont(new Font("Serif", Font.PLAIN, 50));
-        multiplayerButton.setBounds(45, 300, 370, 50);
+        multiplayerButton.setBounds(45, 280, 370, 50);
         initButton(multiplayerButton);
         multiplayerButton.addActionListener(e -> cardLayout.show(mainPanel, "Pass & Play"));
+
+        JButton aiButton = new JButton("AI vs AI");
+        aiButton.setForeground(Color.WHITE);
+        aiButton.setFont(new Font("Serif", Font.PLAIN, 50));
+        aiButton.setBounds(45, 360, 180, 50);
+        initButton(aiButton);
+        aiButton.addActionListener(e -> cardLayout.show(mainPanel, "AI vs AI"));
 
         JButton quitButton = new JButton("QUIT");
         quitButton.setFont(new Font("Serif", Font.PLAIN, 50));
         quitButton.setForeground(Color.WHITE);
-        quitButton.setBounds(45, 380, 135, 50);
+        quitButton.setBounds(45, 440, 130, 50);
         initButton(quitButton);
         quitButton.addActionListener(e -> System.exit(0));
 
@@ -120,6 +119,7 @@ public class GuiMenu extends JFrame {
         background.add(gameTitle1);
         background.add(playButton);
         background.add(multiplayerButton);
+        background.add(aiButton);
         background.add(quitButton);
         return panel;
     }
@@ -172,22 +172,8 @@ public class GuiMenu extends JFrame {
         validate();
         background.setLayout(null);
         resource = GuiGame.class.getResource("/logo.png");
-        JLabel gameTitle = new JLabel(new ImageIcon(resource));
-        gameTitle.setBounds(120, 5, 150, 200);
-
-        try {
-            resource = GuiGame.class.getResource("/font/MarkerFelt.ttc");
-            markerFelt = Font.createFont(Font.TRUETYPE_FONT, resource.openStream()).deriveFont(60f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(markerFelt);
-        } catch (IOException | FontFormatException e) {
-            System.out.println("Cannot load the font");
-        }
-
-        this.gameTitle1 = new JLabel("DICE       CHESS");
-        gameTitle1.setBounds(45, 50, 400, 100);
-        gameTitle1.setForeground(Color.WHITE);
-        gameTitle1.setFont(markerFelt);
+        gameTitle = new JLabel(new ImageIcon(resource));
+        setGameTitle();
 
         JButton playButton = new JButton("PLAY");
         playButton.setFont(new Font("Serif", Font.PLAIN, 50));
@@ -197,19 +183,22 @@ public class GuiMenu extends JFrame {
         playButton.addActionListener(e -> {
 //        Start game here (human vs computer)
             playingAI = true;
+            AIGame = false;
             Game.resetTurnState();
             frame.setVisible(false);
-            ChessMain.startGame(true, false, showPossibleMovesAI.isSelected());
+            ChessMain.startGame(showPossibleMovesAI.isSelected());
         });
 
-        this.backButton = backButton();
         showPossibleMovesAI = showPossibleMoves();
 
-        JComboBox<String> aiComboBox = new JComboBox<>();
+        aiComboBox = new JComboBox<>();
         aiComboBox.addItem("Random Moves Bot");
-        aiComboBox.setFont(new Font("Serif", Font.PLAIN, 12));
-        aiComboBox.setForeground(Color.WHITE);
-        aiComboBox.setBounds(30, 380, 430, 50);
+        aiComboBox.addItem("Minimax Bot");
+        aiComboBox.addItem("Minimax with alpha-beta Bot");
+        aiComboBox.addItem("Expectimax Bot");
+        aiComboBox.setFont(new Font("Serif", Font.PLAIN, 20));
+        aiComboBox.setForeground(Color.BLACK);
+        aiComboBox.setBounds(30, 380, 250, 30);
         aiComboBox.setBorder(BorderFactory.createEmptyBorder());
         aiComboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -218,7 +207,7 @@ public class GuiMenu extends JFrame {
         background.add(playButton);
         background.add(showPossibleMovesAI);
         background.add(aiComboBox);
-        background.add(backButton);
+        background.add(backButton());
         return panel;
     }
 
@@ -236,22 +225,8 @@ public class GuiMenu extends JFrame {
         validate();
         background.setLayout(null);
         resource = GuiGame.class.getResource("/logo.png");
-        JLabel gameTitle = new JLabel(new ImageIcon(resource));
-        gameTitle.setBounds(120, 5, 150, 200);
-
-        try {
-            resource = GuiGame.class.getResource("/font/MarkerFelt.ttc");
-            markerFelt = Font.createFont(Font.TRUETYPE_FONT, resource.openStream()).deriveFont(60f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(markerFelt);
-        } catch (IOException | FontFormatException e) {
-            System.out.println("Cannot load the font");
-        }
-
-        this.gameTitle1 = new JLabel("DICE       CHESS");
-        gameTitle1.setBounds(45, 50, 400, 100);
-        gameTitle1.setForeground(Color.WHITE);
-        gameTitle1.setFont(markerFelt);
+        gameTitle = new JLabel(new ImageIcon(resource));
+        setGameTitle();
 
         showPossibleMovesHuman = showPossibleMoves();
 
@@ -263,18 +238,103 @@ public class GuiMenu extends JFrame {
         playButton.addActionListener(e -> {
 //          Start game here (human vs human)
             playingAI = false;
+            AIGame = false;
             Game.resetTurnState();
             setVisible(false);
-            ChessMain.startGame(true, true, showPossibleMovesHuman.isSelected());
+            ChessMain.startGame(showPossibleMovesHuman.isSelected());
         });
-
-        this.backButton = backButton();
 
         background.add(gameTitle);
         background.add(gameTitle1);
         background.add(playButton);
         background.add(showPossibleMovesHuman);
-        background.add(backButton);
+        background.add(backButton());
+        return panel;
+    }
+
+    private JPanel createStart3Panel() {
+
+        JPanel panel = new JPanel(null);
+        java.net.URL resource = GuiGame.class.getResource("/menu_bg.jpg");
+        JLabel background = new JLabel(new ImageIcon(resource));
+        background.setBounds(0, 0, 800, 600);
+        panel.add(background);
+        validate();
+        background.setLayout(null);
+        resource = GuiGame.class.getResource("/logo.png");
+        gameTitle = new JLabel(new ImageIcon(resource));
+        setGameTitle();
+
+        JButton playButton = new JButton("PLAY");
+        playButton.setFont(new Font("Serif", Font.PLAIN, 50));
+        playButton.setForeground(Color.WHITE);
+        playButton.setBounds(45, 200, 150, 50);
+        initButton(playButton);
+        playButton.addActionListener(e -> {
+//            Start game here (computer vs computer)
+            playingAI = false;
+            AIGame = true;
+            Game.setGamesToBePlayed((Integer) model.getValue());
+            Game.resetTurnState();
+            setVisible(false);
+            ChessMain.startGame(false);
+        });
+
+        JLabel whitePlayerAI = new JLabel("Choose an AI for the white pieces");
+        whitePlayerAI.setFont(new Font("Serif", Font.PLAIN, 20));
+        whitePlayerAI.setBounds(35, 280, 300, 20);
+        whitePlayerAI.setForeground(Color.WHITE);
+
+        aiPlayer0ComboBox = new JComboBox<>();
+        aiPlayer0ComboBox.addItem("Random Moves Bot");
+        aiPlayer0ComboBox.addItem("Minimax Bot");
+        aiPlayer0ComboBox.addItem("Minimax with alpha-beta Bot");
+        aiPlayer0ComboBox.addItem("Expectimax Bot");
+        aiPlayer0ComboBox.setFont(new Font("Serif", Font.PLAIN, 20));
+        aiPlayer0ComboBox.setForeground(Color.BLACK);
+        aiPlayer0ComboBox.setBounds(30, 300, 300, 30);
+        aiPlayer0ComboBox.setBorder(BorderFactory.createEmptyBorder());
+        aiPlayer0ComboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        JLabel blackPlayerAI = new JLabel("Choose an AI for the black pieces");
+        blackPlayerAI.setFont(new Font("Serif", Font.PLAIN, 20));
+        blackPlayerAI.setBounds(35, 360, 300, 20);
+        blackPlayerAI.setForeground(Color.WHITE);
+
+        aiPlayer1ComboBox = new JComboBox<>();
+        aiPlayer1ComboBox.addItem("Random Moves Bot");
+        aiPlayer1ComboBox.addItem("Minimax Bot");
+        aiPlayer1ComboBox.addItem("Minimax with alpha-beta Bot");
+        aiPlayer1ComboBox.addItem("Expectimax Bot");
+        aiPlayer1ComboBox.setFont(new Font("Serif", Font.PLAIN, 20));
+        aiPlayer1ComboBox.setForeground(Color.BLACK);
+        aiPlayer1ComboBox.setBounds(30, 380, 300, 30);
+        aiPlayer1ComboBox.setBorder(BorderFactory.createEmptyBorder());
+        aiPlayer1ComboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        JLabel numberOfGames = new JLabel("Number of games to be played");
+        numberOfGames.setFont(new Font("Serif", Font.PLAIN, 20));
+        numberOfGames.setBounds(35, 440, 250, 20);
+        numberOfGames.setForeground(Color.WHITE);
+
+        model = new SpinnerNumberModel(1, 1, 1000, 1);
+        spinner = new JSpinner(model);
+        spinner.setFont(new Font("Serif", Font.PLAIN, 20));
+        spinner.setForeground(Color.BLACK);
+        spinner.setBounds(290, 440, 70, 20);
+        spinner.setBorder(BorderFactory.createEmptyBorder());
+        spinner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        background.add(gameTitle);
+        background.add(gameTitle1);
+        background.add(playButton);
+        background.add(whitePlayerAI);
+        background.add(aiPlayer0ComboBox);
+        background.add(blackPlayerAI);
+        background.add(aiPlayer1ComboBox);
+        background.add(numberOfGames);
+        background.add(spinner);
+        background.add(backButton());
         return panel;
     }
 
@@ -310,8 +370,9 @@ public class GuiMenu extends JFrame {
      * @return The button to go back.
      */
     private JButton backButton() {
-        java.net.URL resource = GuiMenu.class.getResource("/back_button.png");
-        backButton = new JButton(new ImageIcon(resource));
+        JButton backButton = new JButton("<-");
+        backButton.setFont(new Font("Serif", Font.PLAIN, 70));
+        backButton.setForeground(Color.WHITE);
         backButton.setBounds(5, 500, 100, 70);
         backButton.addMouseListener(new MouseAdapter() {
 
@@ -322,8 +383,7 @@ public class GuiMenu extends JFrame {
              */
             @Override
             public void mouseEntered(MouseEvent e) {
-                java.net.URL resource = GuiMenu.class.getResource("/back_button.png");
-                backButton.setIcon(new ImageIcon(resource));
+                backButton.setForeground(Color.GRAY);
             }
 
             /**
@@ -333,8 +393,7 @@ public class GuiMenu extends JFrame {
              */
             @Override
             public void mouseExited(MouseEvent e) {
-                java.net.URL resource = GuiMenu.class.getResource("/back_button.png");
-                backButton.setIcon(new ImageIcon(resource));
+                backButton.setForeground(Color.WHITE);
             }
         });
         backButton.setBorder(BorderFactory.createEmptyBorder());
@@ -343,6 +402,26 @@ public class GuiMenu extends JFrame {
         backButton.addActionListener(e -> cardLayout.show(mainPanel, "Main Menu"));
         return backButton;
     }
+
+    private void setGameTitle() {
+        java.net.URL resource;
+        gameTitle.setBounds(120, 5, 150, 200);
+
+        try {
+            resource = GuiGame.class.getResource("/font/MarkerFelt.ttc");
+            markerFelt = Font.createFont(Font.TRUETYPE_FONT, resource.openStream()).deriveFont(60f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(markerFelt);
+        } catch (IOException | FontFormatException e) {
+            System.out.println("Cannot load the font");
+        }
+
+        this.gameTitle1 = new JLabel("DICE       CHESS");
+        gameTitle1.setBounds(45, 50, 400, 100);
+        gameTitle1.setForeground(Color.WHITE);
+        gameTitle1.setFont(markerFelt);
+    }
+
 
     /**
      * @return the selected outcome of the checkbox

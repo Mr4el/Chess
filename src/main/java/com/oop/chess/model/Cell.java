@@ -1,7 +1,6 @@
 package com.oop.chess.model;
 
 import com.oop.chess.Game;
-import com.oop.chess.model.pieces.Piece;
 
 /**
  * This class represents a single tile of the chess board.

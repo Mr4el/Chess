@@ -4,6 +4,7 @@ import com.oop.chess.ChessMain;
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.model.pieces.Piece;
+import com.oop.chess.model.player.Human;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,6 @@ public class GuiGame extends JFrame {
     private static JLabel whoseTurn;
     public static JComboBox<String> blackComboBox;
     public static JComboBox<String> whiteComboBox;
-    private static final String imageFile = "src/main/resources/";
 
     /**
      * Constructs a new graphical interface with the given chess board.
@@ -86,19 +86,17 @@ public class GuiGame extends JFrame {
         restartGame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         restartGame.setBounds(550, 475, 75, 75);
         restartGame.addActionListener(e -> {
-            frame.dispose();
-            Game.resetTurnState();
-            if (GuiMenu.playingAI) {
-                ChessMain.startGame(true, false, GuiMenu.getShowPossibleMoves(true));
-            }
-            else
-                ChessMain.startGame(true, true, GuiMenu.getShowPossibleMoves(false));
+            Game.restart();
         });
 
-        frame.add(blackPromotion);
-        frame.add(whitePromotion);
-        frame.add(blackComboBox);
-        frame.add(whiteComboBox);
+        if (!GuiMenu.AIGame && !GuiMenu.playingAI) {
+            frame.add(blackPromotion);
+            frame.add(blackComboBox);
+        }
+        if (!GuiMenu.AIGame) {
+            frame.add(whitePromotion);
+            frame.add(whiteComboBox);
+        }
         frame.add(homeButton);
         frame.add(restartGame);
         frame.add(whoseTurn);
@@ -229,6 +227,10 @@ public class GuiGame extends JFrame {
     public static void setWhoseTurn(int turn) {
         if (turn == 1) {
             whoseTurn.setText("Black's Turn");
+
+            // Thinking text if black player is AI
+            if (!(Game.current_player instanceof Human))
+                whoseTurn.setText("<html>Black's Turn<br>(Thinking...)</html>");
         }
         else
             whoseTurn.setText("White's Turn");

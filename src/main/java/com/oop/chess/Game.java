@@ -1,5 +1,6 @@
 package com.oop.chess;
 
+import com.oop.chess.debug.GameLogger;
 import com.oop.chess.model.pieces.*;
 import com.oop.chess.model.player.*;
 import com.oop.chess.gui.*;
@@ -13,14 +14,13 @@ import java.util.Objects;
  */
 public class Game {
     public static Piece[][] board;
-    ChessMain parent;
 
     // store player 1 and 2 in array, players[current_player_index] accesses the current player (with current_player_index being either 0 or 1.)
     // current_player is a static reference to the current player, mainly useful for GUI stuff
-    Player[] players = {null, null};
+    static Player[] players = {null, null};
     public static Player current_player;
     public static Player other_player;
-    int current_player_index;
+    static int current_player_index;
 
     // How many moves since the last piece capture/pawn advance?
     static int half_moves;
@@ -30,11 +30,15 @@ public class Game {
 
     static boolean king_captured = false;
 
+    static int gamesToBePlayed;
+
     // The game's GUI;
     public static GuiGame gui;
 
+    public static String last_fen;
+
     // the different values which the turn state can have.
-    public enum TURN_STATES {
+    public static enum TURN_STATES {
         START,              // basic initialization
         DICE_ROLL,          // rolling dice & determining legal pieces
         CHOOSING_MOVE,      // player choosing a move
@@ -48,7 +52,7 @@ public class Game {
     /**
      * Enum for the different piece types (used as identifiers)
      */
-    public enum PieceEnum {
+    public static enum PieceEnum {
         ANY,    // mainly used for debugging
         PAWN,
         KNIGHT,
@@ -64,46 +68,59 @@ public class Game {
     /**
      * Creates a new game of dicechess.
      *
-     * @param parent  The dicechess object to be utilized.
      * @param player1 The first player of the game.
      * @param player2 The second player of the game, which allows for switching between a human and AI player.
      */
-    public Game(ChessMain parent, Player player1, Player player2) {
-        this.parent = parent;
 
-        this.players[0] = player1;
-        this.players[1] = player2;
+    public static void initializeGame(Player player1, Player player2) {
+        players[0] = player1;
+        players[1] = player2;
 
         full_moves = 0;
         half_moves = 0;
 
         current_player_index = 0;
-        current_player = this.players[current_player_index];
-        other_player = this.players[1];
+        current_player = players[current_player_index];
+        other_player = players[1];
+
+        System.out.println(current_player.getClass());
+        System.out.println(other_player.getClass());
 
         initializeBoard();
         gui = new GuiGame(board);
-
-        System.out.println(current_player + " " + getPlayerPieces(current_player));
     }
 
+
+    public static void restart() {
+        GuiGame.frame.dispose();
+
+        ChessMain.session_games_played++;
+        resetTurnState();
+        if (GuiMenu.playingAI) {
+            ChessMain.startGame(GuiMenu.getShowPossibleMoves(true));
+        }
+        else if(GuiMenu.AIGame) {
+            ChessMain.startGame(false);
+        }
+        else
+            ChessMain.startGame(GuiMenu.getShowPossibleMoves(false));
+    }
+
+    public static void setGamesToBePlayed(int playGames) {
+
+        gamesToBePlayed = playGames;
+    }
 
     /**
      * This is the main loop of the program where the state of the program is checked.
      */
-    public void run() {
+    public static void run() {
         switch (turn_state) {
             case START:
                 gui.setTitle((current_player_index == 0 ? "Dice Chess! - White's Turn" : "Dice Chess! - Black's Turn"));
 
                 GuiGame.setWhoseTurn(current_player_index);
                 runNextState(TURN_STATES.DICE_ROLL);
-
-                // String fen = FEN.encode(board, current_player_index, half_moves, full_moves);
-                // System.out.println(fen);
-                // System.out.println(Arrays.deepToString(FEN.decode(fen)));
-
-                // System.out.println(getEveryLegalMoveOfPlayer(is_white);
 
                 if (ChessMain.debug)
                     System.out.println("GAME STATE - Start turn for " + current_player);
@@ -113,22 +130,12 @@ public class Game {
             // roll the dice to determine which pieces the player is allowed to move
             case DICE_ROLL:
                 legal_piece = Dice.roll(current_player.isWhite());
-//                while (!(legal_piece == PieceEnum.PAWN || legal_piece == PieceEnum.KING || legal_piece == PieceEnum.KNIGHT)) {
-//                    legal_piece = Dice.roll(current_player.isWhite());
-//                }
-                //legal_piece = PieceEnum.ANY;
-                if (current_player_index == 1 && GuiMenu.playingAI) {
-                    RandomBot.randomPlay(getLegalPiece());
-                }
-                GuiGame.frame.revalidate();
-                GuiGame.frame.repaint();
 
                 if (legal_piece != null) {
                     gui.setLegalPiece(legal_piece, current_player_index);
                     gui.setTitle(gui.getTitle() + " - Legal piece: " + legal_piece);
 
                     runNextState(TURN_STATES.CHOOSING_MOVE);
-
 
                     break;
                 }
@@ -138,7 +145,7 @@ public class Game {
                 if (ChessMain.debug)
                     System.out.println("GAME STATE - " + current_player + " can make a move.");
 
-                // if this returns true, then the player has successfully finished a round
+                System.out.println(current_player.getClass());
                 current_player.turn(legal_piece);
                 break;
 
@@ -156,17 +163,14 @@ public class Game {
                     current_player_index = 0;
                 }
 
-                System.out.println(current_player.pieces);
-
                 other_player = current_player;
                 current_player = players[current_player_index];
 
                 runNextState(TURN_STATES.START);
 
-                // System.out.println(current_player + " " + getPlayerPieces(current_player));
                 break;
 
-            // King captured
+            // King captured (Game end)
             case GAME_END:
                 String title = "";
                 if (current_player.isWhite())
@@ -174,7 +178,17 @@ public class Game {
                 else
                     title = "Black captured White's King!";
 
+                last_fen = FEN.encode(board, current_player_index, half_moves, full_moves);
+
+                GameLogger.logWin(current_player.isWhite());
+
+                if (GuiMenu.AIGame && gamesToBePlayed > 1) {
+                    gamesToBePlayed--;
+                    restart();
+                }
+
                 gui.setTitle(title);
+
                 break;
 
             default:
@@ -182,9 +196,11 @@ public class Game {
         }
     }
 
+    // PHASE 2
+    // Progress to the next game state
     public static void runNextState(TURN_STATES st) {
         turn_state = st;
-        ChessMain.getInstance().game.run();
+        run();
         GuiGame.frame.repaint();
     }
 
@@ -255,6 +271,9 @@ public class Game {
 
                 if (p2.piece_type == PieceEnum.KING && play)
                     king_captured = true;
+
+                if (play)
+                    System.out.println(p2.piece_type + " of " + (p2.isWhite ? "white" : "black") + " captured!");
             }
 
             if (p != null) {
@@ -351,10 +370,9 @@ public class Game {
     }
 
     /**
-     * Gets every legal move of a player with 4 integer elements (first two: current piece position, last two: second piece position)
+     * Gets every legal move of a player with 4 integer elements with a required piece type
      *
-     * @param is_white     The X-coordinate at which a piece will be added visually.
-     * @param piece_type   Restrict the query to a certain piece type
+     * @param is_white whether the player is white or black
      * @return An arraylist of integer arrays
      */
     public static ArrayList<int[]> getEveryLegalMoveOfPlayer(boolean is_white) {
@@ -365,7 +383,7 @@ public class Game {
     /**
      * Gets every legal move of a player with 4 integer elements with a required piece type
      *
-     * @param is_white     The X-coordinate at which a piece will be added visually.
+     * @param is_white     Whether the player is white or black
      * @param piece_type   Restrict the query to a certain piece type
      * @return An arraylist of integer arrays
      */
@@ -396,7 +414,7 @@ public class Game {
     /**
      * Initializing the board with all the different pieces such that the board represents the actual starting positions for all the pieces.
      */
-    public void initializeBoard() {
+    public static void initializeBoard() {
         board = new Piece[8][8];
 
         board[0][0] = new Rook(false, 0, 0);
@@ -438,87 +456,6 @@ public class Game {
                     current_player.pieces.add(getPiece(x, y));
             }
         }
-    }
-
-    // Maybe later transform into a switch case (would not work if we separate white and black pieces --> Then make one big switch case)
-    public double evaluationFunction(String fen, boolean isWhite) {
-
-        int whiteKings = 0;
-        int blackKings = 0;
-        int whiteBishops = 0;
-        int blackBishops = 0;
-        int whitePawns = 0;
-        int blackPawns = 0;
-        int whiteKnights = 0;
-        int blackKnights = 0;
-        int whiteRooks = 0;
-        int blackRooks = 0;
-        int whiteQueens = 0;
-        int blackQueens = 0;
-
-        if (isWhite) {
-            for (int i = 0; i < fen.length(); i++) {
-                if ((fen.charAt(i)) == ('K')) { whiteKings++; }
-
-                if ((fen.charAt(i)) == ('B')) { whiteBishops++; }
-
-                if ((fen.charAt(i)) == ('P')) { whitePawns++; }
-
-                if ((fen.charAt(i)) == ('N')) { whiteKnights++; }
-
-                if ((fen.charAt(i)) == ('R')) { whiteRooks++; }
-
-                if ((fen.charAt(i)) == ('Q')) { whiteQueens++; }
-            }
-        }
-
-        else {
-            for (int i = 0; i < fen.length(); i++) {
-                if ((fen.charAt(i)) == ('k')) { blackKings++; }
-
-                if ((fen.charAt(i)) == ('b')) { blackBishops++; }
-
-                if ((fen.charAt(i)) == ('p')) { blackPawns++; }
-
-                if ((fen.charAt(i)) == ('n')) { blackKnights++; }
-
-                if ((fen.charAt(i)) == ('r')) { blackRooks++; }
-
-                if ((fen.charAt(i)) == ('q')) { blackQueens++; }
-            }
-        }
-
-
-
-        /** TODO:
-         * Possible situations to consider:
-         * Number of squares per player that cannot be protected by pawns
-         * King safety (number of squares where king is not protected)
-         * Pawn structure --> Information about doubled, blocked and isolated pawns
-         */
-
-        double kingsDifference = whiteKings - blackKings;
-        double queensDifference = whiteQueens - blackQueens;
-        double rooksDifference = whiteRooks - blackRooks;
-        double bishopsDifference = whiteBishops - blackBishops;
-        double knightsDifference = whiteKnights - blackKnights;
-        double pawnsDifference = whitePawns - blackPawns;
-
-        double kingsCoefficient = 200;
-        double queensCoefficient = 9;
-        double rooksCoefficient = 5;
-        double bishopsCoefficient = 3;
-        double knightsCoefficient = 3;
-        double pawnsCoefficient = 1;
-
-        double evaluationFunctionMaterial = kingsCoefficient*kingsDifference + queensCoefficient*queensDifference + rooksCoefficient*rooksDifference + bishopsCoefficient*bishopsDifference + knightsCoefficient*knightsDifference + pawnsCoefficient*pawnsDifference;
-        double evaluationFunctionMobility = getEveryLegalMoveOfPlayer(isWhite).size()-getEveryLegalMoveOfPlayer(!isWhite).size();
-
-
-        double evaluationFunctionChosen = 0;
-
-
-        return evaluationFunctionChosen;
     }
 }
 

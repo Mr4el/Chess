@@ -1,5 +1,6 @@
 package com.oop.chess.model.search;
 
+import com.oop.chess.EvaluationFunction;
 import com.oop.chess.Game;
 import com.oop.chess.gui.GuiGame;
 
@@ -19,59 +20,158 @@ public class GameSearchTree {
     // Change this only for root node once minimax scores are known?
     static int[] bestMove;
 
+    static int states_evaluated;
+    static double optimal_value;
+
+    static boolean alpha_beta;
+
+    static int rounds = 0;
 
     // Method that does the search and then returns the static bestmove
-    public static int[] search(int depth, boolean is_white) {
-        // the root node will always be max, so set the maximizer's colour to is_white
-        maximizing_colour = is_white;
+    public static int[] search(int depth, boolean is_white, boolean alpha_beta) {
+        GameSearchTree.alpha_beta = alpha_beta;
 
-        // Start searching at the root
-        depthSearch(depth, true, true);
-        Game.rebuildBoard();
+        states_evaluated = 0;
+        optimal_value = 0;
+        depthSearch(depth, is_white, true, true, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+
+        System.out.println("[SEARCH AI] Best score: " + optimal_value + ", " + states_evaluated + " states evaluated.");
+
+        if (visual_search)
+            Game.rebuildBoard();
+
+        rounds++;
 
         // return the best move (from_x, from_y, to_x, to_y)
         return bestMove;
     }
 
-    static boolean maximizing_colour;
-
 
     // this is the AI's brain
-    // TODO: Minimax & alpha-beta, Evaluation function calls
-    public static int depthSearch(int depth, boolean maximizing, boolean root) {
-        if (depth == 0)
-            return 0; // break recursion at lowest depth by simply returning the value of the evaluation function
+    public static double depthSearch(int depth, boolean is_white, boolean root, boolean maximizingPlayer, double alpha, double beta) {
+        states_evaluated++;
+
+        if (depth == 0) {
+            String node = FEN.encode(Game.board, is_white ? 1 : 0, 0, 0);
+            return EvaluationFunction.evaluationFunction(node, is_white, false, true, true, false);
+        }
+
+        // break recursion at lowest depth by simply returning the value of the evaluation function
 
         // Get every legal move for the game's current player
         ArrayList<int[]> moves;
-        if (root)
-            moves = Game.getEveryLegalMoveOfPlayer(maximizing ? maximizing_colour : !maximizing_colour, Game.getLegalPiece());
-        else
-            moves = Game.getEveryLegalMoveOfPlayer(maximizing ? maximizing_colour : !maximizing_colour, Game.PieceEnum.ANY);
+        if (root) {
+            moves = Game.getEveryLegalMoveOfPlayer(is_white, Game.getLegalPiece());
 
-        if (visual_search)
-            GuiGame.frame.repaint();
+            // return only move available at root
+            if (moves.size() == 1) {
+                bestMove = moves.get(0);
+                return 0;
+            }
+        } else
+            moves = Game.getEveryLegalMoveOfPlayer(is_white, Game.PieceEnum.ANY);
 
-        for(int[] move : moves) {
-            // Store state before executing a move
 
-            boolean colour = (maximizing ? maximizing_colour : !maximizing_colour);
-            String node = FEN.encode(Game.board, colour  ? 0 : 1);
+        if (maximizingPlayer) {
+            double maxEva = Double.NEGATIVE_INFINITY;
 
-            // Execute a specific move
-            Game.movePieceTo(move[0], move[1], move[2], move[3], visual_search, false);
+            movesloop:
+            for (int[] move : moves) {
 
-            // Search with depth-1 for other player
-            depthSearch(depth-1, !maximizing, false);
+                // Store state, execute move, restore state
+                String node = FEN.encode(Game.board, is_white ? 0 : 1);
+                Game.movePieceTo(move[0], move[1], move[2], move[3], visual_search, false);
 
-            // Undo move (by rolling back to state before piece move)
-            Game.board = FEN.decode(node);
+                double eva = depthSearch(depth - 1, !is_white, false, false, alpha, beta);
+
+                Game.board = FEN.decode(node);
+
+                maxEva = Math.max(maxEva, eva);
+
+                if (eva == maxEva && root) {
+                    bestMove = move;
+                    optimal_value = eva;
+                }
+
+                if (GameSearchTree.alpha_beta) {
+                    alpha = Math.max(alpha,maxEva);
+
+                    if (alpha >= beta)
+                        break movesloop;
+                }
+            }
+            return maxEva;
+
+        } else {
+            double minEva = Double.POSITIVE_INFINITY;
+
+            movesloop:
+            for (int[] move : moves) {
+
+                // Store state, execute move, restore state
+                String node = FEN.encode(Game.board, is_white ? 0 : 1);
+                Game.movePieceTo(move[0], move[1], move[2], move[3], visual_search, false);
+
+                double eva = depthSearch(depth - 1, !is_white, false, true, alpha, beta);
+
+                Game.board = FEN.decode(node);
+
+                minEva = Math.min(minEva, eva);
+
+                if (eva == minEva && root) {
+                    bestMove = move;
+                    optimal_value = eva;
+                }
+
+                beta = Math.min(beta,minEva);
+
+                if (GameSearchTree.alpha_beta) {
+                    beta = Math.min(beta,minEva);
+
+                    if (alpha >= beta)
+                        break movesloop;
+                }
+            }
+
+            return minEva;
+
         }
 
-        // This is purely for testing purposes, remove this later
-        if (root)
-            bestMove = moves.get(0);
 
-        return 0;   // Return best move based on score
+        // This is purely for testing purposes, remove this later
+
     }
+
 }
+
+
+//    public int minimax(ArrayList<int[]> node, int depth, boolean maximizingPlayer) {
+//
+//        ArrayList<int[]> child = Game.getEveryLegalMoveOfPlayer(is_white, PieceEnum.ANY);
+//        int maxEva = (int) Double.NEGATIVE_INFINITY;
+//        int minEva = (int) Double.POSITIVE_INFINITY;
+//
+//
+//        if (maximizingPlayer) {     // for Maximizer Player
+//
+//            for (int i = 0; i < child.size(); i++) {
+//                //int eva = minimax(child, depth - 1, false);
+//                int eva = game.evaluationFunction();
+//                int nMaxEva = Math.max(maxEva, eva);//gives Maximum of the values
+//                minimax(child, depth - 1, false);
+//                return nMaxEva;
+//            }
+//        } else {                         // for Minimizer player
+//
+//            for (int i = 0; i < node.size(); i++) {
+//                //int eva = minimax(child, depth - 1, true);
+//                int eva = game.evaluationFunction();
+//                int nMinEva = Math.min(minEva, eva);
+//                minimax(child, depth - 1, true);//gives minimum of the values
+//                return nMinEva;
+//            }
+////arraylist return
+//        }
+//
+//
+//    }
