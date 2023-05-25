@@ -31,7 +31,7 @@ public class GuiGame extends JFrame {
             System.out.println("Initialize GUI");
 
         frame = this;
-        setTitle("Dice Chess!");
+        setTitle("OOP - Random Chess!");
         setSize(715, 590);
         setResizable(false);
 

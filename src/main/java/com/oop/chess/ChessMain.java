@@ -43,7 +43,7 @@ public class ChessMain {
     }
 
     /**
-     * Creates a new DiceChess game.
+     * Creates a new Chess game.
      */
     public ChessMain() {
 

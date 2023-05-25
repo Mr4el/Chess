@@ -66,7 +66,7 @@ public class Game {
     public static PieceEnum legal_piece;
 
     /**
-     * Creates a new game of dicechess.
+     * Creates a new game of chess.
      *
      * @param player1 The first player of the game.
      * @param player2 The second player of the game, which allows for switching between a human and AI player.
@@ -123,7 +123,7 @@ public class Game {
     public static void run() {
         switch (turn_state) {
             case START:
-                gui.setTitle((current_player_index == 0 ? "Dice Chess! - White's Turn" : "Dice Chess! - Black's Turn"));
+                gui.setTitle((current_player_index == 0 ? "OOP - Random Chess! - White's Turn" : "OOP - Random Chess! - Black's Turn"));
 
                 GuiGame.setWhoseTurn(current_player_index);
                 runNextState(TURN_STATES.DICE_ROLL);

@@ -416,7 +416,7 @@ public class GuiMenu extends JFrame {
             System.out.println("Cannot load the font");
         }
 
-        this.gameTitle1 = new JLabel("DICE       CHESS");
+        this.gameTitle1 = new JLabel("OOP - RANDOM CHESS");
         gameTitle1.setBounds(45, 50, 400, 100);
         gameTitle1.setForeground(Color.WHITE);
         gameTitle1.setFont(markerFelt);
