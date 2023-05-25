@@ -17,15 +17,20 @@ public class SearchAI extends Player {
     boolean white;
     boolean move = false;
     boolean help;
-    public static boolean ML_component;
+    public boolean ML_component;
     int oldtile_x = 0;
     int oldtile_y = 0;
     int newtile_x = 0;
     int newtile_y = 0;
 
-    public static double[] weights = {0, 200, 9, 5, 3, 3, 1, 0};
-    public static double[] weights_Minimax_without_ML_white = {1, 0, 0, 0, 0, 0, 0, 0};
+    //public static double[] weights = {0, 200, 9, 5, 3, 3, 1, 1};
+    public static double[] weights = {0.008540710361972362,200.0,6.531346297830447,2.7811509905542304,1.0751178187426864,1.0238338993612515,0.3202340904449179,-0.046752062692078766};
+
+    //public static double[] weights = {1,1,1,1,1,1,1,1};
+    public static double[] weights_Minimax_without_ML_white = {1.786646829470027,201.7781061191081,8.309452416938491,4.559257109662285,2.8532239378507436,2.801940018469309,2.0983402095529735,1.7313540564159757};
+    //public static double[] weights_Minimax_without_ML_white = {-0.15783604453542877,200.0,-0.33245414299726556,-1.4035058126088686,-0.22420600607601932,-0.3522486446432376,-0.10532924925896296,-0.03715688984201507};
     public static double[] weights_Minimax_without_ML_black = {0, 200, 9, 5, 3, 3, 1, 1};
+
 
 
     /**
@@ -131,7 +136,7 @@ public class SearchAI extends Player {
      * @return A String of information about the current AI player.
      */
     public String toString() {
-        return "(AI Player," + (white ? "White" : "Black") + ")";
+        return "(" + ALGORITHM + ", ML component: " + ML_component +")";
     }
 
     /**
@@ -158,8 +163,6 @@ public class SearchAI extends Player {
                 break;
         }
 
-        System.out.println(Arrays.toString(my_best_move));
-
         Game.movePieceTo(my_best_move[0], my_best_move[1], my_best_move[2], my_best_move[3]);
     }
 
@@ -170,18 +173,11 @@ public class SearchAI extends Player {
      */
     private int[] minimax(boolean alphabeta) {
         if (!ML_component) {
-            if (white) {
-                depth = 3;
-                return GameSearchTree.search(depth, true, alphabeta, weights_Minimax_without_ML_white);
-            }
-            else {
-                depth = 3;
-                return GameSearchTree.search(depth, false, alphabeta, weights_Minimax_without_ML_black);
-            }
-
+            depth = 3;
+            return GameSearchTree.search(depth, white, alphabeta, weights_Minimax_without_ML_white, false);
         }
         depth = 3;
-        return GameSearchTree.search(depth, white, alphabeta, weights);
+        return GameSearchTree.search(depth, white, alphabeta, weights, true);
     }
 
     /**

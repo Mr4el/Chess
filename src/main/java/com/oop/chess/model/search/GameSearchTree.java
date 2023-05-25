@@ -40,8 +40,9 @@ public class GameSearchTree {
      * @param alpha_beta Whether Alpha-Beta Pruning is used or not.
      * @return The best move.
      */
-    public static int[] search(int depth, boolean is_white, boolean alpha_beta, double[] weights) {
+    public static int[] search(int depth, boolean is_white, boolean alpha_beta, double[] weights, boolean ML_component) {
         GameSearchTree.alpha_beta = alpha_beta;
+
 
         states_evaluated = 0;
         optimal_value = 0;
@@ -49,7 +50,8 @@ public class GameSearchTree {
 
         GameSearchTree.best_leaf_nodes.add(search_result.get(1));
 
-        // System.out.println("[SEARCH AI] Best score: " + optimal_value + ", " + states_evaluated + " states evaluated.");
+        if (ML_component)
+            GameSearchTree.best_leaf_nodes.add((String)search_result.get(1));
 
         GameLogger.logStatesSearched(states_evaluated, optimal_value);
 
@@ -76,6 +78,7 @@ public class GameSearchTree {
     public static ArrayList<Object> depthSearch(int depth, boolean is_white, boolean root, boolean maximizingPlayer, double alpha, double beta, double[] weights) {
         states_evaluated++;
 
+
         if (depth == 0) {
             String node = FEN.encode(Game.board, is_white ? 1 : 0, 0, 0);
             double evaluation = EvaluationFunction.evaluationFunctionsCombined(Game.board, is_white, weights, true);
@@ -92,7 +95,8 @@ public class GameSearchTree {
         // Get every legal move for the game's current player
         ArrayList<int[]> moves;
         if (root) {
-            moves = Game.getEveryLegalMoveOfPlayer(Game.board,is_white, Game.getLegalPiece());
+            moves = Game.getEveryLegalMoveOfPlayer(Game.board, is_white, Game.getLegalPiece());
+
 
             // return only move available at root
             if (moves.size() == 1) {

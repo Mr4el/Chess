@@ -16,13 +16,11 @@ import java.util.Objects;
  */
 public class Game {
     public static Piece[][] board;
-    public static ArrayList<String> all_states_player_1 = new ArrayList<String>();
-    public static ArrayList<String> all_states_player_2 = new ArrayList<String>();
 
 
     // store player 1 and 2 in array, players[current_player_index] accesses the current player (with current_player_index being either 0 or 1.)
     // current_player is a static reference to the current player, mainly useful for GUI stuff
-    static Player[] players = {null, null};
+    public static Player[] players = {null, null};
     public static Player current_player;
     public static Player other_player;
     static int current_player_index;
@@ -32,8 +30,6 @@ public class Game {
 
     // How many completed moves/turns total? (Increments after black player)
     static int full_moves;
-
-    static int completed_moves;
 
     static boolean king_captured = false;
 
@@ -107,7 +103,6 @@ public class Game {
 
         ChessMain.session_games_played++;
         resetTurnState();
-        completed_moves = 0;
         if (GuiMenu.playingAI) {
             ChessMain.startGame(GuiMenu.getShowPossibleMoves(true));
         }
@@ -131,29 +126,12 @@ public class Game {
      * This is the main loop of the program where the state of the program is checked.
      */
     public static void run() {
+        int completed_moves = 0;
         switch (turn_state) {
             case START:
                 gui.setTitle((current_player_index == 0 ? "OOP - Random Chess! - White's Turn" : "OOP - Random Chess! - Black's Turn"));
 
                 GuiGame.setWhoseTurn(current_player_index);
-
-                int player_index = -1;
-                if (current_player.isWhite()) {
-                    player_index = 0;
-                }
-                else {
-                    player_index = 1;
-                }
-
-                if (current_player instanceof SearchAI && current_player_index == 0) {
-                    all_states_player_1.add(FEN.encode(Game.board, player_index));
-                    //System.out.println("11111111111111111111" + all_states_player_1.get(all_states_player_1.size()-1));
-                }
-
-                if (current_player instanceof SearchAI && current_player_index == 1) {
-                    all_states_player_2.add(FEN.encode(Game.board, player_index));
-                    //System.out.println("222222222222222222" + all_states_player_2.get(all_states_player_2.size()-1));
-                }
 
                 runNextState(TURN_STATES.DICE_ROLL);
 
@@ -215,29 +193,25 @@ public class Game {
             // King captured (Game end)
             case GAME_END:
                 String title = "";
-                player_index = -1;
                 if (current_player.isWhite()) {
                     title = "White captured Black's King!";
-                    player_index = 0;
+                    current_player_index = 0;
                 }
                 else {
                     title = "Black captured White's King!";
-                    player_index = 1;
+                    current_player_index = 1;
                 }
 
-                if (current_player instanceof SearchAI && current_player_index == 0) {
-                    all_states_player_1.add(FEN.encode(Game.board, player_index));
-                    //System.out.println("11111111111111111111" + all_states_player_1.get(all_states_player_1.size()-1));
-                }
+                if (current_player instanceof SearchAI && ((SearchAI)current_player).ML_component)
+                    GameSearchTree.best_leaf_nodes.add(1.0);
 
-                if (current_player instanceof SearchAI && current_player_index == 1) {
-                    all_states_player_2.add(FEN.encode(Game.board, player_index));
-                    //System.out.println("222222222222222222" + all_states_player_2.get(all_states_player_2.size()-1));
-                }
+                else if (other_player instanceof SearchAI && ((SearchAI)other_player).ML_component)
+                    GameSearchTree.best_leaf_nodes.add(-1.0);
+
 
                 if (((current_player instanceof SearchAI) && (((SearchAI) current_player).ML_component)) || ((other_player instanceof SearchAI) && (((SearchAI) other_player).ML_component))) {
                     //TODO: Maybe allow here the agent to be both black or white, but this works for now.
-                    TemporalDifferenceLeaf.updateWeights(GameSearchTree.best_leaf_nodes, false, SearchAI.weights);
+                    TemporalDifferenceLeaf.updateWeights(GameSearchTree.best_leaf_nodes, true, SearchAI.weights);
                 }
 
                 last_fen = FEN.encode(board, current_player_index, half_moves, full_moves);
@@ -441,8 +415,6 @@ public class Game {
     public static void resetTurnState() {
 //        this.turn_state = turn_state;
         king_captured = false;
-        all_states_player_1.clear();
-        all_states_player_2.clear();
 
         GameSearchTree.best_leaf_nodes.clear();
 
@@ -469,10 +441,12 @@ public class Game {
     public static ArrayList<int[]> getEveryLegalMoveOfPlayer(Piece[][] board, boolean is_white, PieceEnum piece_type) {
         ArrayList<int[]> moves = new ArrayList<int[]>();
 
+
         for(int x = 0; x < board.length; x++) {
             for(int y = 0; y < board.length; y++) {
                 Piece p = getPiece(x,y);
                 ArrayList<int[]> legal_moves = new ArrayList<int[]>();
+
 
                 if (p != null && p.isWhite() == is_white && (piece_type == PieceEnum.ANY || piece_type == p.piece_type)) {
                     legal_moves = p.getLegalMoves(p.x, p.y);

@@ -97,8 +97,9 @@ public class ChessMain {
                     player1 = new SearchAI(true, false, false);
                     break;
                 case "Minimax with alpha-beta and TDLeaf Bot":
+                    SearchBotWhite = true;
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
-                    player1 = new SearchAI(false, false, true);
+                    player1 = new SearchAI(true, false, true);
                     break;
                 case "Expectimax Bot":
                     SearchBotWhite = true;

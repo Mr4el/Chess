@@ -24,6 +24,11 @@ public class GameLogger {
     static int average_states_evaluated = 0;
     static int total_evaluations = 0;
 
+    static int white_wins = 0;
+    static int black_wins = 0;
+    static int white_wins_last_100 = 0;
+    static int black_wins_last_100 = 0;
+
     /**
      * Writes to the file which was the best score found and how many states were evaluated.
      * @param states_evaluated The number of states evaluated.
@@ -89,6 +94,19 @@ public class GameLogger {
 
         analytics_window.update(white_won ? 1 : 0, white_won ? 0 : 1);
 
+        if (white_won) {
+            white_wins++;
+            white_wins_last_100++;
+        } else {
+            black_wins++;
+            black_wins_last_100++;
+        };
+
+        if (white_wins_last_100 > 100)
+            white_wins_last_100 = Math.max(white_wins_last_100-1,0);
+        if (black_wins_last_100 > 100)
+            black_wins_last_100 = Math.max(black_wins_last_100-1,0);
+
         File directory = new File(directory_name);
         if (! directory.exists()){
             directory.mkdir();
@@ -103,7 +121,7 @@ public class GameLogger {
         if (LOG_WINS)
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(f_name, true));
-                writer.write(ChessMain.session_games_played + "," + who_won + "," + turns + "," + average_states_evaluated + "\n");
+                writer.write(ChessMain.session_games_played + "," + who_won + "," + turns + "," + average_states_evaluated + "," + white_wins + "," + black_wins + "\n");
                 writer.close();
             } catch (IOException e) {
 

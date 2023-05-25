@@ -1,5 +1,6 @@
 package com.oop.chess.debug;
 
+import com.oop.chess.Game;
 import com.oop.chess.model.player.SearchAI;
 
 import javax.swing.*;
@@ -54,10 +55,14 @@ class AnalyticsPanel extends JPanel {
      * Creates a new Analytics Panel featuring the search depth of the AI as well as the number of games won by each player.
      */
     public AnalyticsPanel() {
-        add(new JLabel("Search AI depth: " + SearchAI.depth + " with algorithm " + SearchAI.ALGORITHM));
+        add(new JLabel("Search AI depth: " + SearchAI.depth));
 
         black_wins_label = new JLabel();
         white_wins_label = new JLabel();
+
+        add(new JLabel("White: " + Game.players[0]));
+        add(new JLabel("Black: " + Game.players[1]));
+
 
         add(black_wins_label);
         add(white_wins_label);
