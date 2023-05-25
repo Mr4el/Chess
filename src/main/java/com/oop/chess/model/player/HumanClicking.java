@@ -19,17 +19,16 @@ import javax.swing.SwingUtilities;
 public class HumanClicking implements MouseListener {
     JPanel board, oldTile, newTile;
     VisualPiece selectedPiece;
-    int oldtile_x, oldtile_y;
+    int oldTileX, oldTileY;
     boolean pieceSelected;
-    public boolean appliedToBoard = false;
     public boolean enabled = false;
     ArrayList<int[]> moves, legalMoves;
-    Piece[][] currentBoard = Game.board;
     ArrayList<Color> initialColorCodes;
     Color initialBGColor;
     boolean recolor;
 
     Human human;
+
 
     /**
      * Creates a new communication channel between the human player and the GUI.
@@ -42,8 +41,8 @@ public class HumanClicking implements MouseListener {
         this.human = human;
     }
 
+
     /**
-     /**
      * Handles what happens whenever the mouse has clicked.
      *
      * @param e The mouse event of the mouse clicking.
@@ -52,6 +51,7 @@ public class HumanClicking implements MouseListener {
     public void mouseClicked(MouseEvent e) {
 
     }
+
 
     /**
      * Resets all the previously defined variables to null, which happens when for example the player selects a piece which is not allowed to move.
@@ -65,6 +65,7 @@ public class HumanClicking implements MouseListener {
         legalMoves = null;
         initialColorCodes = null;
     }
+
 
     /**
      * Handles what happens whenever the mouse is pressed.
@@ -82,16 +83,16 @@ public class HumanClicking implements MouseListener {
 
         // What tile is being clicked on?
         Point p = e.getLocationOnScreen();
-        SwingUtilities.convertPointFromScreen(p, (JComponent) board);
+        SwingUtilities.convertPointFromScreen(p, board);
 
         oldTile = (JPanel) e.getComponent().getComponentAt(p);
 
-        Dimension board_dimensions = board.getSize();
-        double w = board_dimensions.getWidth();
-        double h = board_dimensions.getHeight();
+        Dimension boardDimensions = board.getSize();
+        double w = boardDimensions.getWidth();
+        double h = boardDimensions.getHeight();
 
-        oldtile_x = (int) Math.round(oldTile.getX() * 8 / w);
-        oldtile_y = (int) Math.round(oldTile.getY() * 8 / h);
+        oldTileX = (int) Math.round(oldTile.getX() * 8 / w);
+        oldTileY = (int) Math.round(oldTile.getY() * 8 / h);
 
         // If tile has a piece on it
         if (oldTile.getComponents().length >= 1) {
@@ -119,11 +120,11 @@ public class HumanClicking implements MouseListener {
 
             //Checks whether the player can actually move the piece selected, otherwise resets the variables.
             if (!(Game.getLegalPiece() == Game.PieceEnum.ANY ||
-                    Game.getLegalPiece() == chosen_piece.piece_type ||
-                    (Game.getPiece(oldtile_x, oldtile_y) != null &&
-                            Game.getPiece(oldtile_x, oldtile_y).getType() == Game.PieceEnum.PAWN &&
-                            Game.getPiece(oldtile_x, oldtile_y).pawnPromotion == true &&
-                            Game.getLegalPiece() != Game.PieceEnum.KING))) {
+                Game.getLegalPiece() == chosen_piece.pieceType ||
+                (Game.getPiece(oldTileX, oldTileY) != null &&
+                    Game.getPiece(oldTileX, oldTileY).getType() == Game.PieceEnum.PAWN &&
+                    Game.getPiece(oldTileX, oldTileY).pawnPromotion == true &&
+                    Game.getLegalPiece() != Game.PieceEnum.KING))) {
                 resetVars();
                 return;
             }
@@ -141,28 +142,26 @@ public class HumanClicking implements MouseListener {
             oldTile.setBackground(Color.decode("#6ff2ac"));
             recolor = true;
 
-            Piece chosenPiece = Game.getPiece(oldtile_x, oldtile_y);
-            legalMoves = chosenPiece.getLegalMoves(oldtile_x, oldtile_y);
+            Piece chosenPiece = Game.getPiece(oldTileX, oldTileY);
+            legalMoves = chosenPiece.getLegalMoves(oldTileX, oldTileY);
 
             // Checks whether the human player has help and then color the tiles which represent possible moves of the current selected piece.
-            if (((Human)Game.current_player).hasHelp()) {
+            if (((Human) Game.currentPlayer).hasHelp()) {
                 initialColorCodes = new ArrayList<>();
 
-                for (int i = 0; i < legalMoves.size(); i++) {
-                    int tileX = legalMoves.get(i)[0];
-                    int tileY = legalMoves.get(i)[1];
+                for (int[] legalMove : legalMoves) {
+                    int tileX = legalMove[0];
+                    int tileY = legalMove[1];
                     JPanel tile = (JPanel) board.getComponent(tileY * 8 + tileX);
                     initialColorCodes.add(tile.getBackground());
                     tile.setBackground(Color.decode("#ed8080"));
                 }
             }
-
-
         } else {
             resetVars();
-            return;
         }
     }
+
 
     /**
      * Handles what happens whenever the mouse is released.
@@ -178,13 +177,13 @@ public class HumanClicking implements MouseListener {
         if (!enabled)
             return;
         Point p = e.getLocationOnScreen();
-        SwingUtilities.convertPointFromScreen(p, (JComponent) board);
+        SwingUtilities.convertPointFromScreen(p, board);
 
 
         if (recolor) {
             oldTile.setBackground(initialBGColor);
 
-            if (((Human)Game.current_player).hasHelp()) {
+            if (((Human) Game.currentPlayer).hasHelp()) {
                 for (int i = 0; i < legalMoves.size(); i++) {
                     int tileX = legalMoves.get(i)[0];
                     int tileY = legalMoves.get(i)[1];
@@ -202,23 +201,23 @@ public class HumanClicking implements MouseListener {
         newTile = (JPanel) e.getComponent().getComponentAt(p);
 
         if (newTile.getComponents().length >= 1) {
-            VisualPiece destination_piece = (VisualPiece) newTile.getComponent(0);
+            VisualPiece destinationPiece = (VisualPiece) newTile.getComponent(0);
 
-            if (destination_piece.white == Game.current_player.isWhite()) {
+            if (destinationPiece.white == Game.currentPlayer.isWhite()) {
                 resetVars();
                 return;
             }
         }
 
-        Dimension board_dimensions = board.getSize();
-        double w = board_dimensions.getWidth();
-        double h = board_dimensions.getHeight();
+        Dimension boardDimensions = board.getSize();
+        double w = boardDimensions.getWidth();
+        double h = boardDimensions.getHeight();
 
-        int newtile_x = (int) Math.round(newTile.getX() * 8 / w);
-        int newtile_y = (int) Math.round(newTile.getY() * 8 / h);
+        int newTileX = (int) Math.round(newTile.getX() * 8 / w);
+        int newTileY = (int) Math.round(newTile.getY() * 8 / h);
 
-        int[] final_pos = {newtile_x, newtile_y};
-        moves = Game.getPiece(oldtile_x, oldtile_y).getLegalMoves(oldtile_x, oldtile_y);
+        int[] finalPosition = {newTileX, newTileY};
+        moves = Game.getPiece(oldTileX, oldTileY).getLegalMoves(oldTileX, oldTileY);
 
         if (moves == null) {
             resetVars();
@@ -226,11 +225,10 @@ public class HumanClicking implements MouseListener {
         }
 
         boolean possible = false;
-        check_if_move_is_legal:
         for (int[] pos : moves) {
-            if (pos[0] == final_pos[0] && pos[1] == final_pos[1]) {
+            if (pos[0] == finalPosition[0] && pos[1] == finalPosition[1]) {
                 possible = true;
-                break check_if_move_is_legal;
+                break;
             }
         }
 
@@ -238,11 +236,12 @@ public class HumanClicking implements MouseListener {
             return;
 
         // tell the game that the player has moved
-        Game.getCurrentPlayer().setMove(oldtile_x, oldtile_y, newtile_x, newtile_y);
+        Game.getCurrentPlayer().setMove(oldTileX, oldTileY, newTileX, newTileY);
 
-        //if clicked tile is occupied, remove the piece.
+        // if clicked tile is occupied, remove the piece.
         resetVars();
     }
+
 
     /**
      * Handles what happens whenever the mouse enters the board.
@@ -253,6 +252,7 @@ public class HumanClicking implements MouseListener {
     public void mouseEntered(MouseEvent e) {
 
     }
+
 
     /**
      * Handles what happens whenever the mouse exits the board.

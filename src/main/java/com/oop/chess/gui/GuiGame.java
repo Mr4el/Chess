@@ -3,11 +3,11 @@ package com.oop.chess.gui;
 import com.oop.chess.ChessMain;
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
-import com.oop.chess.model.pieces.Piece;
 import com.oop.chess.model.player.Human;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 /**
  * This class represents the graphical interface part of the game.
@@ -20,12 +20,12 @@ public class GuiGame extends JFrame {
     public static JComboBox<String> blackComboBox;
     public static JComboBox<String> whiteComboBox;
 
+
     /**
      * Constructs a new graphical interface with the given chess board.
      *
-     * @param board The board which will be displayed in the window.
      */
-    public GuiGame(Piece[][] board) {
+    public GuiGame() {
 
         if (ChessMain.debug)
             System.out.println("Initialize GUI");
@@ -37,7 +37,7 @@ public class GuiGame extends JFrame {
 
         visualBoard = VisualBoard.createBoard(this);
         visualBoard.setBounds(0, 0, 550, 550);
-        new Pieces(visualBoard);
+        new Pieces();
 
         JPanel dicePanel = new JPanel();
         dicePanel.setBackground(Color.decode("#ffe6b3"));
@@ -60,6 +60,7 @@ public class GuiGame extends JFrame {
         blackComboBox.setSelectedIndex(0);
         blackComboBox.setBounds(565, 100, 120, 25);
         blackComboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        blackComboBox.setFocusable(false);
 
         JLabel whitePromotion = new JLabel("White Promotion");
         whitePromotion.setBounds(570, 360, 105, 20);
@@ -73,8 +74,13 @@ public class GuiGame extends JFrame {
         whiteComboBox.setSelectedIndex(0);
         whiteComboBox.setBounds(565, 380, 120, 25);
         whiteComboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        whiteComboBox.setFocusable(false);
 
         JButton homeButton = new JButton("Home");
+        homeButton.setFont(new Font("Serif", Font.BOLD, 20));
+        homeButton.setBorder(BorderFactory.createEmptyBorder());
+        homeButton.setContentAreaFilled(false);
+        homeButton.setFocusable(false);
         homeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         homeButton.setBounds(625, 475, 75, 75);
         homeButton.addActionListener(e -> {
@@ -83,17 +89,19 @@ public class GuiGame extends JFrame {
         });
 
         JButton restartGame = new JButton("Replay");
+        restartGame.setFont(new Font("Serif", Font.BOLD, 20));
+        restartGame.setBorder(BorderFactory.createEmptyBorder());
+        restartGame.setContentAreaFilled(false);
+        restartGame.setFocusable(false);
         restartGame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         restartGame.setBounds(550, 475, 75, 75);
-        restartGame.addActionListener(e -> {
-            Game.restart();
-        });
+        restartGame.addActionListener(e -> Game.restart());
 
-        if (!GuiMenu.AIGame && !GuiMenu.playingAI) {
+        if (!GuiMenu.AIGame && (!GuiMenu.playingAI || GuiMenu.playAsBlack.isSelected())) {
             frame.add(blackPromotion);
             frame.add(blackComboBox);
         }
-        if (!GuiMenu.AIGame) {
+        if (!GuiMenu.AIGame && !(GuiMenu.playingAI && GuiMenu.playAsBlack.isSelected())) {
             frame.add(whitePromotion);
             frame.add(whiteComboBox);
         }
@@ -105,9 +113,9 @@ public class GuiGame extends JFrame {
         frame.add(dicePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        //setResizable(false);
         setVisible(true);
     }
+
 
     /**
      * Removes a piece from the presented board visually.
@@ -125,12 +133,13 @@ public class GuiGame extends JFrame {
         frame.repaint();
     }
 
+
     /**
      * Adds a piece to the presented board visually.
      *
-     * @param x The X-coordinate at which a piece will be added visually.
-     * @param y The Y-coordinate at which a piece will be added visually.
-     * @param type The type of the piece to be added visually.
+     * @param x     The X-coordinate at which a piece will be added visually.
+     * @param y     The Y-coordinate at which a piece will be added visually.
+     * @param type  The type of the piece to be added visually.
      * @param white Whether the piece is white or black.
      */
     public static void addVisualPiece(int x, int y, PieceEnum type, boolean white) {
@@ -140,33 +149,19 @@ public class GuiGame extends JFrame {
 
         String colour_string = (white ? "white" : "black");
 
-        String type_string = "";
-        switch (type) {
-            case ANY:
-            case PAWN:
-                type_string = "Pawn";
-                break;
-            case KNIGHT:
-                type_string = "Knight";
-                break;
-            case ROOK:
-                type_string = "Rook";
-                break;
-            case BISHOP:
-                type_string = "Bishop";
-                break;
-            case QUEEN:
-                type_string = "Queen";
-                break;
-            case KING:
-                type_string = "King";
-                break;
-        }
+        String type_string = switch (type) {
+            case ANY, PAWN -> "Pawn";
+            case KNIGHT -> "Knight";
+            case ROOK -> "Rook";
+            case BISHOP -> "Bishop";
+            case QUEEN -> "Queen";
+            case KING -> "King";
+        };
 
-        java.net.URL image_file = GuiGame.class.getResource("/" + colour_string + type_string + ".png");
+        URL imageFile = GuiGame.class.getResource("/" + colour_string + type_string + ".png");
 
         VisualPiece visual_piece;
-        visual_piece = new VisualPiece(new ImageIcon(image_file), white, type);
+        visual_piece = new VisualPiece(new ImageIcon(imageFile), white, type);
 
         tile.add(visual_piece);
 
@@ -175,6 +170,7 @@ public class GuiGame extends JFrame {
         tile.repaint();
         visualBoard.repaint();
     }
+
 
     /**
      * Convert x and y coordinates into an index of the visual board.
@@ -187,52 +183,44 @@ public class GuiGame extends JFrame {
         return x + 8 * y;
     }
 
+
     /**
      * Sets the piece which is allowed to move in the visual board to the passed legal_piece
      *
-     * @param type The type the visual piece will be set to.
+     * @param type                 The type the visual piece will be set to.
      * @param current_player_index The index of the current player.
      */
     public void setLegalPiece(PieceEnum type, int current_player_index) {
 
-        String colour_string = (current_player_index == 1 ? "black" : "white" );
+        String colour_string = (current_player_index == 1 ? "black" : "white");
 
-        String type_string = "";
-        switch (type) {
-            case ANY:
-            case PAWN:
-                type_string = "Pawn";
-                break;
-            case KNIGHT:
-                type_string = "Knight";
-                break;
-            case ROOK:
-                type_string = "Rook";
-                break;
-            case BISHOP:
-                type_string = "Bishop";
-                break;
-            case QUEEN:
-                type_string = "Queen";
-                break;
-            case KING:
-                type_string = "King";
-                break;
-        }
+        String type_string = switch (type) {
+            case ANY, PAWN -> "Pawn";
+            case KNIGHT -> "Knight";
+            case ROOK -> "Rook";
+            case BISHOP -> "Bishop";
+            case QUEEN -> "Queen";
+            case KING -> "King";
+        };
 
         java.net.URL resource = GuiGame.class.getResource("/" + colour_string + type_string + ".png");
         legalPiece.setIcon(new ImageIcon(resource));
     }
 
+
+    /**
+     * Sets whose turn it currently is.
+     *
+     * @param turn An integer indicating whose turn it is, where 1 denotes black and 0 denotes white.
+     */
     public static void setWhoseTurn(int turn) {
         if (turn == 1) {
             whoseTurn.setText("Black's Turn");
 
             // Thinking text if black player is AI
-            if (!(Game.current_player instanceof Human))
+            if (!(Game.currentPlayer instanceof Human))
                 whoseTurn.setText("<html>Black's Turn<br>(Thinking...)</html>");
-        }
-        else
+        } else
             whoseTurn.setText("White's Turn");
     }
 }

@@ -10,19 +10,21 @@ import java.util.ArrayList;
  */
 public class Bishop extends Piece {
 
+
     /**
      * Constructs a Bishop piece using the fact whether it is white or black and its initial location on the board.
      *
      * @param white The boolean determining whether the piece is black or white (true = white and false = black).
-     * @param i The initial x-position on the board starting.
-     * @param j The initial y-position on the board starting.
+     * @param i     The initial x-position on the board starting.
+     * @param j     The initial y-position on the board starting.
      */
     public Bishop(boolean white, int i, int j) {
         super.isWhite = white;
         super.x = i;
         super.y = j;
-        super.piece_type = PieceEnum.BISHOP;
+        super.pieceType = PieceEnum.BISHOP;
     }
+
 
     /**
      * Returns an identical Bishop piece.
@@ -33,6 +35,7 @@ public class Bishop extends Piece {
     public Bishop clone() {
         return new Bishop(isWhite, x, y);
     }
+
 
     /**
      * Retrieves all the legal moves of the current piece.
@@ -47,16 +50,14 @@ public class Bishop extends Piece {
 
         // The positions a bishop can move to from its original position.
         int[][] directions_to_check = {
-                {1, 1},
-                {-1, 1},
-                {1, -1},
-                {-1, -1}
+            {1, 1},
+            {-1, 1},
+            {1, -1},
+            {-1, -1}
         };
 
 
-        for (int i = 0; i < directions_to_check.length; i++) {
-            int[] d = directions_to_check[i];
-
+        for (int[] d : directions_to_check) {
             int x = initialX + d[0];
             int y = initialY + d[1];
 
@@ -67,18 +68,18 @@ public class Bishop extends Piece {
 
             while (check) {
                 Piece piece = Game.getPiece(x, y);
-                boolean add_to_legal_moves = false;
+                boolean addToLegalMoves = false;
 
                 if (piece == null) {
-                    add_to_legal_moves = true;
+                    addToLegalMoves = true;
                 } else if (piece.isWhite != isWhite) {
-                    add_to_legal_moves = true;
+                    addToLegalMoves = true;
                     check = false;
                 } else
                     check = false;
 
 
-                if (add_to_legal_moves) {
+                if (addToLegalMoves) {
                     int[] move = {x, y};
                     legalMoves.add(move);
                 }

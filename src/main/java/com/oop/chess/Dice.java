@@ -1,6 +1,7 @@
 package com.oop.chess;
 
 import java.util.Random;
+
 import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.model.pieces.Piece;
 
@@ -13,27 +14,22 @@ public class Dice {
      * Rolls a dice.
      *
      * @param white A boolean indicating whether the player is white or black.
-     * @return
      */
     public static PieceEnum roll(boolean white) {
-        Piece[][] currentBoard = Game.board;
-        boolean pieceIsWhite = white;
-        boolean aPieceIsMoveable = findMoveablePiece(currentBoard, pieceIsWhite);
+        boolean aPieceIsMovable = findMovablePiece(white);
 
-        if (aPieceIsMoveable) {
-            boolean pieceFound = false;
-
+        if (aPieceIsMovable) {
             // Re-rolls until a piece has been found that can be moved by the player.
-            while (!pieceFound) {
+            while (true) {
                 PieceEnum random = getRandomPiece();
-                if (canPieceMove(currentBoard, random, pieceIsWhite)) {
-                    pieceFound = true;
+                if (canPieceMove(random, white)) {
                     return random;
                 }
             }
         }
         return null;
     }
+
 
     /**
      * Creates a random dice roll.
@@ -47,18 +43,17 @@ public class Dice {
         return values[randIndex];
     }
 
+
     /**
-     * Finds whether the player has any moveable pieces left.
+     * Finds whether the player has any movable pieces left.
      *
-     * @param currentBoard The current chess board.
      * @param pieceIsWhite A boolean indicating whether the player is white or black.
-     * @return Whether there exists a moveable piece for the current player.
+     * @return Whether there exists a movable piece for the current player.
      */
-    static boolean findMoveablePiece(Piece[][] currentBoard, boolean pieceIsWhite) {
-        for (Piece p : Game.getPlayerPieces(Game.current_player)) {
-            Piece foundPiece = p;
-            if (foundPiece != null && (foundPiece.isWhite == pieceIsWhite)) {
-                if (!foundPiece.getLegalMoves(p.x, p.y).isEmpty()) {
+    static boolean findMovablePiece(boolean pieceIsWhite) {
+        for (Piece p : Game.getPlayerPieces(Game.currentPlayer)) {
+            if (p != null && (p.isWhite == pieceIsWhite)) {
+                if (!p.getLegalMoves(p.x, p.y).isEmpty()) {
                     return true;
                 }
             }
@@ -67,28 +62,26 @@ public class Dice {
         return false;
     }
 
+
     /**
      * Checks whether the passed on piece can move.
      *
-     * @param currentBoard The current chess board.
-     * @param piece The piece to be checked whether it can move.
+     * @param piece        The piece to be checked whether it can move.
      * @param pieceIsWhite A boolean indicating whether the piece is white or black.
      * @return Whether the piece can be moved or not.
      */
-    static boolean canPieceMove(Piece[][] currentBoard, PieceEnum piece, boolean pieceIsWhite) {
-        for (Piece p : Game.getPlayerPieces(Game.current_player)) {
-            Piece foundPiece = p;
-            if (foundPiece == null)
+    static boolean canPieceMove(PieceEnum piece, boolean pieceIsWhite) {
+        for (Piece p : Game.getPlayerPieces(Game.currentPlayer)) {
+            if (p == null)
                 continue;
 
-            if ((foundPiece.getType() == piece) && (foundPiece.isWhite == pieceIsWhite)) {
-                if (!foundPiece.getLegalMoves(p.x,p.y).isEmpty()) {
+            if ((p.getType() == piece) && (p.isWhite == pieceIsWhite)) {
+                if (!p.getLegalMoves(p.x, p.y).isEmpty()) {
                     return true;
                 }
             }
 
         }
-
         return false;
     }
 }
