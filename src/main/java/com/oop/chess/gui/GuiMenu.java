@@ -195,6 +195,7 @@ public class GuiMenu extends JFrame {
         aiComboBox.addItem("Random Moves Bot");
         aiComboBox.addItem("Minimax Bot");
         aiComboBox.addItem("Minimax with alpha-beta Bot");
+        aiComboBox.addItem("Minimax with alpha-beta and TDLeaf Bot");
         aiComboBox.addItem("Expectimax Bot");
         aiComboBox.setFont(new Font("Serif", Font.PLAIN, 20));
         aiComboBox.setForeground(Color.BLACK);
@@ -289,6 +290,7 @@ public class GuiMenu extends JFrame {
         aiPlayer0ComboBox.addItem("Random Moves Bot");
         aiPlayer0ComboBox.addItem("Minimax Bot");
         aiPlayer0ComboBox.addItem("Minimax with alpha-beta Bot");
+        aiPlayer0ComboBox.addItem("Minimax with alpha-beta and TDLeaf Bot");
         aiPlayer0ComboBox.addItem("Expectimax Bot");
         aiPlayer0ComboBox.setFont(new Font("Serif", Font.PLAIN, 20));
         aiPlayer0ComboBox.setForeground(Color.BLACK);
@@ -305,6 +307,7 @@ public class GuiMenu extends JFrame {
         aiPlayer1ComboBox.addItem("Random Moves Bot");
         aiPlayer1ComboBox.addItem("Minimax Bot");
         aiPlayer1ComboBox.addItem("Minimax with alpha-beta Bot");
+        aiPlayer1ComboBox.addItem("Minimax with alpha-beta and TDLeaf Bot");
         aiPlayer1ComboBox.addItem("Expectimax Bot");
         aiPlayer1ComboBox.setFont(new Font("Serif", Font.PLAIN, 20));
         aiPlayer1ComboBox.setForeground(Color.BLACK);

@@ -53,6 +53,32 @@ public class GameLogger {
             }
     }
 
+    public static void logWeights(double[] weights) {
+        String dirname = "debug-output/games";
+        File directory = new File(dirname);
+        if (! directory.exists()){
+            directory.mkdir();
+        }
+
+        String f_name = dirname + "/weight__" + ChessMain.session_launch_time + ".csv";
+
+        StringBuilder s = new StringBuilder("" + weights[0]);
+        for(int i = 1; i < weights.length; i++)
+            s.append(",").append(weights[i]);
+
+        s.append("\n");
+
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(f_name, true));
+            writer.write(s.toString());
+
+            writer.close();
+        } catch (IOException ignored) {
+
+        }
+    }
+
     /**
      * Writes to the file which player won.
      * @param white_won Whether white or black won.

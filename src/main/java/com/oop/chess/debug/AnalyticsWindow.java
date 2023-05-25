@@ -54,7 +54,7 @@ class AnalyticsPanel extends JPanel {
      * Creates a new Analytics Panel featuring the search depth of the AI as well as the number of games won by each player.
      */
     public AnalyticsPanel() {
-        add(new JLabel("Search AI depth: " + SearchAI.DEPTH + " with algorithm " + SearchAI.ALGORITHM));
+        add(new JLabel("Search AI depth: " + SearchAI.depth + " with algorithm " + SearchAI.ALGORITHM));
 
         black_wins_label = new JLabel();
         white_wins_label = new JLabel();

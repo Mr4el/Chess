@@ -89,17 +89,21 @@ public class ChessMain {
                 case "Minimax Bot":
                     SearchBotWhite = true;
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
-                    player1 = new SearchAI(true, false);
+                    player1 = new SearchAI(true, false, false);
                     break;
                 case "Minimax with alpha-beta Bot":
                     SearchBotWhite = true;
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
-                    player1 = new SearchAI(true, false);
+                    player1 = new SearchAI(true, false, false);
+                    break;
+                case "Minimax with alpha-beta and TDLeaf Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    player1 = new SearchAI(false, false, true);
                     break;
                 case "Expectimax Bot":
                     SearchBotWhite = true;
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
-                    player1 = new SearchAI(true, false);
+                    player1 = new SearchAI(true, false, false);
                     break;
             }
 
@@ -109,15 +113,19 @@ public class ChessMain {
                     break;
                 case "Minimax Bot":
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
-                    player2 = new SearchAI(false, false);
+                    player2 = new SearchAI(false, false, false);
                     break;
                 case "Minimax with alpha-beta Bot":
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
-                    player2 = new SearchAI(false, false);
+                    player2 = new SearchAI(false, false, false);
+                    break;
+                case "Minimax with alpha-beta and TDLeaf Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    player2 = new SearchAI(false, false, true);
                     break;
                 case "Expectimax Bot":
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
-                    player2 = new SearchAI(false, false);
+                    player2 = new SearchAI(false, false, false);
                     break;
             }
         } else if (GuiMenu.playingAI) {
@@ -128,15 +136,19 @@ public class ChessMain {
                     break;
                 case "Minimax Bot":
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
-                    player2 = new SearchAI(false, false);
+                    player2 = new SearchAI(false, false, false);
                     break;
                 case "Minimax with alpha-beta Bot":
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
-                    player2 = new SearchAI(false, false);
+                    player2 = new SearchAI(false, false, false);
+                    break;
+                case "Minimax with alpha-beta and TDLeaf Bot":
+                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    player2 = new SearchAI(false, false, true);
                     break;
                 case "Expectimax Bot":
                     SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
-                    player2 = new SearchAI(false, false);
+                    player2 = new SearchAI(false, false, false);
                     break;
             }
         } else {
