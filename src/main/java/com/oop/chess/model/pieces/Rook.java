@@ -14,19 +14,21 @@ public class Rook extends Piece {
     public static boolean castleLeft = true;
     boolean moved = false;
 
+
     /**
      * Constructs a Rook piece using the fact whether it is white or black and its initial location on the board.
      *
      * @param white The boolean determining whether the piece is black or white (true = white and false = black).
-     * @param i The initial x-position on the board starting.
-     * @param j The initial y-position on the board starting.
+     * @param i     The initial x-position on the board starting.
+     * @param j     The initial y-position on the board starting.
      */
     public Rook(boolean white, int i, int j) {
         super.isWhite = white;
         super.x = i;
         super.y = j;
-        super.piece_type = PieceEnum.ROOK;
+        super.pieceType = PieceEnum.ROOK;
     }
+
 
     /**
      * Returns an identical Rook piece.
@@ -40,13 +42,12 @@ public class Rook extends Piece {
         return r;
     }
 
+
     /**
      * Retrieves all the legal moves of the current piece.
      *
      * @param initialX The initial X-coordinate of the piece.
      * @param initialY The initial Y-coordinate of the piece.
-     * @param finalX The final X-coordinate of the piece.
-     * @param finalY The final Y-coordinate of the piece.
      * @return Returns an array of all the legal moves.
      */
     @Override

@@ -15,20 +15,22 @@ public class Pawn extends Piece {
     // This variable 'enPassantPossible' defines that the most recent move of the pawn is two squares and it is thus possible that it is captured.
     public boolean enPassantPossible;
 
+
     /**
      * Constructs a Pawn piece using the fact whether it is white or black and its initial location on the board.
      *
      * @param white The boolean determining whether the piece is black or white (true = white and false = black).
-     * @param i The initial x-position on the board starting.
-     * @param j The initial y-position on the board starting.
+     * @param i     The initial x-position on the board starting.
+     * @param j     The initial y-position on the board starting.
      */
     public Pawn(boolean white, int i, int j) {
         super.isWhite = white;
         super.x = i;
         super.y = j;
         enPassantPossible = false;
-        super.piece_type = PieceEnum.PAWN;
+        super.pieceType = PieceEnum.PAWN;
     }
+
 
     /**
      * Returns an identical Pawn piece.
@@ -41,6 +43,7 @@ public class Pawn extends Piece {
         p.enPassantPossible = enPassantPossible;
         return p;
     }
+
 
     /**
      * Retrieves all the legal moves of the current piece.
@@ -57,15 +60,15 @@ public class Pawn extends Piece {
         int direction = (isWhite() ? -1 : 1);
 
         // All possible directions the pawn can move in
-        int[][] positions_to_check = {
-                {  -1,      direction  }, // 1 forward, left
-                {   0,      direction  }, // 1 forward
-                {   1,      direction  }, // 1 forward, right
-                {   0,  2 * direction  }  // 2 forward (first move)
+        int[][] positionsToCheck = {
+            {-1, direction}, // 1 forward, left
+            {0, direction}, // 1 forward
+            {1, direction}, // 1 forward, right
+            {0, 2 * direction}  // 2 forward (first move)
         };
 
         // Loop through the positions to check, add to legalMoves if legal
-        for (int[] p : positions_to_check) {
+        for (int[] p : positionsToCheck) {
             int finalX = initialX + p[0];
             int finalY = initialY + p[1];
 
@@ -79,13 +82,14 @@ public class Pawn extends Piece {
         return legalMoves;
     }
 
+
     /**
      * Retrieves all the legal moves of the current piece.
      *
      * @param initialX The initial X-coordinate of the piece.
      * @param initialY The initial Y-coordinate of the piece.
-     * @param finalX The final X-coordinate of the piece.
-     * @param finalY The final Y-coordinate of the piece.
+     * @param finalX   The final X-coordinate of the piece.
+     * @param finalY   The final Y-coordinate of the piece.
      * @return Returns an array of all the legal moves.
      */
     @Override
@@ -93,7 +97,7 @@ public class Pawn extends Piece {
         ArrayList<int[]> legalMoves = new ArrayList<>();
 
         if (finalX == initialX && finalY == initialY) {
-            return null; //cannot move nothing
+            return null;
         }
         if (finalX < 0 || finalX > 7 || initialX < 0 || initialX > 7 || finalY < 0 || finalY > 7 || initialY < 0 || initialY > 7) {
             return null;
@@ -139,6 +143,7 @@ public class Pawn extends Piece {
                 }
             }
         }
+
         // Checks whether there exist white pawns on the board that can be promoted and adds the legal moves to the array list of all legal moves.
         // It also takes into account whether it can also conquer another piece, thus make a move to a left and one down tile or to a right and one down tile.
         else if (Game.getPiece(initialX, initialY) != null && initialY == 6 && !Game.getPiece(initialX, initialY).isWhite) {
@@ -164,7 +169,6 @@ public class Pawn extends Piece {
                         legalMoves.add(move);
                     }
 
-
                 }
             }
 
@@ -186,7 +190,7 @@ public class Pawn extends Piece {
 
             // En-passant movement
             Piece enPassantPiece = Game.getPiece(finalX, finalY - direction);
-            if (enPassantPiece != null && enPassantPiece instanceof Pawn) {
+            if (enPassantPiece instanceof Pawn) {
                 if (Math.abs(initialX - finalX) == 1 && ((Pawn) enPassantPiece).enPassantPossible && enPassantPiece.isWhite != isWhite) {
                     int[] move = {finalX, finalY};
                     legalMoves.add(move);
@@ -202,9 +206,9 @@ public class Pawn extends Piece {
         else
             b = (initialY == 1);
 
-        Piece piece_in_the_way = Game.getPiece(initialX, initialY + direction);
+        Piece pieceInTheWay = Game.getPiece(initialX, initialY + direction);
 
-        if (b == true && piece_in_the_way == null) {
+        if (b && pieceInTheWay == null) {
             if (finalY - initialY == 2 * direction) {
                 if (finalX == initialX && piece == null) {
                     int[] move = {finalX, finalY};
@@ -222,8 +226,8 @@ public class Pawn extends Piece {
      *
      * @param initialX The initial X-coordinate of the pawn.
      * @param initialY The initial Y-coordinate of the pawn.
-     * @param finalX The final X-coordinate of the pawn.
-     * @param finalY The final Y-coordinate of the pawn.
+     * @param finalX   The final X-coordinate of the pawn.
+     * @param finalY   The final Y-coordinate of the pawn.
      */
     public void makeMove(int initialX, int initialY, int finalX, int finalY) {
         Piece piece = Game.getPiece(finalX, finalY);
@@ -252,14 +256,14 @@ public class Pawn extends Piece {
             }
         }
 
-        // check if enpassant is possible
+        // Check if en passant is possible
         boolean b;
         if (isWhite)
             b = (initialY == 6);
         else
             b = (initialY == 1);
 
-        if (b == true) {
+        if (b) {
             if (finalY - initialY == 2 * direction) {
                 if (finalX == initialX && piece == null) {
                     enPassantPossible = true;
@@ -269,97 +273,49 @@ public class Pawn extends Piece {
 
         // execute en passant
         Piece enPassantPiece = Game.getPiece(finalX, finalY - direction);
-        if (enPassantPiece != null && enPassantPiece instanceof Pawn) {
+        if (enPassantPiece instanceof Pawn) {
             if (Math.abs(initialX - finalX) == 1 && ((Pawn) enPassantPiece).enPassantPossible && enPassantPiece.isWhite != isWhite) {
                 // delete the en passant piece
                 Game.board[finalY - direction][finalX] = null;
-                Game.GUIdeletePiece(finalX, finalY - direction);
+                Game.deletePieceGUI(finalX, finalY - direction);
             }
         }
     }
+
 
     /**
      * Creates a new piece whenever a pawn is promoted.
      *
      * @param initialX The initial X-coordinate of the pawn.
      * @param initialY The initial Y-coordinate of the pawn.
-     * @param isWhite A boolean to denote whether the pawn is white or black.
+     * @param isWhite  A boolean to denote whether the pawn is white or black.
      */
     public void createNewPiece(int initialX, int initialY, boolean isWhite) {
         switch (Game.getLegalPiece()) {
-            case ANY: {
-                Game.board[initialY][initialX] = new Pawn(isWhite, initialX, initialY);
-                break;
-            }
-            case PAWN: {
-                //TODO: Create functionality that the player can change it to any other piece, except king.
+            case ANY -> Game.board[initialY][initialX] = new Pawn(isWhite, initialX, initialY);
+            case PAWN -> {
                 if (isWhite) {
                     switch (Objects.requireNonNull(GuiGame.whiteComboBox.getSelectedItem()).toString()) {
-                        case "Pawn": {
-                            Game.board[initialY][initialX] = new Pawn(true, initialX, initialY);
-                            break;
-                        }
-                        case "Knight": {
-                            Game.board[initialY][initialX] = new Knight(true, initialX, initialY);
-                            break;
-                        }
-                        case "Rook": {
-                            Game.board[initialY][initialX] = new Rook(true, initialX, initialY);
-                            break;
-                        }
-                        case "Bishop": {
-                            Game.board[initialY][initialX] = new Bishop(true, initialX, initialY);
-                            break;
-                        }
-                        case "Queen": {
-                            Game.board[initialY][initialX] = new Queen(true, initialX, initialY);
-                            break;
-                        }
+                        case "Pawn" -> Game.board[initialY][initialX] = new Pawn(true, initialX, initialY);
+                        case "Knight" -> Game.board[initialY][initialX] = new Knight(true, initialX, initialY);
+                        case "Rook" -> Game.board[initialY][initialX] = new Rook(true, initialX, initialY);
+                        case "Bishop" -> Game.board[initialY][initialX] = new Bishop(true, initialX, initialY);
+                        case "Queen" -> Game.board[initialY][initialX] = new Queen(true, initialX, initialY);
                     }
                 } else {
                     switch (Objects.requireNonNull(GuiGame.blackComboBox.getSelectedItem()).toString()) {
-                        case "Pawn": {
-                            Game.board[initialY][initialX] = new Pawn(false, initialX, initialY);
-                            break;
-                        }
-                        case "Knight": {
-                            Game.board[initialY][initialX] = new Knight(false, initialX, initialY);
-                            break;
-                        }
-                        case "Rook": {
-                            Game.board[initialY][initialX] = new Rook(false, initialX, initialY);
-                            break;
-                        }
-                        case "Bishop": {
-                            Game.board[initialY][initialX] = new Bishop(false, initialX, initialY);
-                            break;
-                        }
-                        case "Queen": {
-                            Game.board[initialY][initialX] = new Queen(false, initialX, initialY);
-                            break;
-                        }
+                        case "Pawn" -> Game.board[initialY][initialX] = new Pawn(false, initialX, initialY);
+                        case "Knight" -> Game.board[initialY][initialX] = new Knight(false, initialX, initialY);
+                        case "Rook" -> Game.board[initialY][initialX] = new Rook(false, initialX, initialY);
+                        case "Bishop" -> Game.board[initialY][initialX] = new Bishop(false, initialX, initialY);
+                        case "Queen" -> Game.board[initialY][initialX] = new Queen(false, initialX, initialY);
                     }
                 }
-                break;
             }
-            case KNIGHT: {
-                Game.board[initialY][initialX] = new Knight(isWhite, initialX, initialY);
-                break;
-            }
-            case BISHOP: {
-                Game.board[initialY][initialX] = new Bishop(isWhite, initialX, initialY);
-                break;
-            }
-            case ROOK: {
-                Game.board[initialY][initialX] = new Rook(isWhite, initialX, initialY);
-                break;
-            }
-            case QUEEN: {
-                Game.board[initialY][initialX] = new Queen(isWhite, initialX, initialY);
-                break;
-            }
-            default:
-                break;
+            case KNIGHT -> Game.board[initialY][initialX] = new Knight(isWhite, initialX, initialY);
+            case BISHOP -> Game.board[initialY][initialX] = new Bishop(isWhite, initialX, initialY);
+            case ROOK -> Game.board[initialY][initialX] = new Rook(isWhite, initialX, initialY);
+            case QUEEN -> Game.board[initialY][initialX] = new Queen(isWhite, initialX, initialY);
         }
     }
 }

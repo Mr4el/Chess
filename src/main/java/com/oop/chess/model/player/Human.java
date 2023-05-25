@@ -3,7 +3,6 @@ package com.oop.chess.model.player;
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.gui.HumanClicking;
-import com.oop.chess.model.pieces.Piece;
 
 import java.util.ArrayList;
 
@@ -15,24 +14,26 @@ public class Human extends Player {
     boolean move;
     boolean white;
     boolean help;
-    int oldtile_x = 0;
-    int oldtile_y = 0;
-    int newtile_x = 0;
-    int newtile_y = 0;
+    int oldTileX = 0;
+    int oldTileY = 0;
+    int newTileX = 0;
+    int newTileY = 0;
     HumanClicking clicker = null;
 
+
     /**
-     * Craetes a new human player.
+     * Creates a new human player.
      *
      * @param white A boolean indicating whether the player is white or black.
-     * @param help A boolean indicating whether the player wants any help, which is to present the player the different moves it can make.
+     * @param help  A boolean indicating whether the player wants any help, which is to present the player the different moves it can make.
      */
     public Human(boolean white, boolean help) {
         this.white = white;
         this.help = help;
 
-        pieces = new ArrayList<Piece>();
+        pieces = new ArrayList<>();
     }
+
 
     /**
      * Determines the logic for the player's turn.
@@ -47,27 +48,31 @@ public class Human extends Player {
         }
         clicker.enabled = true;
 
-        // If the clicker calls setMove(x,y,x,y), then the player can make their move
-
         return false;
     }
+
 
     /**
      * Sets the move of the player from the first two parameters to the second two parameters.
      *
      * @param ox The X-coordinate from where the piece will be moved.
      * @param oy The Y-coordinate from where the piece will be moved.
-     * @param nx The X-cooridnate to which the piece will be moved.
+     * @param nx The X-coordinate to which the piece will be moved.
      * @param ny The Y-coordinate to which the piece will be moved.
      */
     public void setMove(int ox, int oy, int nx, int ny) {
-        this.oldtile_x = ox;
-        this.oldtile_y = oy;
-        this.newtile_x = nx;
-        this.newtile_y = ny;
+        this.oldTileX = ox;
+        this.oldTileY = oy;
+        this.newTileX = nx;
+        this.newTileY = ny;
+
+        clicker.enabled = false;
+
+        Game.movePieceTo(ox,oy,nx,ny);
 
         this.move = true;
     }
+
 
     /**
      * Returns whether the player has selected the help option.
@@ -78,6 +83,7 @@ public class Human extends Player {
         return help;
     }
 
+
     /**
      * Returns whether the current player is white or black.
      *
@@ -87,8 +93,10 @@ public class Human extends Player {
         return white;
     }
 
+
     /**
      * Gets a String of information about the current human player.
+     *
      * @return A String of information about the current human player.
      */
     public String toString() {

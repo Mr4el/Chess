@@ -10,10 +10,9 @@ import java.util.Arrays;
  * This class represents a piece of the chess board.
  */
 public abstract class Piece {
-    public PieceEnum piece_type;
+    public PieceEnum pieceType;
 
     public boolean pawnPromotion;
-    // x and y coordinates of the piece on the board
 
     private boolean isCaptured = false;
 
@@ -26,6 +25,7 @@ public abstract class Piece {
 
     }
 
+
     /**
      * Returns whether the piece is white.
      *
@@ -35,14 +35,16 @@ public abstract class Piece {
         return this.isWhite;
     }
 
+
     /**
      * Returns the type of the piece.
      *
      * @return Returns the type of the piece.
      */
     public PieceEnum getType() {
-        return piece_type;
+        return pieceType;
     }
+
 
     /**
      * Sets the piece to be the boolean white.
@@ -53,6 +55,7 @@ public abstract class Piece {
         this.isWhite = white;
     }
 
+
     /**
      * Sets the X-coordinate to the given X-coordinate.
      *
@@ -61,6 +64,7 @@ public abstract class Piece {
     public void setX(int xCoord) {
         x = xCoord;
     }
+
 
     /**
      * Gets the X-coordinate of the piece.
@@ -71,6 +75,7 @@ public abstract class Piece {
         return x;
     }
 
+
     /**
      * Sets the Y-coordinate to the given X-coordinate.
      *
@@ -79,6 +84,7 @@ public abstract class Piece {
     public void setY(int yCoord) {
         y = yCoord;
     }
+
 
     /**
      * Gets the Y-coordinate of the piece.
@@ -89,6 +95,7 @@ public abstract class Piece {
         return y;
     }
 
+
     /**
      * Returns whether the piece is captured.
      *
@@ -97,6 +104,7 @@ public abstract class Piece {
     public boolean isCaptured() {
         return this.isCaptured;
     }
+
 
     /**
      * Sets the capture variable to the given boolean.
@@ -107,6 +115,7 @@ public abstract class Piece {
         this.isCaptured = isCaptured;
     }
 
+
     /**
      * Returns an identical piece.
      *
@@ -116,18 +125,20 @@ public abstract class Piece {
         return null;
     }
 
+
     /**
      * Retrieves all the legal moves of the current piece.
      *
      * @param initialX The initial X-coordinate of the piece.
      * @param initialY The initial Y-coordinate of the piece.
-     * @param finalX The final X-coordinate of the piece.
-     * @param finalY The final Y-coordinate of the piece.
+     * @param finalX   The final X-coordinate of the piece.
+     * @param finalY   The final Y-coordinate of the piece.
      * @return Returns an array of all the legal moves.
      */
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY) {
         return null;
-    };
+    }
+
 
     /**
      * Retrieves all the legal moves of the current piece.
@@ -137,27 +148,25 @@ public abstract class Piece {
      * @return Returns an array of all the legal moves.
      */
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY) {
-        ArrayList<int[]> legalMoves = new ArrayList<int[]>();
+        ArrayList<int[]> legalMoves = new ArrayList<>();
 
         for (int i = 0; i < 8; i++) {
             for (int ii = 0; ii < 8; ii++) {
                 ArrayList<int[]> moves = getLegalMoves(initialX, initialY, i, ii);
 
                 if (moves != null) {
-                    for (var iii = 0; iii < moves.size(); iii++) {
-                        int[] m = moves.get(iii);
+                    for (int[] m : moves) {
                         if (Game.xyInBounds(m[0], m[1])) {
-                            boolean already_in = false;
+                            boolean alreadyIn = false;
 
-                            check_duplicate:
                             for (int[] item : legalMoves) {
                                 if (Arrays.equals(m, item)) {
-                                    already_in = true;
-                                    break check_duplicate;
+                                    alreadyIn = true;
+                                    break;
                                 }
                             }
 
-                            if (!already_in)
+                            if (!alreadyIn)
                                 legalMoves.add(m);
                         }
                     }
@@ -168,17 +177,19 @@ public abstract class Piece {
         return legalMoves;
     }
 
+
     /**
      * Makes a move from one to another tile.
      *
      * @param initialX The initial X-coordinate of the pawn.
      * @param initialY The initial Y-coordinate of the pawn.
-     * @param finalX The final X-coordinate of the pawn.
-     * @param finalY The final Y-coordinate of the pawn.
+     * @param finalX   The final X-coordinate of the pawn.
+     * @param finalY   The final Y-coordinate of the pawn.
      */
     public void makeMove(int initialX, int initialY, int finalX, int finalY) {
 
     }
+
 
     /**
      * Checks whether the passed x is the X-coordinate of the piece.
@@ -187,12 +198,9 @@ public abstract class Piece {
      * @return Returns whether the passed x is the X-coordinate of the piece.
      */
     public boolean hasX(int x) {
-        if (getX() == x) {
-            return true;
-        } else {
-            return false;
-        }
+        return getX() == x;
     }
+
 
     /**
      * Checks whether the passed y is the Y-coordinate of the piece.
@@ -201,15 +209,13 @@ public abstract class Piece {
      * @return Returns whether the passed y is the Y-coordinate of the piece.
      */
     public boolean hasY(int y) {
-        if (getY() == y) {
-            return true;
-        } else {
-            return false;
-        }
+        return getY() == y;
     }
+
 
     /**
      * Checks whether the current piece is equal to the passed on piece.
+     *
      * @param obj The passed on piece.
      * @return Whether the current piece is equal to the passed on piece.
      */
@@ -218,14 +224,16 @@ public abstract class Piece {
         if (obj == this) return true;
         if (!(obj instanceof Piece)) return false;
 
-        return (piece_type == ((Piece)obj).piece_type && x == ((Piece)obj).x && y == ((Piece)obj).y);
+        return (pieceType == ((Piece) obj).pieceType && x == ((Piece) obj).x && y == ((Piece) obj).y);
     }
+
 
     /**
      * Gets a String of information about the current piece.
+     *
      * @return The String with information about the current piece.
      */
     public String toString() {
-        return "( " + piece_type + " : " + (isWhite ? "White" : "Black") + ", x=" + x + ", y=" + y + ")";
+        return "( " + pieceType + " : " + (isWhite ? "White" : "Black") + ", x=" + x + ", y=" + y + ")";
     }
 }

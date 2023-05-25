@@ -5,7 +5,6 @@ import com.oop.chess.model.search.Expectimax;
 import com.oop.chess.model.search.GameSearchTree;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,19 +17,15 @@ public class SearchAI extends Player {
     boolean move = false;
     boolean help;
     public boolean ML_component;
-    int oldtile_x = 0;
-    int oldtile_y = 0;
-    int newtile_x = 0;
-    int newtile_y = 0;
+    int oldTileX = 0;
+    int oldTileY = 0;
+    int newTileX = 0;
+    int newTileY = 0;
 
-    //public static double[] weights = {0, 200, 9, 5, 3, 3, 1, 1};
-    public static double[] weights = {0.008540710361972362,200.0,6.531346297830447,2.7811509905542304,1.0751178187426864,1.0238338993612515,0.3202340904449179,-0.046752062692078766};
-
-    //public static double[] weights = {1,1,1,1,1,1,1,1};
-    public static double[] weights_Minimax_without_ML_white = {1.786646829470027,201.7781061191081,8.309452416938491,4.559257109662285,2.8532239378507436,2.801940018469309,2.0983402095529735,1.7313540564159757};
-    //public static double[] weights_Minimax_without_ML_white = {-0.15783604453542877,200.0,-0.33245414299726556,-1.4035058126088686,-0.22420600607601932,-0.3522486446432376,-0.10532924925896296,-0.03715688984201507};
-    public static double[] weights_Minimax_without_ML_black = {0, 200, 9, 5, 3, 3, 1, 1};
-
+    // The initial weights for the evaluation function components.
+    public static double[] weights = {1, 200, 9, 5, 3, 3, 1, 1};
+    public static double[] weights_Minimax_without_ML_white = {1, 200, 9, 5, 3, 3, 1, 1};
+    public static double[] weights_Minimax_without_ML_black = {1, 200, 9, 5, 3, 3, 1, 1};
 
 
     /**
@@ -55,28 +50,42 @@ public class SearchAI extends Player {
     /**
      * Enum for the different implemented algorithms.
      */
-    public static enum ALGORITHMS {
+    public enum ALGORITHMS {
         MINIMAX,
         MINIMAX_ALPHABETA,
         EXPECTIMAX
     }
 
-    public static ALGORITHMS ALGORITHM = ALGORITHMS.MINIMAX_ALPHABETA;
-    public static int depth = 3;
+    // Sets the default algorithm to be the minimax with alpha-beta pruning algorithm.
+    public ALGORITHMS ALGORITHM = ALGORITHMS.MINIMAX_ALPHABETA;
+    public static int depth;
+
 
     /**
      * Sets the algorithm to be used to the passed on algorithm.
+     *
      * @param algorithm The passed on algorithm which will be used for the search.
      */
-    public static void setAlgorithm(ALGORITHMS algorithm) {
+    public void setAlgorithm(ALGORITHMS algorithm) {
         ALGORITHM = algorithm;
     }
+
+
+    /**
+     * Sets the search depth value for the search algorithm.
+     *
+     * @param newDepth The new search depth value.
+     */
+    public static void setDepth(int newDepth) {
+        depth = newDepth;
+    }
+
 
     /**
      * Creates a new AI player.
      *
      * @param white A boolean indicating whether the player is white or black.
-     * @param help A boolean indicating whether the player wants any help, which is to present the player the different moves it can make.
+     * @param help  A boolean indicating whether the player wants any help, which is to present the player the different moves it can make.
      */
     public SearchAI(boolean white, boolean help, boolean ML_component) {
         this.white = white;
@@ -86,6 +95,7 @@ public class SearchAI extends Player {
         pieces = new ArrayList<>();
     }
 
+
     /**
      * Determines the logic for the player's turn.
      *
@@ -93,18 +103,14 @@ public class SearchAI extends Player {
      * @return Since this method is to be used for the implementation in the second phase, it serves as a placeholder.
      */
     public boolean turn(Game.PieceEnum piece) {
-        // Search to depth 2 for now
-        ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                searchForMove();
-            }
-        };
-        Timer timer = new Timer(1,taskPerformer);
+        ActionListener taskPerformer = evt -> searchForMove();
+        Timer timer = new Timer(1, taskPerformer);
         timer.setRepeats(false);
         timer.start();
 
         return false;
     }
+
 
     /**
      * Sets the move of the player from the first two parameters to the second two parameters, but for now is just a placeholder for an implementation in the second phase.
@@ -115,76 +121,88 @@ public class SearchAI extends Player {
      * @param ny The Y-coordinate to which the piece will be moved.
      */
     public void setMove(int ox, int oy, int nx, int ny) {
-        this.oldtile_x = ox;
-        this.oldtile_y = oy;
-        this.newtile_x = nx;
-        this.newtile_y = ny;
+        this.oldTileX = ox;
+        this.oldTileY = oy;
+        this.newTileX = nx;
+        this.newTileY = ny;
 
         this.move = true;
     }
 
+
     /**
      * Checks whether the current AI player is white or black.
+     *
      * @return Whether the current AI player is white or black.
      */
     public boolean isWhite() {
         return white;
     }
 
+
     /**
      * Gets a String of information about the current AI player.
+     *
      * @return A String of information about the current AI player.
      */
     public String toString() {
-        return "(" + ALGORITHM + ", ML component: " + ML_component +")";
+        return "(" + ALGORITHM + ", ML component: " + ML_component + ")";
     }
+
 
     /**
      * Determines which algorithm is selected and therefore will be used as the search algorithm.
      */
     private void searchForMove() {
 
-        int[] my_best_move = new int[4];
+        int[] myBestMove = new int[4];
 
-        switch(ALGORITHM) {
+        switch (ALGORITHM) {
             // Minimax without alphabeta
             case MINIMAX:
-                my_best_move = minimax(false);
+                myBestMove = minimax(false);
                 break;
 
             // Minimax with alphabeta
             case MINIMAX_ALPHABETA:
-                my_best_move = minimax(true);
+                myBestMove = minimax(true);
                 break;
 
             // Expectimax
             case EXPECTIMAX:
-                my_best_move = expectimax();
+                myBestMove = expectimax();
                 break;
         }
 
-        Game.movePieceTo(my_best_move[0], my_best_move[1], my_best_move[2], my_best_move[3]);
+        Game.movePieceTo(myBestMove[0], myBestMove[1], myBestMove[2], myBestMove[3]);
     }
+
 
     /**
      * Starts the search using the Minimax algorithm.
-     * @param alphabeta Whether Alpha-Beta Pruning is used or not.
+     *
+     * @param alphabeta Whether Alpha-Beta Prunining is used or not.
      * @return The best moves found by the algorithm.
      */
     private int[] minimax(boolean alphabeta) {
         if (!ML_component) {
-            depth = 3;
-            return GameSearchTree.search(depth, white, alphabeta, weights_Minimax_without_ML_white, false);
+            if (white) {
+                return GameSearchTree.search(3, true, alphabeta, weights_Minimax_without_ML_white, false);
+            } else {
+                return GameSearchTree.search(3, false, alphabeta, weights_Minimax_without_ML_black, false);
+            }
         }
-        depth = 3;
         return GameSearchTree.search(depth, white, alphabeta, weights, true);
     }
 
+
     /**
      * Starts the search using the Expectimax algorithm.
+     *
      * @return The best moves found by the algorithm.
      */
     private int[] expectimax() {
+        System.out.println("Depth for expectimax: " + depth);
         return Expectimax.expectimaxSearch(depth, white);
     }
 }

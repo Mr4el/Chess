@@ -12,35 +12,33 @@ import java.util.TimerTask;
  * This class represents the implemented game.
  */
 public class ChessMain {
-    final static int FPS = 60;  // run main game loop 60 times per second
+    final static int FPS = 60;
 
     public final static boolean debug = false;
 
-    GuiMenu menu_gui;
-
-    static Game game = null;
-
-    Timer task_timer = null;
+    Timer taskTimer = null;
 
     // game singleton
-    static ChessMain dc_instance = null;
+    static ChessMain chessInstance = null;
 
-    public static String session_launch_time;
-    public static String game_launch_time;
-    public static int session_games_played;
+    public static String sessionLaunchTime;
+    public static String gameLaunchTime;
+    public static int sessionGamesPlayed;
     public static boolean SearchBotWhite = false;
+
 
     /**
      * Diverges a call to create a new game but only when no such game has been created already (using the singleton design pattern).
      *
-     * @return
+     * @return chess main instance
      */
     public static ChessMain getInstance() {
-        if (dc_instance == null) {
-            dc_instance = new ChessMain();
+        if (chessInstance == null) {
+            chessInstance = new ChessMain();
         }
-        return dc_instance;
+        return chessInstance;
     }
+
 
     /**
      * Creates a new Chess game.
@@ -50,26 +48,26 @@ public class ChessMain {
         uiUpdateTimer(1000 / FPS);
     }
 
+
     /**
      * A manual fix to the way swing handles single-threads.
      *
      * @param t The delay.
      */
     public void uiUpdateTimer(int t) {
-        if (task_timer != null)
-            task_timer.cancel();
+        if (taskTimer != null)
+            taskTimer.cancel();
 
-        task_timer = new Timer();
-        task_timer.scheduleAtFixedRate(new TimerTask() {
+        taskTimer = new Timer();
+        taskTimer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
             public void run() {
-                if (game != null) {
-                }
-                //game.run();
+
             }
         }, 0, t);
     }
+
 
     /**
      * Starts a game between two players.
@@ -82,75 +80,100 @@ public class ChessMain {
 
         if (GuiMenu.AIGame) {
             switch (GuiMenu.aiPlayer0ComboBox.getItemAt(GuiMenu.aiPlayer0ComboBox.getSelectedIndex())) {
-                case "Random Moves Bot":
+                case "Random Moves Bot" -> {
                     SearchBotWhite = false;
                     player1 = new RandomAI(true, false);
-                    break;
-                case "Minimax Bot":
+                }
+                case "Minimax Bot" -> {
                     SearchBotWhite = true;
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
                     player1 = new SearchAI(true, false, false);
-                    break;
-                case "Minimax with alpha-beta Bot":
+                    ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                }
+                case "Minimax with alpha-beta Bot" -> {
                     SearchBotWhite = true;
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
                     player1 = new SearchAI(true, false, false);
-                    break;
-                case "Minimax with alpha-beta and TDLeaf Bot":
+                    ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                }
+                case "Minimax with alpha-beta and TDLeaf Bot" -> {
                     SearchBotWhite = true;
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
                     player1 = new SearchAI(true, false, true);
-                    break;
-                case "Expectimax Bot":
+                    ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                }
+                case "Expectimax Bot" -> {
                     SearchBotWhite = true;
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
                     player1 = new SearchAI(true, false, false);
-                    break;
+                    ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                }
             }
 
             switch (GuiMenu.aiPlayer1ComboBox.getItemAt(GuiMenu.aiPlayer1ComboBox.getSelectedIndex())) {
-                case "Random Moves Bot":
-                    player2 = new RandomAI(false, false);
-                    break;
-                case "Minimax Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                case "Random Moves Bot" -> player2 = new RandomAI(false, false);
+                case "Minimax Bot" -> {
                     player2 = new SearchAI(false, false, false);
-                    break;
-                case "Minimax with alpha-beta Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                }
+                case "Minimax with alpha-beta Bot" -> {
                     player2 = new SearchAI(false, false, false);
-                    break;
-                case "Minimax with alpha-beta and TDLeaf Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                }
+                case "Minimax with alpha-beta and TDLeaf Bot" -> {
                     player2 = new SearchAI(false, false, true);
-                    break;
-                case "Expectimax Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                    ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                }
+                case "Expectimax Bot" -> {
                     player2 = new SearchAI(false, false, false);
-                    break;
+                    ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                }
             }
         } else if (GuiMenu.playingAI) {
-            player1 = new Human(true, hints);
-            switch (GuiMenu.aiComboBox.getItemAt(GuiMenu.aiComboBox.getSelectedIndex())) {
-                case "Random Moves Bot":
-                    player2 = new RandomAI(false, false);
-                    break;
-                case "Minimax Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
-                    player2 = new SearchAI(false, false, false);
-                    break;
-                case "Minimax with alpha-beta Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
-                    player2 = new SearchAI(false, false, false);
-                    break;
-                case "Minimax with alpha-beta and TDLeaf Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
-                    player2 = new SearchAI(false, false, true);
-                    break;
-                case "Expectimax Bot":
-                    SearchAI.setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
-                    player2 = new SearchAI(false, false, false);
-                    break;
+            if (!GuiMenu.playAsBlack.isSelected()) {
+                player1 = new Human(true, hints);
+                switch (GuiMenu.aiComboBox.getItemAt(GuiMenu.aiComboBox.getSelectedIndex())) {
+                    case "Random Moves Bot" -> player2 = new RandomAI(false, false);
+                    case "Minimax Bot" -> {
+                        player2 = new SearchAI(false, false, false);
+                        ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                    }
+                    case "Minimax with alpha-beta Bot" -> {
+                        player2 = new SearchAI(false, false, false);
+                        ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    }
+                    case "Minimax with alpha-beta and TDLeaf Bot" -> {
+                        player2 = new SearchAI(false, false, true);
+                        ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    }
+                    case "Expectimax Bot" -> {
+                        player2 = new SearchAI(false, false, false);
+                        ((SearchAI) player2).setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                    }
+                }
+            } else {
+                player2 = new Human(false, hints);
+                switch (GuiMenu.aiComboBox.getItemAt(GuiMenu.aiComboBox.getSelectedIndex())) {
+                    case "Random Moves Bot" -> {
+                        SearchBotWhite = false;
+                        player1 = new RandomAI(true, false);
+                    }
+                    case "Minimax Bot" -> {
+                        SearchBotWhite = true;
+                        player1 = new SearchAI(true, false, false);
+                        ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX);
+                    }
+                    case "Minimax with alpha-beta Bot" -> {
+                        SearchBotWhite = true;
+                        player1 = new SearchAI(true, false, false);
+                        ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    }
+                    case "Minimax with alpha-beta and TDLeaf Bot" -> {
+                        player1 = new SearchAI(false, false, true);
+                        ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.MINIMAX_ALPHABETA);
+                    }
+                    case "Expectimax Bot" -> {
+                        SearchBotWhite = true;
+                        player1 = new SearchAI(true, false, false);
+                        ((SearchAI) player1).setAlgorithm(SearchAI.ALGORITHMS.EXPECTIMAX);
+                    }
+                }
             }
         } else {
             player1 = new Human(true, hints);
@@ -160,11 +183,12 @@ public class ChessMain {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd__HH-mm-ss");
         LocalDateTime ldt = LocalDateTime.now();
 
-        game_launch_time = ldt.format(formatter).toString();
+        gameLaunchTime = ldt.format(formatter);
 
         Game.initializeGame(player1, player2);
         Game.runNextState(Game.TURN_STATES.START);
     }
+
 
     /**
      * The method from which the game is started and a new menu will be launched.
@@ -175,7 +199,7 @@ public class ChessMain {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd__HH-mm-ss");
         LocalDateTime ldt = LocalDateTime.now();
 
-        session_launch_time = ldt.format(formatter).toString();
+        sessionLaunchTime = ldt.format(formatter);
 
         new GuiMenu();
     }

@@ -15,7 +15,7 @@ public class AnalyticsWindow extends JFrame {
      * Creates a new Analytics Window which will feature how many games each player has won.
      */
     public AnalyticsWindow() {
-        setSize(200,100);
+        setSize(200, 100);
         setVisible(true);
 
         panel = new AnalyticsPanel();
@@ -26,6 +26,7 @@ public class AnalyticsWindow extends JFrame {
 
     /**
      * Updates the Analytics Window.
+     *
      * @param w The number of games white won.
      * @param b The number of games black won.
      */
@@ -33,8 +34,8 @@ public class AnalyticsWindow extends JFrame {
         panel.black_wins += b;
         panel.white_wins += w;
 
-        double p_w = ((double)panel.white_wins)/(panel.black_wins + panel.white_wins) * 100;
-        double p_b = ((double)panel.black_wins)/(panel.black_wins + panel.white_wins) * 100;
+        double p_w = ((double) panel.white_wins) / (panel.black_wins + panel.white_wins) * 100;
+        double p_b = ((double) panel.black_wins) / (panel.black_wins + panel.white_wins) * 100;
 
         panel.white_wins_label.setText("white wins: " + panel.white_wins + " (" + p_w + "%)");
         panel.black_wins_label.setText("black wins: " + panel.black_wins + " (" + p_b + "%)");

@@ -13,27 +13,25 @@ public class King extends Piece {
 
     public static boolean castleRight = true;
     public static boolean castleLeft = true;
-    public Rook rook;
 
     // Represents whether the king has already moved.
     boolean moved = false;
 
-    int castleMoveLeftX = -1;
-    int castleMoveRightX = -1;
 
     /**
      * Constructs a King piece using the fact whether it is white or black and its initial location on the board.
      *
      * @param white The boolean determining whether the piece is black or white (true = white and false = black).
-     * @param i The initial x-position on the board.
-     * @param j The initial y-position on the board.
+     * @param i     The initial x-position on the board.
+     * @param j     The initial y-position on the board.
      */
     public King(boolean white, int i, int j) {
         super.isWhite = white;
         super.x = i;
         super.y = j;
-        super.piece_type = PieceEnum.KING;
+        super.pieceType = PieceEnum.KING;
     }
+
 
     /**
      * Returns an identical King piece.
@@ -47,28 +45,27 @@ public class King extends Piece {
         return k;
     }
 
+
     /**
      * Retrieves all the legal moves of the current piece.
      *
      * @param initialX The initial X-coordinate of the piece.
      * @param initialY The initial Y-coordinate of the piece.
-     * @param finalX The final X-coordinate of the piece.
-     * @param finalY The final Y-coordinate of the piece.
      * @return Returns an array of all the legal moves.
      */
     @Override
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY) {
         ArrayList<int[]> legalMoves = new ArrayList<>();
 
-        int[][] positions_to_check = {
-                {1, 0},
-                {0, 1},
-                {1, 1},
-                {-1, 0},
-                {0, -1},
-                {-1, -1},
-                {-1, 1},
-                {1, -1}
+        int[][] positionsToCheck = {
+            {1, 0},
+            {0, 1},
+            {1, 1},
+            {-1, 0},
+            {0, -1},
+            {-1, -1},
+            {-1, 1},
+            {1, -1}
         };
 
         // check if castle can be performed
@@ -92,9 +89,7 @@ public class King extends Piece {
         }
 
 
-        for (int i = 0; i < positions_to_check.length; i++) {
-            int[] p = positions_to_check[i];
-
+        for (int[] p : positionsToCheck) {
             if (!Game.xyInBounds(initialX + p[0], initialY + p[1]))
                 continue;
 
@@ -107,9 +102,9 @@ public class King extends Piece {
         }
 
 
-
         return legalMoves;
     }
+
 
     /**
      * Returns whether the king can castle left.
@@ -117,8 +112,9 @@ public class King extends Piece {
      * @return Returns whether the king can castle left.
      */
     public boolean canCastleLeft() {
-        return this.castleLeft;
+        return castleLeft;
     }
+
 
     /**
      * Returns whether the king can castle right.
@@ -126,8 +122,9 @@ public class King extends Piece {
      * @return Returns whether the king can castle right.
      */
     public boolean canCastleRight() {
-        return this.castleRight;
+        return castleRight;
     }
+
 
     /**
      * Checks whether the king can castle.
@@ -136,58 +133,57 @@ public class King extends Piece {
      * @param initialY The initial Y-coordinate of the piece.
      */
     public void castleCheck(int initialX, int initialY) {
-        int check_y;
+        int checkY;
 
         if (isWhite)
-            check_y = 7;
+            checkY = 7;
         else
-            check_y = 0;
+            checkY = 0;
 
         // left rook
-        Piece rook1 = Game.getPiece(0, check_y);
+        Piece rook1 = Game.getPiece(0, checkY);
         // right rook
-        Piece rook2 = Game.getPiece(7, check_y);
+        Piece rook2 = Game.getPiece(7, checkY);
 
         if (this.moved) {
             CastleMove.cantCastleLeft();
             CastleMove.cantCastleRight();
         }
 
-        boolean piece_in_the_way_left = false;
-        check_left:
+        boolean pieceInTheWayLeft = false;
         for (int i = initialX - 1; i > 0; i--) {
-            Piece p = Game.getPiece(i, check_y);
+            Piece p = Game.getPiece(i, checkY);
             if (p != null) {
-                piece_in_the_way_left = true;
-                break check_left;
+                pieceInTheWayLeft = true;
+                break;
             }
         }
-        if (piece_in_the_way_left || !(rook1 != null && rook1.piece_type == PieceEnum.ROOK && rook1.isWhite == this.isWhite && !((Rook) rook1).moved)) {
+        if (pieceInTheWayLeft || !(rook1 != null && rook1.pieceType == PieceEnum.ROOK && rook1.isWhite == this.isWhite && !((Rook) rook1).moved)) {
             CastleMove.cantCastleLeft();
         }
 
-        boolean piece_in_the_way_right = false;
-        check_right:
+        boolean pieceInTheWayRight = false;
         for (int i = initialX + 1; i < 7; i++) {
-            Piece p = Game.getPiece(i, check_y);
+            Piece p = Game.getPiece(i, checkY);
             if (p != null) {
-                piece_in_the_way_right = true;
-                break check_right;
+                pieceInTheWayRight = true;
+                break;
             }
         }
-        if (piece_in_the_way_right || !(rook2 != null && rook2.piece_type == PieceEnum.ROOK && rook2.isWhite == this.isWhite && !((Rook) rook2).moved)) {
+        if (pieceInTheWayRight || !(rook2 != null && rook2.pieceType == PieceEnum.ROOK && rook2.isWhite == this.isWhite && !((Rook) rook2).moved)) {
             CastleMove.cantCastleRight();
         }
 
     }
 
+
     /**
      * Makes a castle move from one to another tile.
      *
-     * @param ix
-     * @param iy
-     * @param fx
-     * @param fy
+     * @param ix The initial X-coordinate of the piece.
+     * @param iy The initial Y-coordinate of the piece.
+     * @param fx The final X-coordinate of the piece.
+     * @param fy The final Y-coordinate of the piece.
      */
     public void makeCastleMove(int ix, int iy, int fx, int fy) {
         if (fy != iy)
@@ -201,13 +197,14 @@ public class King extends Piece {
             Game.movePieceTo(0, iy, fx + 1, fy);
     }
 
+
     /**
      * Makes a castle move from one tile to another.
      *
      * @param initialX The initial X-coordinate of the piece.
      * @param initialY The initial Y-coordinate of the piece.
-     * @param finalX The final X-coordinate of the piece.
-     * @param finalY The final Y-coordinate of the piece.
+     * @param finalX   The final X-coordinate of the piece.
+     * @param finalY   The final Y-coordinate of the piece.
      */
     public void makeMove(int initialX, int initialY, int finalX, int finalY) {
         makeCastleMove(initialX, initialY, finalX, finalY);

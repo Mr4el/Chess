@@ -12,6 +12,7 @@ public class VisualBoard {
 
     public static JFrame frame;
 
+
     /**
      * Creates the visual chess board.
      *
