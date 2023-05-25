@@ -11,9 +11,10 @@ public class Queen extends Piece {
 
     /**
      * Constructs a Queen piece using the fact whether it is white or black and its initial location on the board.
+     *
      * @param white The boolean determining whether the piece is black or white (true = white and false = black).
-     * @param i The initial x-position on the board starting at the bottom left corner.
-     * @param j The initial y-position on the board starting at the bottom left corner.
+     * @param i The initial x-position on the board starting.
+     * @param j The initial y-position on the board starting.
      */
     public Queen(boolean white, int i, int j) {
         super.isWhite = white;
@@ -24,6 +25,7 @@ public class Queen extends Piece {
 
     /**
      * Returns an identical Queen piece.
+     *
      * @return a new identical piece.
      */
     @Override
@@ -31,13 +33,23 @@ public class Queen extends Piece {
         return new Queen(isWhite, x, y);
     }
 
+    /**
+     * Retrieves all the legal moves of the current piece.
+     *
+     * @param initialX The initial X-coordinate of the piece.
+     * @param initialY The initial Y-coordinate of the piece.
+     * @param finalX The final X-coordinate of the piece.
+     * @param finalY The final Y-coordinate of the piece.
+     * @return Returns an array of all the legal moves.
+     */
     @Override
-    public ArrayList<int[]> getLegalMoves(int initialX, int initialY, int finalX, int finalY) {
+    public ArrayList<int[]> getLegalMoves(int initialX, int initialY) {
         Bishop bishop = new Bishop(this.isWhite, this.x, this.y);
         Rook rook = new Rook(this.isWhite, this.x, this.y);
 
-        ArrayList<int[]> bishopMoves = new ArrayList<>(bishop.getLegalMoves(initialX, initialY, finalX, finalY));
-        ArrayList<int[]> rookMoves = new ArrayList<>(rook.getLegalMoves(initialX, initialY, finalX, finalY));
+        // Gets the legal moves of both a bishop and a rook piece, since these combined contain all the legal moves a Queen can make.
+        ArrayList<int[]> bishopMoves = new ArrayList<>(bishop.getLegalMoves(initialX, initialY));
+        ArrayList<int[]> rookMoves = new ArrayList<>(rook.getLegalMoves(initialX, initialY));
 
         bishopMoves.addAll(rookMoves);
 
