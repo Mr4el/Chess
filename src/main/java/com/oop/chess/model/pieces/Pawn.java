@@ -20,13 +20,13 @@ public class Pawn extends Piece {
      * Constructs a Pawn piece using the fact whether it is white or black and its initial location on the board.
      *
      * @param white The boolean determining whether the piece is black or white (true = white and false = black).
-     * @param i     The initial x-position on the board starting.
-     * @param j     The initial y-position on the board starting.
+     * @param x     The initial x-position on the board starting.
+     * @param y     The initial y-position on the board starting.
      */
-    public Pawn(boolean white, int i, int j) {
+    public Pawn(boolean white, int x, int y) {
         super.isWhite = white;
-        super.x = i;
-        super.y = j;
+        super.x = x;
+        super.y = y;
         enPassantPossible = false;
         super.pieceType = PieceEnum.PAWN;
     }

@@ -7,6 +7,7 @@ import com.oop.chess.model.player.*;
 import com.oop.chess.gui.*;
 import com.oop.chess.model.search.FEN;
 import com.oop.chess.model.search.GameSearchTree;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -547,5 +548,32 @@ public class Game {
             }
         }
     }
-}
 
+    public static String getBoardStringRepresentation() {
+        StringBuilder boardRepresentation = new StringBuilder();
+        boardRepresentation.append(StringUtils.repeat("*", 89)).append("\n");
+
+        for (int x = 0; x <= 7; x++) {
+            for (int y = 0; y <= 7; y++) {
+
+                Piece p = board[x][y];
+                if (y == 0) boardRepresentation.append("* ");
+                else boardRepresentation.append(" | ");
+
+                if (p != null) {
+                    String color;
+                    if (p.isWhite) color = "w ";
+                    else color = "b ";
+                    boardRepresentation.append(String.format("%-8.8s", color + p.pieceType));
+                } else {
+                    boardRepresentation.append("_ ______");
+                }
+
+            }
+            boardRepresentation.append(" *\n");
+        }
+
+        boardRepresentation.append(StringUtils.repeat("*", 89)).append("\n");
+        return boardRepresentation.toString();
+    }
+}
