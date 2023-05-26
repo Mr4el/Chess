@@ -87,8 +87,11 @@ public class GuiMenu extends JFrame {
         panel.add(background);
         validate();
         background.setLayout(null);
-        resource = GuiGame.class.getResource("/logo.png");
-        this.gameTitle = new JLabel(new ImageIcon(resource));
+        //resource = GuiGame.class.getResource("/logo.png");
+        resource = GuiGame.class.getResource("/chess_icon.png");
+        ImageIcon iconImg = new ImageIcon(resource);
+        frame.setIconImage(iconImg.getImage());
+        //this.gameTitle = new JLabel(new ImageIcon(resource));
         setGameTitle();
 
         JButton playButton = new JButton("Human vs AI");
@@ -119,7 +122,7 @@ public class GuiMenu extends JFrame {
         initButton(quitButton);
         quitButton.addActionListener(e -> System.exit(0));
 
-        background.add(gameTitle);
+        //background.add(gameTitle);
         background.add(gameTitle1);
         background.add(playButton);
         background.add(multiplayerButton);
@@ -177,8 +180,11 @@ public class GuiMenu extends JFrame {
         panel.add(background);
         validate();
         background.setLayout(null);
-        resource = GuiGame.class.getResource("/logo.png");
-        gameTitle = new JLabel(new ImageIcon(resource));
+        //resource = GuiGame.class.getResource("/logo.png");
+        resource = GuiGame.class.getResource("/chess_icon.png");
+        ImageIcon iconImg = new ImageIcon(resource);
+        frame.setIconImage(iconImg.getImage());
+        //gameTitle = new JLabel(new ImageIcon(resource));
         setGameTitle();
 
         model = new SpinnerNumberModel(3, 1, 4, 1);
@@ -246,15 +252,15 @@ public class GuiMenu extends JFrame {
         });
 
 
-        background.add(gameTitle);
+        //background.add(gameTitle);
         background.add(gameTitle1);
+        background.add(backButton());
         background.add(playButton);
         background.add(showPossibleMovesAI);
         background.add(aiComboBox);
         background.add(searchDepth);
         background.add(spinner);
         background.add(playAsBlack);
-        background.add(backButton());
         return panel;
     }
 
@@ -271,8 +277,11 @@ public class GuiMenu extends JFrame {
         panel.add(background);
         validate();
         background.setLayout(null);
-        resource = GuiGame.class.getResource("/logo.png");
-        gameTitle = new JLabel(new ImageIcon(resource));
+        //resource = GuiGame.class.getResource("/logo.png");
+        resource = GuiGame.class.getResource("/chess_icon.png");
+        ImageIcon iconImg = new ImageIcon(resource);
+        frame.setIconImage(iconImg.getImage());
+        //gameTitle = new JLabel(new ImageIcon(resource));
         setGameTitle();
 
         showPossibleMovesHuman = showPossibleMoves();
@@ -291,11 +300,11 @@ public class GuiMenu extends JFrame {
             ChessMain.startGame(showPossibleMovesHuman.isSelected());
         });
 
-        background.add(gameTitle);
+        //background.add(gameTitle);
         background.add(gameTitle1);
+        background.add(backButton());
         background.add(playButton);
         background.add(showPossibleMovesHuman);
-        background.add(backButton());
         return panel;
     }
 
@@ -313,8 +322,11 @@ public class GuiMenu extends JFrame {
         panel.add(background);
         validate();
         background.setLayout(null);
-        resource = GuiGame.class.getResource("/logo.png");
-        gameTitle = new JLabel(new ImageIcon(resource));
+        //resource = GuiGame.class.getResource("/logo.png");
+        resource = GuiGame.class.getResource("/chess_icon.png");
+        ImageIcon iconImg = new ImageIcon(resource);
+        frame.setIconImage(iconImg.getImage());
+        //gameTitle = new JLabel(new ImageIcon(resource));
         setGameTitle();
 
         model = new SpinnerNumberModel(3, 1, 4, 1);
@@ -409,8 +421,9 @@ public class GuiMenu extends JFrame {
         delay.setBounds(35, 480, 250, 20);
         delay.setForeground(Color.WHITE);
 
-        background.add(gameTitle);
+        //background.add(gameTitle);
         background.add(gameTitle1);
+        background.add(backButton());
         background.add(playButton);
         background.add(whitePlayerAI);
         background.add(aiPlayer0ComboBox);
@@ -422,7 +435,6 @@ public class GuiMenu extends JFrame {
         background.add(spinner1);
         background.add(delay);
         background.add(spinner2);
-        background.add(backButton());
         return panel;
     }
 
@@ -461,11 +473,15 @@ public class GuiMenu extends JFrame {
      * @return The button to go back.
      */
     private JButton backButton() {
-        JButton backButton = new JButton("<-");
+        java.net.URL resourceIcon = GuiGame.class.getResource("/back_button.png");
+        ImageIcon btnImg = new ImageIcon(resourceIcon);
+
+        JButton backButton = new JButton(btnImg);
+        backButton.setRolloverIcon(btnImg);
         backButton.setFont(new Font("Serif", Font.PLAIN, 70));
         backButton.setForeground(Color.WHITE);
         backButton.setFocusable(false);
-        backButton.setBounds(5, 500, 100, 70);
+        backButton.setBounds(5, 140, 100, 70);
         backButton.addMouseListener(new MouseAdapter() {
 
             /**
@@ -476,6 +492,9 @@ public class GuiMenu extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 backButton.setForeground(Color.GRAY);
+                java.net.URL resourceIcon = GuiGame.class.getResource("/back_button_shadow.png");
+                ImageIcon btnImg = new ImageIcon(resourceIcon);
+                backButton.setRolloverIcon(btnImg);
             }
 
             /**
@@ -486,6 +505,9 @@ public class GuiMenu extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 backButton.setForeground(Color.WHITE);
+                java.net.URL resourceIcon = GuiGame.class.getResource("/back_button.png");
+                ImageIcon btnImg = new ImageIcon(resourceIcon);
+                backButton.setRolloverIcon(btnImg);
             }
         });
         backButton.setBorder(BorderFactory.createEmptyBorder());
@@ -500,7 +522,7 @@ public class GuiMenu extends JFrame {
      */
     private void setGameTitle() {
         java.net.URL resource;
-        gameTitle.setBounds(120, 5, 150, 200);
+        //gameTitle.setBounds(120, 5, 150, 200);
 
         try {
             resource = GuiGame.class.getResource("/font/MarkerFelt.ttc");
@@ -511,7 +533,7 @@ public class GuiMenu extends JFrame {
             System.out.println("Cannot load the font");
         }
 
-        this.gameTitle1 = new JLabel("OOP - RANDOM CHESS");
+        this.gameTitle1 = new JLabel("RANDOM CHESS");
         gameTitle1.setBounds(45, 50, 400, 100);
         gameTitle1.setForeground(Color.WHITE);
         gameTitle1.setFont(markerFelt);

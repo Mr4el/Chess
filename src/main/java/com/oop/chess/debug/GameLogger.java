@@ -138,4 +138,11 @@ public class GameLogger {
         averageStatesEvaluated = 0;
         totalEvaluations = 0;
     }
+
+    public static void disposeAnalytics() {
+        if (analyticsWindow != null) {
+            analyticsWindow.dispose();
+            analyticsWindow = null;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.oop.chess;
 
+import com.oop.chess.debug.AnalyticsWindow;
 import com.oop.chess.debug.GameLogger;
 import com.oop.chess.model.machine.learning.TemporalDifferenceLeaf;
 import com.oop.chess.model.pieces.*;
@@ -9,8 +10,13 @@ import com.oop.chess.model.search.FEN;
 import com.oop.chess.model.search.GameSearchTree;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * This class represents a single game.
@@ -254,6 +260,106 @@ public class Game {
 
                 gui.setTitle(title);
 
+                //Create Game over frame
+                JFrame frame = new JFrame("Game Over!");
+                frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                frame.setSize(600, 300);
+                frame.setResizable(false);
+                frame.setLocationRelativeTo(null);
+
+                java.net.URL resourceIcon = GuiGame.class.getResource("/chess_icon.png");
+                ImageIcon iconImg = new ImageIcon(resourceIcon);
+                frame.setIconImage(iconImg.getImage());
+
+                // Create a panel to hold the buttons
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                panel.setBackground(Color.black);
+
+                java.net.URL resource;
+                Font markerFelt = null;
+                Font markerFelt2 = null;
+
+                try {
+                    resource = GuiGame.class.getResource("/font/MarkerFelt.ttc");
+                    markerFelt = Font.createFont(Font.TRUETYPE_FONT, resource.openStream()).deriveFont(60f);
+                    markerFelt2 = Font.createFont(Font.TRUETYPE_FONT, resource.openStream()).deriveFont(30f);
+                    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    ge.registerFont(markerFelt);
+                } catch (IOException | FontFormatException e) {
+                    System.out.println("Cannot load the font");
+                }
+
+                JLabel endTitle = new JLabel("GAME IS OVER!");
+                endTitle.setBounds(100, 50, 400, 100);
+                endTitle.setForeground(Color.GREEN);
+                if (markerFelt != null)
+                    endTitle.setFont(markerFelt);
+
+                JLabel brLabel = new JLabel("<html><br></html>");
+
+                // Game result
+                JLabel endRes = new JLabel(title);
+                endRes.setBounds(100, 150, 400, 100);
+                endRes.setForeground(Color.WHITE);
+                if (markerFelt2 != null)
+                    endRes.setFont(markerFelt2);
+
+                // Create a separate panel for buttons with FlowLayout
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                buttonPanel.setBackground(Color.BLACK);
+                JPanel emptyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                emptyPanel.setBackground(Color.BLACK);
+
+                // Create the buttons
+                JButton homeButton = new JButton("Home ");
+                homeButton.setFont(new Font("Serif", Font.BOLD, 30));
+                homeButton.setBorder(BorderFactory.createEmptyBorder());
+                homeButton.setBackground(Color.white);
+                homeButton.setForeground(Color.decode("#ffe6b3")); // Set button text color to white
+                homeButton.setContentAreaFilled(false);
+                homeButton.setFocusable(false);
+                homeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                homeButton.setBounds(625, 475, 75, 75);
+                homeButton.addActionListener(e -> {
+                    frame.dispose();
+                    gui.dispose();
+                    GameLogger.disposeAnalytics();
+                    new GuiMenu();
+                });
+
+                JButton restartGame = new JButton("Replay");
+                restartGame.setFont(new Font("Serif", Font.BOLD, 30));
+                restartGame.setBorder(BorderFactory.createEmptyBorder());
+                restartGame.setContentAreaFilled(false);
+                restartGame.setBackground(Color.white);
+                restartGame.setForeground(Color.decode("#ffe6b3")); // Set button text color to white
+                restartGame.setFocusable(false);
+                restartGame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                restartGame.setBounds(550, 475, 75, 75);
+                restartGame.addActionListener(e -> Game.restart());
+
+                // Add the buttons to the button panel
+                buttonPanel.add(homeButton);
+                buttonPanel.add(restartGame);
+
+                // Add the labels and buttons to the panel
+                panel.add(Box.createVerticalGlue());
+                panel.add(endTitle);
+                panel.add(brLabel);
+                panel.add(endRes);
+                panel.add(emptyPanel);
+                panel.add(buttonPanel);
+                panel.add(Box.createVerticalGlue());
+
+                // Add the panel to the frame
+                frame.getContentPane().add(panel);
+
+                // Set the frame to be visible
+                frame.setVisible(true);
+
+                frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
                 break;
 
             default:
@@ -351,8 +457,9 @@ public class Game {
                 if (p2.pieceType == PieceEnum.KING && play)
                     kingCaptured = true;
 
-                if (play)
+                if (play) {
                     System.out.println(p2.pieceType + " of " + (p2.isWhite ? "white" : "black") + " captured!");
+                }
             }
 
             if (p != null) {
