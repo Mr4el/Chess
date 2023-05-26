@@ -22,13 +22,13 @@ public class King extends Piece {
      * Constructs a King piece using the fact whether it is white or black and its initial location on the board.
      *
      * @param white The boolean determining whether the piece is black or white (true = white and false = black).
-     * @param i     The initial x-position on the board.
-     * @param j     The initial y-position on the board.
+     * @param x     The initial x-position on the board.
+     * @param y     The initial y-position on the board.
      */
-    public King(boolean white, int i, int j) {
+    public King(boolean white, int x, int y) {
         super.isWhite = white;
-        super.x = i;
-        super.y = j;
+        super.x = x;
+        super.y = y;
         super.pieceType = PieceEnum.KING;
     }
 
