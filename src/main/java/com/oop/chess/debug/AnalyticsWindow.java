@@ -1,6 +1,7 @@
 package com.oop.chess.debug;
 
 import com.oop.chess.Game;
+import com.oop.chess.gui.GuiGame;
 import com.oop.chess.model.player.SearchAI;
 
 import javax.swing.*;
@@ -15,10 +16,13 @@ public class AnalyticsWindow extends JFrame {
      * Creates a new Analytics Window which will feature how many games each player has won.
      */
     public AnalyticsWindow() {
-        setSize(200, 100);
+        setSize(200, 300);
         setVisible(true);
 
         panel = new AnalyticsPanel();
+        java.net.URL resource = GuiGame.class.getResource("/chess_icon.png");
+        ImageIcon iconImg = new ImageIcon(resource);
+        this.setIconImage(iconImg.getImage());
         add(panel);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);

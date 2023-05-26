@@ -111,6 +111,11 @@ public class GuiGame extends JFrame {
         frame.add(legalPiece);
         frame.add(visualBoard);
         frame.add(dicePanel);
+
+        java.net.URL resource = GuiGame.class.getResource("/chess_icon.png");
+        ImageIcon iconImg = new ImageIcon(resource);
+        frame.setIconImage(iconImg.getImage());
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);

@@ -196,7 +196,7 @@ public class HumanClicking implements MouseListener {
 
         newTile = (JPanel) e.getComponent().getComponentAt(p);
 
-        if (newTile.getComponents().length >= 1) {
+        if (newTile != null && newTile.getComponents().length >= 1) {
             VisualPiece destinationPiece = (VisualPiece) newTile.getComponent(0);
 
             if (destinationPiece.white == Game.currentPlayer.isWhite()) {
@@ -204,6 +204,8 @@ public class HumanClicking implements MouseListener {
                 return;
             }
         }
+        if (newTile == null)
+            return;
 
         Dimension boardDimensions = board.getSize();
         double w = boardDimensions.getWidth();
