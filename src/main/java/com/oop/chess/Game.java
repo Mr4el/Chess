@@ -30,7 +30,7 @@ public class Game {
     public static Player[] players = {null, null};
     public static Player currentPlayer;
     public static Player otherPlayer;
-    static int currentPlayerIndex;
+    public static int currentPlayerIndex;
 
     // How many moves since the last piece capture/pawn advance?
     static int halfMoves;
@@ -185,6 +185,7 @@ public class Game {
                 if (ChessMain.debug)
                     System.out.println("GAME STATE - " + currentPlayer + " can make a move.");
 
+                VisualBoard.discardRecoloredCells();
                 currentPlayer.turn(legalPiece);
                 break;
 
@@ -236,6 +237,7 @@ public class Game {
                     title = "Black captured White's King!";
                     currentPlayerIndex = 1;
                 }
+                gui.setTitle(title);
 
                 if (currentPlayer instanceof SearchAI && ((SearchAI) currentPlayer).ML_component)
                     GameSearchTree.bestLeafNodes.add(1.0);
@@ -256,9 +258,8 @@ public class Game {
                 if (GuiMenu.AIGame && gamesToBePlayed > 1) {
                     gamesToBePlayed--;
                     restart();
+                    if (gamesToBePlayed > 0) break;
                 }
-
-                gui.setTitle(title);
 
                 //Create Game over frame
                 JFrame frame = new JFrame("Game Over!");
@@ -661,9 +662,9 @@ public class Game {
      *
      * @return A string with a textual representation of the board with figures
      */
-    public static String getBoardStringRepresentation() {
+    public static String getBoardStringRepresentation(boolean newLinesAsText) {
         StringBuilder boardRepresentation = new StringBuilder();
-        boardRepresentation.append(StringUtils.repeat("*", 89)).append("\n");
+        boardRepresentation.append(StringUtils.repeat("*", 89)).append((newLinesAsText) ? "\\n" : "\n");
 
         for (int y = 0; y <= 7; y++) {
             for (int x = 0; x <= 7; x++) {
@@ -683,10 +684,10 @@ public class Game {
                 }
 
             }
-            boardRepresentation.append(" *\n");
+            boardRepresentation.append((newLinesAsText) ? " *\\n" : " *\n");
         }
 
-        boardRepresentation.append(StringUtils.repeat("*", 89)).append("\n");
+        boardRepresentation.append(StringUtils.repeat("*", 89)).append((newLinesAsText) ? "\\n" : "\n");
         return boardRepresentation.toString();
     }
 }

@@ -22,7 +22,7 @@ public class BaseJUnitTest {
         System.out.println();
         System.out.println("Result:");
         System.out.println();
-        System.out.print(Game.getBoardStringRepresentation());
+        System.out.print(Game.getBoardStringRepresentation(false));
         System.out.println();
         testCounter++;
     }
@@ -31,7 +31,7 @@ public class BaseJUnitTest {
         System.out.println("Test number " + testCounter + " " + StringUtils.repeat(".", 76));
         System.out.println("Initial state:");
         System.out.println();
-        System.out.print(Game.getBoardStringRepresentation());
+        System.out.print(Game.getBoardStringRepresentation(false));
     }
 
     public void markLegalMoves(boolean isWhite, ArrayList<int[]> legalMoves) {

@@ -45,7 +45,7 @@ public class Expectimax {
      * Performs the search at the given depth. This method contains the implementation of the Expectimax algorithm.
      *
      * @param depth            The depth at which the search will be performed.
-     * @param isWhite         Whether the player is white or black.
+     * @param isWhite          Whether the player is white or black.
      * @param maximizingPlayer Whether the current player is the maximizing player or not.
      * @param chanceLayer      Whether the current layer is a chance layer or not.
      * @param currentPiece     The current piece from which we will perform the algorithm.
