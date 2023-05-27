@@ -656,22 +656,28 @@ public class Game {
         }
     }
 
+    /**
+     * Returns the state of the entire board as a text.
+     *
+     * @return A string with a textual representation of the board with figures
+     */
     public static String getBoardStringRepresentation() {
         StringBuilder boardRepresentation = new StringBuilder();
         boardRepresentation.append(StringUtils.repeat("*", 89)).append("\n");
 
-        for (int x = 0; x <= 7; x++) {
-            for (int y = 0; y <= 7; y++) {
+        for (int y = 0; y <= 7; y++) {
+            for (int x = 0; x <= 7; x++) {
 
-                Piece p = board[x][y];
-                if (y == 0) boardRepresentation.append("* ");
+                Piece p = board[y][x];
+                if (x == 0) boardRepresentation.append("* ");
                 else boardRepresentation.append(" | ");
 
                 if (p != null) {
                     String color;
                     if (p.isWhite) color = "w ";
                     else color = "b ";
-                    boardRepresentation.append(String.format("%-8.8s", color + p.pieceType));
+                    String pieceType = p.pieceType == PieceEnum.ANY ? "marker" : p.pieceType.toString();
+                    boardRepresentation.append(String.format("%-8.8s", color + pieceType));
                 } else {
                     boardRepresentation.append("_ ______");
                 }

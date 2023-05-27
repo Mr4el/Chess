@@ -54,6 +54,7 @@ public class Rook extends Piece {
     public ArrayList<int[]> getLegalMoves(int initialX, int initialY) {
         ArrayList<int[]> legalMoves = new ArrayList<>();
 
+        // right
         boolean noMoves = true;
         for (int i = initialX + 1; i <= 7 && noMoves; i++) {
             if (!Game.xyInBounds(i, initialY))

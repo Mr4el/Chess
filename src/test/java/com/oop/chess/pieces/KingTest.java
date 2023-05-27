@@ -7,11 +7,13 @@ import org.junit.jupiter.api.BeforeEach;
 
 public class KingTest extends BaseJUnitTest {
 
-    private King subject;
+    private King king;
+    private final int x = 2;
+    private final int y = 4;
 
     @BeforeEach
     private void setUp() {
-        subject = new King(true, 3, 3);
-        Game.board[3][3] = subject;
+        king = new King(true, x, y);
+        Game.board[y][x] = king;
     }
 }

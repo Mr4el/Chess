@@ -8,17 +8,19 @@ import org.junit.jupiter.api.Test;
 
 public class BishopTest extends BaseJUnitTest {
 
-    private Bishop subject;
+    private Bishop bishop;
+    private final int x = 2;
+    private final int y = 4;
 
     @BeforeEach
     private void setUp() {
-        subject = new Bishop(true, 3, 3);
-        Game.board[3][3] = subject;
+        bishop = new Bishop(true, x, y);
+        Game.board[y][x] = bishop;
     }
 
     @Test
     public void check() {
         printInitialState();
-        System.out.println(subject.getLegalMoves(subject.x, subject.y));
+        System.out.println(bishop.getLegalMoves(x, y));
     }
 }

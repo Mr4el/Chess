@@ -7,11 +7,13 @@ import org.junit.jupiter.api.BeforeEach;
 
 public class KnightTest extends BaseJUnitTest {
 
-    private Knight subject;
+    private Knight knight;
+    private final int x = 2;
+    private final int y = 4;
 
     @BeforeEach
     private void setUp() {
-        subject = new Knight(true, 3, 3);
-        Game.board[3][3] = subject;
+        knight = new Knight(true, x, y);
+        Game.board[y][x] = knight;
     }
 }
