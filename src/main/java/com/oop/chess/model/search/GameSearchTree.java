@@ -4,13 +4,11 @@ import com.oop.chess.EvaluationFunction;
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
 import com.oop.chess.debug.GameLogger;
+import com.oop.chess.model.config.Configuration;
 
 import java.util.ArrayList;
 
 public class GameSearchTree {
-
-    // Display the search visually? (Slower if true)
-    static boolean visualSearch = false;
 
     // Store the best move found by the GST (from_x,from_y,to_x,to_y)
     // Change this only for root node once minimax scores are known?
@@ -29,7 +27,7 @@ public class GameSearchTree {
     /**
      * Retrieves the best move while performing the search using the Minimax algorithm.
      *
-     * @param depth      The maximum depth at which the algorithm will search.
+     * @param depth     The maximum depth at which the algorithm will search.
      * @param isWhite   Whether the player is white or black.
      * @param alphaBeta Whether Alpha-Beta Pruning is used or not.
      * @return The best move.
@@ -49,7 +47,7 @@ public class GameSearchTree {
 
         GameLogger.logStatesSearched(statesEvaluated, optimalValue);
 
-        if (visualSearch)
+        if (Configuration.enableVisualSearch)
             Game.rebuildBoard();
 
         rounds++;
@@ -62,7 +60,7 @@ public class GameSearchTree {
      * Performs the search at the given depth. This method contains the implementation of the Minimax algorithm.
      *
      * @param depth            The depth at which the search will be performed.
-     * @param isWhite         Whether the player is white or black.
+     * @param isWhite          Whether the player is white or black.
      * @param root             Whether the current board is the root.
      * @param maximizingPlayer Whether the current player is the maximizing player or not.
      * @param alpha            The alpha value.
@@ -113,7 +111,7 @@ public class GameSearchTree {
 
                 // Store state, execute move, restore state
                 String node = FEN.encode(Game.board, isWhite ? 0 : 1);
-                Game.movePieceTo(move[0], move[1], move[2], move[3], visualSearch, false);
+                Game.movePieceTo(move[0], move[1], move[2], move[3], Configuration.enableVisualSearch, false);
 
                 ArrayList<Object> childNode = depthSearch(depth - 1, !isWhite, false, false, alpha, beta, weights);
                 double evaluationValue = (double) childNode.get(0);
@@ -155,7 +153,7 @@ public class GameSearchTree {
 
                 // Store state, execute move, restore state
                 String node = FEN.encode(Game.board, isWhite ? 0 : 1);
-                Game.movePieceTo(move[0], move[1], move[2], move[3], visualSearch, false);
+                Game.movePieceTo(move[0], move[1], move[2], move[3], Configuration.enableVisualSearch, false);
 
                 ArrayList<Object> childNode = depthSearch(depth - 1, !isWhite, false, true, alpha, beta, weights);
                 double evaluationValue = (double) childNode.get(0);

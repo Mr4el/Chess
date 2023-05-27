@@ -24,7 +24,7 @@ public class FEN {
      * Note: The encoding process is split up into multiple sub-methods.
      * The encoding of the actual board and additional information is kept separate.
      *
-     * @param board                The board to be converted into FEN.
+     * @param board              The board to be converted into FEN.
      * @param currentPlayerIndex Current player is white or black?
      * @return FEN string of board.
      */
@@ -38,10 +38,10 @@ public class FEN {
      * Note: The encoding process is split up into multiple sub-methods.
      * The encoding of the actual board and additional information is kept separate.
      *
-     * @param board                The board to be converted into FEN.
+     * @param board              The board to be converted into FEN.
      * @param currentPlayerIndex Current player is white or black?
-     * @param halfMoves           The number of half moves.
-     * @param fullMoves           The number of full moves.
+     * @param halfMoves          The number of half moves.
+     * @param fullMoves          The number of full moves.
      * @return FEN string of board.
      */
     public static String encode(Piece[][] board, int currentPlayerIndex, int halfMoves, int fullMoves) {
@@ -53,7 +53,7 @@ public class FEN {
         enpassantCoords[1] = -1;
         enpassantTile = "-";
 
-        // Enocde the board
+        // Encode the board
         fenString += encodeBoard(board) + " ";
 
         fenString += (currentPlayerIndex == 0 ? "w" : "b") + " ";

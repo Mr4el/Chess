@@ -1,0 +1,21 @@
+### ChatGpt configuration
+chat-gpt.api.enable = false
+chat-gpt.api.url = https://api.openai.com/v1/chat/completions
+chat-gpt.api.key =
+chat-gpt.api.model = gpt-3.5-turbo
+
+### Visual search
+# Display the search visually (Slower if true)
+application.visual.search = false
+
+### AI
+# The values of the discount factor (LAMBDA), the learning rate (ALPHA) and the constant in the tanh function (BETA).
+application.temporal.different.leaf.lambda = 0.7
+application.temporal.different.leaf.alpha = 1.0
+application.temporal.different.leaf.beta = 0.0025
+
+# Gradually decrease the learning
+application.temporal.different.leaf.alpha-decrease-rate = 0.01
+# Equals to alpha
+application.temporal.different.leaf.max-alpha = 1.0
+application.temporal.different.leaf.min-alpha = 0.01

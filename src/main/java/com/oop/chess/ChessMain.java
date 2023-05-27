@@ -1,6 +1,7 @@
 package com.oop.chess;
 
 import com.oop.chess.gui.*;
+import com.oop.chess.model.config.Configuration;
 import com.oop.chess.model.player.*;
 
 import java.time.LocalDateTime;
@@ -196,6 +197,7 @@ public class ChessMain {
      * @param args The arguments to be handled by the main method.
      */
     public static void main(String[] args) {
+        Configuration.loadConfiguration();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd__HH-mm-ss");
         LocalDateTime ldt = LocalDateTime.now();
 

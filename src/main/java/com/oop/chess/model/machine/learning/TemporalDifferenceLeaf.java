@@ -2,6 +2,7 @@ package com.oop.chess.model.machine.learning;
 
 import com.oop.chess.EvaluationFunction;
 import com.oop.chess.debug.GameLogger;
+import com.oop.chess.model.config.Configuration;
 import com.oop.chess.model.player.SearchAI;
 import com.oop.chess.model.search.FEN;
 
@@ -15,27 +16,15 @@ public class TemporalDifferenceLeaf {
     // This array determines which elements in the weights array are fixed.
     static boolean[] fixed = {false, true, false, false, false, false, false, false};
 
-    // The values of the discount factor (LAMBDA), the learning rate (ALPHA) and the constant in the tanh function (BETA).
-    final static double LAMBDA = 0.7;
-    static double ALPHA = 1.0;
-    final static double BETA = 0.0025;
-
-    // gradually decrease the learning
-    final static double ALPHA_DECREASE_RATE = 0.01;
-    final static double MAX_ALPHA = ALPHA;
-    final static double MIN_ALPHA = 0.01;
-
     static int games = 0;
 
 
     /**
      * Updates the weights of all the evaluation functions.
-     * <p>
-     * The TDLEAF formula can be found here (page 2, equation 4): <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.117.9094&rep=rep1&type=pdf">...</a>.
      *
      * @param allStates The states of the board after the agent has made a move.
-     * @param isWhite    Whether the player is white or black.
-     * @param weights    The current weights of the evaluation function components.
+     * @param isWhite   Whether the player is white or black.
+     * @param weights   The current weights of the evaluation function components.
      */
     public static void updateWeights(ArrayList<Object> allStates, boolean isWhite, double[] weights) {
         System.out.println(allStates.toString());
@@ -84,14 +73,13 @@ public class TemporalDifferenceLeaf {
 
                     // The temporal difference between the recently calculated nextState and currentState.
                     double dj = nextStateConversion - currentStateConversion;
-                    // The following line forms the part in between the square brackets of equation 4 on page 2 (link in Javadoc).
-                    lambdaDtSum += Math.pow(LAMBDA, j - t) * dj;
+                    lambdaDtSum += Math.pow(Configuration.lambda, j - t) * dj;
                 }
-                // Combining the part in between the square brackets and the calculated evaluation value of equation 4 on page 2 (link in Javadoc).
+                // Combining the part in between the square brackets and the calculated evaluation value.
                 finalValue += partialDerivative_conversion * lambdaDtSum;
             }
-            // Finally, updating each weight by calculating the whole equation 4 on page 2 (link in Javadoc).
-            weightChange[i] = ALPHA * finalValue;
+            // Finally, updating each weight by calculating the whole equation.
+            weightChange[i] = Configuration.alpha * finalValue;
             newWeights[i] = weights[i] + weightChange[i];
         }
 
@@ -99,7 +87,7 @@ public class TemporalDifferenceLeaf {
 
         // Decreasing the learning rate.
         if ((double) (allStates.get(allStates.size() - 1)) == 1.0) {
-            ALPHA = clamp(ALPHA - ALPHA_DECREASE_RATE, MIN_ALPHA, MAX_ALPHA);
+            Configuration.alpha = clamp(Configuration.alpha - Configuration.alphaDecreaseRate, Configuration.minAlpha, Configuration.maxAlpha);
         }
 
         // Changing the "old" weights to the newly calculated weights.
@@ -116,7 +104,7 @@ public class TemporalDifferenceLeaf {
      */
     public static double tanh(double evaluationValue) {
 
-        evaluationValue *= BETA;
+        evaluationValue *= Configuration.beta;
 
         double sinh = Math.exp(evaluationValue) - Math.exp(-evaluationValue);
         double cosh = Math.exp(evaluationValue) + Math.exp(-evaluationValue);

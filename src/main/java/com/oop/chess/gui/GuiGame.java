@@ -3,6 +3,7 @@ package com.oop.chess.gui;
 import com.oop.chess.ChessMain;
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
+import com.oop.chess.model.config.Configuration;
 import com.oop.chess.model.player.Human;
 
 import javax.swing.*;
@@ -225,7 +226,39 @@ public class GuiGame extends JFrame {
             // Thinking text if black player is AI
             if (!(Game.currentPlayer instanceof Human))
                 whoseTurn.setText("<html>Black's Turn<br>(Thinking...)</html>");
-        } else
+
+            // Asking text if black player is Human
+            if (Game.currentPlayer instanceof Human && Configuration.enableChatGptIntegration)
+                whoseTurn.setText("<html>Black's Turn<br>(Asking ChatGpt...)</html>");
+        } else {
             whoseTurn.setText("White's Turn");
+
+            // Asking text if white player is Human
+            if (Game.currentPlayer instanceof Human && Configuration.enableChatGptIntegration)
+                whoseTurn.setText("<html>White's Turn<br>(Asking ChatGpt...)</html>");
+        }
+    }
+
+    /**
+     * Updates whose turn is currently on ChatGPT's response.
+     */
+    public static void updateWhoseTurnOnChatGptResponse(boolean isAdviceEmpty) {
+        if (Game.currentPlayerIndex == 1) {
+            whoseTurn.setText("Black's Turn");
+
+            // Thinking text if black player is AI
+            if (!(Game.currentPlayer instanceof Human))
+                whoseTurn.setText("<html>Black's Turn<br>(Thinking...)</html>");
+
+            // Error text if black player is Human and ChatGPT answered in the wrong way
+            if (Game.currentPlayer instanceof Human && isAdviceEmpty)
+                whoseTurn.setText("<html>Black's Turn<br>(I have no advice)</html>");
+        } else {
+            whoseTurn.setText("White's Turn");
+
+            // Error text if white player is Human and ChatGPT answered in the wrong way
+            if (Game.currentPlayer instanceof Human && isAdviceEmpty)
+                whoseTurn.setText("<html>White's Turn<br>(I have no advice)</html>");
+        }
     }
 }

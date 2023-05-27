@@ -2,9 +2,17 @@ package com.oop.chess.model.player;
 
 import com.oop.chess.Game;
 import com.oop.chess.Game.PieceEnum;
+import com.oop.chess.gui.GuiGame;
 import com.oop.chess.gui.HumanClicking;
+import com.oop.chess.gui.VisualBoard;
+import com.oop.chess.model.config.Configuration;
+import com.oop.chess.model.integrations.chat_gpt.ChatGPT;
+import com.oop.chess.model.integrations.obj.ChatGPTAdvice;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This class represents a human player.
@@ -12,7 +20,7 @@ import java.util.ArrayList;
 public class Human extends Player {
 
     boolean move;
-    boolean white;
+    boolean isWhite;
     boolean help;
     int oldTileX = 0;
     int oldTileY = 0;
@@ -24,11 +32,11 @@ public class Human extends Player {
     /**
      * Creates a new human player.
      *
-     * @param white A boolean indicating whether the player is white or black.
-     * @param help  A boolean indicating whether the player wants any help, which is to present the player the different moves it can make.
+     * @param isWhite A boolean indicating whether the player is white or black.
+     * @param help    A boolean indicating whether the player wants any help, which is to present the player the different moves it can make.
      */
-    public Human(boolean white, boolean help) {
-        this.white = white;
+    public Human(boolean isWhite, boolean help) {
+        this.isWhite = isWhite;
         this.help = help;
 
         pieces = new ArrayList<>();
@@ -42,6 +50,8 @@ public class Human extends Player {
      * @return Whether the player has made a move and thus ended their turn.
      */
     public boolean turn(PieceEnum piece) {
+        askChatGptToHelpTheUser();
+
         // Add the human's clicker to the board
         if (clicker == null) {
             clicker = new HumanClicking(this);
@@ -68,7 +78,7 @@ public class Human extends Player {
 
         clicker.enabled = false;
 
-        Game.movePieceTo(ox,oy,nx,ny);
+        Game.movePieceTo(ox, oy, nx, ny);
 
         this.move = true;
     }
@@ -90,7 +100,7 @@ public class Human extends Player {
      * @return Whether the current player is white or black.
      */
     public boolean isWhite() {
-        return white;
+        return isWhite;
     }
 
 
@@ -100,6 +110,29 @@ public class Human extends Player {
      * @return A String of information about the current human player.
      */
     public String toString() {
-        return "(Human Player," + (white ? "White" : "Black") + ")";
+        return "(Human Player," + (isWhite ? "White" : "Black") + ")";
+    }
+
+
+    /**
+     * Makes an asynchronous ChatGPT request to get a hint for the user.
+     */
+    private void askChatGptToHelpTheUser() {
+        if (Configuration.enableChatGptIntegration) {
+            CompletableFuture<ChatGPTAdvice> future = ChatGPT.askAdvice(isWhite);
+
+            future.thenAccept(advice -> {
+                GuiGame.updateWhoseTurnOnChatGptResponse(advice.isEmpty());
+
+                if (!advice.isEmpty()) {
+                    JPanel fromTile = (JPanel) GuiGame.visualBoard.getComponent(advice.getFromTileX() + advice.getFromTileY() * 8);
+                    JPanel toTile = (JPanel) GuiGame.visualBoard.getComponent(advice.getToTileX() + advice.getToTileY() * 8);
+                    fromTile.setBackground(Color.decode("#5764F1"));
+                    toTile.setBackground(Color.decode("#5764F1"));
+                    VisualBoard.recoloredCells.add(advice.getFromTile());
+                    VisualBoard.recoloredCells.add(advice.getToTile());
+                }
+            });
+        }
     }
 }
