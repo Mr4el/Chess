@@ -86,6 +86,6 @@ application.temporal.different.leaf.min-alpha = 0.01
 
 ## Game Rules
 
-1. 1
-2. 2
-3. 3
+1. There is no check or checkmate. The King is allowed to move to squares that are under attack by the opponent's pieces, and the game ends when one player captures the King of the other player.
+2. A die is rolled for each turn to indicate which pieces the player can move. In the game, the legal piece is displayed on the right side of the screen. If the die chooses an immobile piece, it simply rolls again for the current player.
+3. If the die's piece type is pawn and if a pawn is moved into the last row for promotion, it can be promoted to any piece (the piece will be promoted to the type that each player selects in the dropdown menus to the right of the GUI).
