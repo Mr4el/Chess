@@ -67,7 +67,7 @@ public class ChatGPT {
             "table:\\n" + boardRepresentation + "The coordinates of the cells on the board consist of a latin letter " +
             "and a number, where the letter is a column and the number is a row. The letter has a limit from a to h " +
             "and the number from 1 to 8. The numbering starts from the lower left corner, so at the beginning of the " +
-            "game the whit king is on cell e1, and the black king is on cell e8.\\nThe figure on the board is " +
+            "game the white king is on cell e1, and the black king is on cell e8.\\nThe figure on the board is " +
             "described in the following format: the colour of the figure, the name of the figure. The colour of the " +
             "figure is indicated as w - white or b - black. The name of the figure is shown in caps. If there is no " +
             "figure on the cell, then the cell has the following entry '_ ______'.\\nAt the moment you can make one " +
