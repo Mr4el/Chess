@@ -1,6 +1,7 @@
 # Chess
 
-Project created by students of the University of Latvia as part of group work for the course Object Oriented Programming
+Project created by students of the University of Latvia as part of group work for the course Object Oriented Programming\
+[**Full description of the project**](https://drive.google.com/file/d/1FopQNMVX-0RNTQN4JOqSnT_EA-zt5TBC/view?usp=sharing)
 
 ### Authors:
 
