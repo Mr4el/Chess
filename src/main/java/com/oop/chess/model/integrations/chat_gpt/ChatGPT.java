@@ -118,7 +118,6 @@ public class ChatGPT {
     private static String makeRequest(String prompt) {
         String jsonRequest = "{\"model\": \"" + Configuration.chatGptApiModel + "\",\"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}],\"temperature\": 0.7}";
 
-
         try {
             HttpPost httpPost = new HttpPost(Configuration.chatGptApiUrl);
             httpPost.setHeader("Content-Type", "application/json");
@@ -140,11 +139,10 @@ public class ChatGPT {
             for (JsonNode jsonElement : jsonArray) {
                 return jsonElement.get("message").get("content").asText();
             }
-            return "";
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
         }
+        return "";
     }
 
 
@@ -183,15 +181,15 @@ public class ChatGPT {
         } else if (lastChanceMatcher.find()) {
             String advice = lastChanceMatcher.group(0);
 
-            to = convertToInternalCords(advice.substring(3, 5));
+            to = convertToInternalCords(advice.substring(0, 2));
 
-            // Trying to guess from
+            // Trying to guess from cords
             boolean missingPointFound = false;
             for (int y = 0; y < 8; y++) {
                 if (missingPointFound) break;
                 for (int x = 0; x < 8; x++) {
                     Piece p = Game.board[y][x];
-                    if (p != null && Game.board[y][x].pieceType == Game.legalPiece) {
+                    if (p != null && p.pieceType == Game.legalPiece) {
                         if (legalMovesContainsMove(p.getLegalMoves(p.x, p.y), to)) {
                             from = new int[]{p.x, p.y};
                             missingPointFound = true;

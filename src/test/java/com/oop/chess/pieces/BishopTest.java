@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -36,13 +35,13 @@ public class BishopTest extends BaseJUnitTest {
     public void getLegalMovesForABishop() {
         // Given
         ArrayList<int[]> expectedLegalMoves = legalMovesForBishopOnBlankBoard();
-        BishopTest.LegalMovesComparator comparator = new BishopTest.LegalMovesComparator();
-        Collections.sort(expectedLegalMoves, comparator);
+        BishopTest.LegalMovesComparator comparator = new LegalMovesComparator();
+        expectedLegalMoves.sort(comparator);
         printInitialState();
 
         // When
         final ArrayList<int[]> moves = bishop.getLegalMoves(x, y);
-        Collections.sort(moves, comparator);
+        moves.sort(comparator);
 
         // Then
         markLegalMoves(true, moves);
@@ -63,8 +62,8 @@ public class BishopTest extends BaseJUnitTest {
 
         // When
         final ArrayList<int[]> moves = bishop.getLegalMoves(x, y);
-        BishopTest.LegalMovesComparator comparator = new BishopTest.LegalMovesComparator();
-        Collections.sort(moves, comparator);
+        BishopTest.LegalMovesComparator comparator = new LegalMovesComparator();
+        moves.sort(comparator);
 
         // Then
         markLegalMoves(true, moves);
@@ -89,8 +88,8 @@ public class BishopTest extends BaseJUnitTest {
 
         // When
         final ArrayList<int[]> moves = bishop.getLegalMoves(x, y);
-        BishopTest.LegalMovesComparator comparator = new BishopTest.LegalMovesComparator();
-        Collections.sort(moves, comparator);
+        BishopTest.LegalMovesComparator comparator = new LegalMovesComparator();
+        moves.sort(comparator);
 
         // Then
         markLegalMoves(true, moves);
@@ -123,7 +122,7 @@ public class BishopTest extends BaseJUnitTest {
         return legalMoves;
     }
 
-    class LegalMovesComparator implements Comparator<int[]> {
+    static class LegalMovesComparator implements Comparator<int[]> {
         @Override
         public int compare(int[] move1, int[] move2) {
             if (move1[0] != move2[0]) {

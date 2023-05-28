@@ -35,7 +35,7 @@ public class KingTest extends BaseJUnitTest {
         // When
         final ArrayList<int[]> moves = king.getLegalMoves(x, y);
         LegalMovesComparator comparator = new LegalMovesComparator();
-        Collections.sort(moves, comparator);
+        moves.sort(comparator);
 
         // Then
         markLegalMoves(true, moves);
@@ -57,7 +57,7 @@ public class KingTest extends BaseJUnitTest {
         // When
         final ArrayList<int[]> moves = king.getLegalMoves(x, y);
         LegalMovesComparator comparator = new LegalMovesComparator();
-        Collections.sort(moves, comparator);
+        moves.sort(comparator);
 
         // Then
         markLegalMoves(true, moves);
@@ -80,7 +80,7 @@ public class KingTest extends BaseJUnitTest {
         // When
         final ArrayList<int[]> moves = king.getLegalMoves(x, y);
         LegalMovesComparator comparator = new LegalMovesComparator();
-        Collections.sort(moves, comparator);
+        moves.sort(comparator);
 
         // Then
         markLegalMoves(true, moves);
@@ -112,7 +112,7 @@ public class KingTest extends BaseJUnitTest {
         return legalMoves;
     }
 
-    class LegalMovesComparator implements Comparator<int[]> {
+    static class LegalMovesComparator implements Comparator<int[]> {
         @Override
         public int compare(int[] move1, int[] move2) {
             if (move1[0] != move2[0]) {
